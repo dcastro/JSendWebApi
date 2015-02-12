@@ -21,7 +21,7 @@ namespace JSendWebApi.Tests.Results
         public void IsHttpActionResult()
         {
             // Fixture setup
-            var controller = new Mock<ApiController>().Object;
+            var controller = new TestableJSendApiController();
             // Exercise system
             var result = new JSendOkResult(controller);
             // Verify outcome
@@ -32,8 +32,7 @@ namespace JSendWebApi.Tests.Results
         public async Task ExecuteAsyncReturnsSuccessJSendResponse()
         {
             // Fixture setup
-            var controller = new Mock<ApiController>().Object;
-            controller.Request = new HttpRequestMessage();
+            var controller = new TestableJSendApiController {Request = new HttpRequestMessage()};
 
             var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse());
             var result = new JSendOkResult(controller);

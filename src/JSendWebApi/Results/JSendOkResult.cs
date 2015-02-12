@@ -16,12 +16,12 @@ namespace JSendWebApi.Results
     {
         private readonly JsonResult<SuccessJSendResponse> _result;
 
-        public JSendOkResult(ApiController controller)
+        public JSendOkResult(JSendApiController controller)
         {
             _result = new JsonResult<SuccessJSendResponse>(
                 new SuccessJSendResponse(),
-                new JsonSerializerSettings(),
-                new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true),
+                controller.JsonSerializerSettings,
+                controller.Encoding,
                 controller);
         }
 
