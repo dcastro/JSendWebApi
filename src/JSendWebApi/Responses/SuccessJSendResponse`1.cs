@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using JSendWebApi;
 using Newtonsoft.Json;
 
-namespace JSendWebApi
+namespace JSendWebApi.Responses
 {
     public class SuccessJSendResponse<T> : SuccessJSendResponse
     {

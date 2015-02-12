@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
+using JSendWebApi.Responses;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace JSendWebApi.Tests
+namespace JSendWebApi.Tests.Responses
 {
     public class SuccessJSendResponseTests
     {
