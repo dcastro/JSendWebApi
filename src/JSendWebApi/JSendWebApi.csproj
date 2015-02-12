@@ -56,7 +56,9 @@
   <ItemGroup>
     <Compile Include="JSendApiController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SuccessJSendResponse`1.cs" />
     <Compile Include="Results\JSendOkResult.cs" />
+    <Compile Include="Results\JSendOkResult`1.cs" />
     <Compile Include="SuccessJSendResponse.cs" />
   </ItemGroup>
   <ItemGroup>

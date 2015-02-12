@@ -9,7 +9,7 @@ namespace JSendWebApi
 {
     public class SuccessJSendResponse
     {
-        [JsonProperty("status")]
+        [JsonProperty("status", Order = 1)]
         public string Status
         {
             get { return "success"; }

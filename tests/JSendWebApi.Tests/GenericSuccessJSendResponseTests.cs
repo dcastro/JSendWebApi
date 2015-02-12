@@ -4,18 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using JSendWebApi.Tests.TestClasses;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace JSendWebApi.Tests
 {
-    public class SuccessJSendResponseTests
+    public class GenericSuccessJSendResponseTests
     {
+        [Fact]
+        public void ThrowsIfDataIsNull()
+        {
+            // Fixture setup
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => new SuccessJSendResponse<Model>(null));
+        }
+
         [Fact]
         public void StatusIsSuccess()
         {
             // Fixture setup
-            var response = new SuccessJSendResponse();
+            var model = new Model();
+            var response = new SuccessJSendResponse<Model>(model);
             // Exercise system
             var status = response.Status;
             // Verify outcome
@@ -26,8 +36,14 @@ namespace JSendWebApi.Tests
         public void SerializesCorrectly()
         {
             // Fixture setup
-            var response = new SuccessJSendResponse();
-            var expectedSerializedResponse = JObject.Parse(@"{""status"":""success""}");
+            var model = new Model();
+            var response = new SuccessJSendResponse<Model>(model);
+
+            var expectedSerializedResponse = new JObject
+            {
+                {"status", "success"},
+                {"data", JObject.FromObject(model)}
+            };
             // Exercise system
             var serializedResponse = JObject.FromObject(response);
             // Verify outcome

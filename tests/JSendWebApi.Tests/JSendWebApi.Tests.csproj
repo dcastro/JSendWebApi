@@ -72,11 +72,14 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="GenericSuccessJSendResponseTests.cs" />
     <Compile Include="JSendApiControllerTests.cs" />
     <Compile Include="Results\JSendOkResultTests.cs" />
+    <Compile Include="Results\GenericJSendOkResultTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SuccessJSendResponseTests.cs" />
     <Compile Include="TestableJSendApiController.cs" />
+    <Compile Include="TestClasses\Model.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

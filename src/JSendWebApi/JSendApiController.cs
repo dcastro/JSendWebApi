@@ -19,5 +19,10 @@ namespace JSendWebApi
         {
             return new JSendOkResult(this);
         }
+
+        protected internal virtual JSendOkResult<T> JSendOk<T>(T content)
+        {
+            return new JSendOkResult<T>(this, content);
+        }
     }
 }
