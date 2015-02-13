@@ -8,26 +8,11 @@ using Newtonsoft.Json;
 
 namespace JSendWebApi.Responses
 {
-    public class SuccessJSendResponse<T>
+    public class SuccessJSendResponse<T> : BaseJSendResponse<T>
     {
-        private readonly T _data;
-
         public SuccessJSendResponse(T data)
+            : base("success", data)
         {
-            if (data == null) throw new ArgumentNullException("data");
-            _data = data;
-        }
-
-        [JsonProperty("status", Order = 1)]
-        public string Status
-        {
-            get { return "success"; }
-        }
-
-        [JsonProperty("data", Order = 2)]
-        public T Data
-        {
-            get { return _data; }
         }
     }
 }

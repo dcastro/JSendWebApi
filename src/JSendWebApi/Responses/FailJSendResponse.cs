@@ -7,26 +7,11 @@ using Newtonsoft.Json;
 
 namespace JSendWebApi.Responses
 {
-    public class FailJSendResponse<T>
+    public class FailJSendResponse<T> : BaseJSendResponse<T>
     {
-        private readonly T _data;
-
         public FailJSendResponse(T data)
+            : base("fail", data)
         {
-            if (data == null) throw new ArgumentNullException("data");
-            _data = data;
-        }
-
-        [JsonProperty("status", Order = 1)]
-        public string Status
-        {
-            get { return "fail"; }
-        }
-
-        [JsonProperty("data", Order = 2)]
-        public T Data
-        {
-            get { return _data; }
         }
     }
 }
