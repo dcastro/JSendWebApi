@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using FluentAssertions;
 using JSendWebApi.Results;
-using JSendWebApi.Tests.TestClasses;
+using JSendWebApi.Tests.FixtureCustomizations;
+using JSendWebApi.Tests.TestTypes;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Kernel;
+using Ploeh.AutoFixture.Xunit;
 using Xunit;
+using Xunit.Extensions;
 
 namespace JSendWebApi.Tests
 {
     public class JSendApiControllerTests
     {
-        [Fact]
-        public void JSendApiControllerIsApiController()
+        [Theory, JSendAutoData]
+        public void JSendApiControllerIsApiController(JSendApiController controller)
         {
-            // Fixture setup
-            // Exercise system
-            var controller = new TestableJSendApiController();
-            // Verify outcome
+            // Exercise system and verify outcome
             controller.Should().BeAssignableTo<ApiController>();
         }
 
@@ -94,23 +94,18 @@ namespace JSendWebApi.Tests
             settings.ShouldBeEquivalentTo(new JsonSerializerSettings());
         }
 
-        [Fact]
-        public void JSendOkReturnsJSendOkResult()
+        [Theory, JSendAutoData]
+        public void JSendOkReturnsJSendOkResult(JSendApiController controller)
         {
-            // Fixture setup
-            var controller = new TestableJSendApiController();
             // Exercise system
             var result = controller.JSendOk();
             // Verify outcome
             result.Should().BeAssignableTo<JSendOkResult>();
         }
 
-        [Fact]
-        public void JSendOkWithContentReturnsJSendOkResult()
+        [Theory, JSendAutoData]
+        public void JSendOkWithContentReturnsJSendOkResult(Model model, JSendApiController controller)
         {
-            // Fixture setup
-            var controller = new TestableJSendApiController();
-            var model = new Model();
             // Exercise system
             var result = controller.JSendOk(model);
             // Verify outcome

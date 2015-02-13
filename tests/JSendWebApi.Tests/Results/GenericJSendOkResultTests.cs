@@ -10,36 +10,31 @@ using System.Web.Http;
 using FluentAssertions;
 using JSendWebApi.Responses;
 using JSendWebApi.Results;
-using JSendWebApi.Tests.TestClasses;
+using JSendWebApi.Tests.FixtureCustomizations;
+using JSendWebApi.Tests.TestTypes;
 using Moq;
 using Newtonsoft.Json;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.Xunit;
 using Xunit;
+using Xunit.Extensions;
 
 namespace JSendWebApi.Tests.Results
 {
     public class GenericJSendOkResultTests
     {
-        [Fact]
-        public void IsHttpActionResult()
+        [Theory, JSendAutoData]
+        public void IsHttpActionResult(JSendOkResult<Model> result)
         {
-            // Fixture setup
-            var controller = new TestableJSendApiController();
-            var model = new Model();
-            // Exercise system
-            var result = new JSendOkResult<Model>(controller, model);
-            // Verify outcome
+            // Exercise system and verify outcome
             result.Should().BeAssignableTo<IHttpActionResult>();
         }
 
-        [Fact]
-        public async Task ExecuteAsyncReturnsSuccessJSendResponse()
+        [Theory, JSendAutoData]
+        public async Task ExecuteAsyncReturnsSuccessJSendResponse([Frozen] Model model, JSendOkResult<Model> result)
         {
             // Fixture setup
-            var controller = new TestableJSendApiController {Request = new HttpRequestMessage()};
-            var model = new Model {Name = "test"};
-
             var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse<Model>(model));
-            var result = new JSendOkResult<Model>(controller, model);
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -47,43 +42,33 @@ namespace JSendWebApi.Tests.Results
             content.Should().Be(jsendSuccess);
         }
 
-        [Fact]
-        public async Task SetsStatusCodeTo200()
+        [Theory, JSendAutoData]
+        public async Task SetsStatusCodeTo200(JSendOkResult<Model> result)
         {
-            // Fixture setup
-            var controller = new TestableJSendApiController {Request = new HttpRequestMessage()};
-            var model = new Model {Name = "test"};
-            var result = new JSendOkResult<Model>(controller, model);
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             message.StatusCode.Should().Be(HttpStatusCode.OK);
         }
-        
+
         [Fact]
         public async Task SetsCharSetHeader()
         {
             // Fixture setup
+            var fixture = new Fixture().Customize(new JSendTestConventions());
             var encoding = Encoding.ASCII;
-            var model = new Model();
-            var controller = new TestableJSendApiController(new JsonSerializerSettings(), encoding)
-            {
-                Request = new HttpRequestMessage()
-            };
-            var result = new JSendOkResult<Model>(controller, model);
+            fixture.Inject(encoding);
+
+            var result = fixture.Create<JSendOkResult<Model>>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             message.Content.Headers.ContentType.CharSet = encoding.WebName;
         }
 
-        [Fact]
-        public async Task SetsContentTypeHeader()
+        [Theory, JSendAutoData]
+        public async Task SetsContentTypeHeader(JSendOkResult<Model> result)
         {
-            // Fixture setup
-            var model = new Model();
-            var controller = new TestableJSendApiController { Request = new HttpRequestMessage() };
-            var result = new JSendOkResult<Model>(controller, model);
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome

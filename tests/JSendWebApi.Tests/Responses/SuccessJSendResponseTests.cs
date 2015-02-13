@@ -1,28 +1,25 @@
 ﻿using FluentAssertions;
 using JSendWebApi.Responses;
+using JSendWebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Xunit.Extensions;
 
 namespace JSendWebApi.Tests.Responses
 {
     public class SuccessJSendResponseTests
     {
-        [Fact]
-        public void StatusIsSuccess()
+        [Theory, JSendAutoData]
+        public void StatusIsSuccess(SuccessJSendResponse response)
         {
-            // Fixture setup
-            var response = new SuccessJSendResponse();
-            // Exercise system
-            var status = response.Status;
-            // Verify outcome
-            status.Should().Be("success");
+            // Exercise system and verify outcome
+            response.Status.Should().Be("success");
         }
 
-        [Fact]
-        public void SerializesCorrectly()
+        [Theory, JSendAutoData]
+        public void SerializesCorrectly(SuccessJSendResponse response)
         {
             // Fixture setup
-            var response = new SuccessJSendResponse();
             var expectedSerializedResponse = JObject.Parse(@"{""status"":""success""}");
             // Exercise system
             var serializedResponse = JObject.FromObject(response);

@@ -1,9 +1,12 @@
 ﻿using System;
 using FluentAssertions;
 using JSendWebApi.Responses;
-using JSendWebApi.Tests.TestClasses;
+using JSendWebApi.Tests.FixtureCustomizations;
+using JSendWebApi.Tests.TestTypes;
 using Newtonsoft.Json.Linq;
+using Ploeh.AutoFixture.Xunit;
 using Xunit;
+using Xunit.Extensions;
 
 namespace JSendWebApi.Tests.Responses
 {
@@ -12,30 +15,21 @@ namespace JSendWebApi.Tests.Responses
         [Fact]
         public void ThrowsIfDataIsNull()
         {
-            // Fixture setup
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => new SuccessJSendResponse<Model>(null));
         }
 
-        [Fact]
-        public void StatusIsSuccess()
+        [Theory, JSendAutoData]
+        public void StatusIsSuccess(SuccessJSendResponse<Model> response)
         {
-            // Fixture setup
-            var model = new Model();
-            var response = new SuccessJSendResponse<Model>(model);
-            // Exercise system
-            var status = response.Status;
-            // Verify outcome
-            status.Should().Be("success");
+            // Exercise system and verify outcome
+            response.Status.Should().Be("success");
         }
 
-        [Fact]
-        public void SerializesCorrectly()
+        [Theory, JSendAutoData]
+        public void SerializesCorrectly([Frozen] Model model, SuccessJSendResponse<Model> response)
         {
             // Fixture setup
-            var model = new Model();
-            var response = new SuccessJSendResponse<Model>(model);
-
             var expectedSerializedResponse = new JObject
             {
                 {"status", "success"},
