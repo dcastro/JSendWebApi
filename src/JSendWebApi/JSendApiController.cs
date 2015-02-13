@@ -59,5 +59,10 @@ namespace JSendWebApi
         {
             return new JSendOkResult<T>(this, content);
         }
+
+        protected internal virtual JSendBadRequestResult<string> JSendBadRequest(string reason)
+        {
+            return new JSendBadRequestResult<string>(this, reason);
+        }
     }
 }
