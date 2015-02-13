@@ -28,26 +28,13 @@ namespace JSendWebApi.Tests
         }
 
         [Fact]
-        public void JSendOkReturnsJSendOkResult()
+        public void ConstructorsThrowWhenAnyArgumentIsNull()
         {
             // Fixture setup
-            var controller = new TestableJSendApiController();
-            // Exercise system
-            var result = controller.JSendOk();
-            // Verify outcome
-            result.Should().BeAssignableTo<JSendOkResult>();
-        }
-
-        [Fact]
-        public void JSendOkWithContentReturnsJSendOkResult()
-        {
-            // Fixture setup
-            var controller = new TestableJSendApiController();
-            var model = new Model();
-            // Exercise system
-            var result = controller.JSendOk(model);
-            // Verify outcome
-            result.Should().BeAssignableTo<JSendOkResult<Model>>();
+            var fixture = new Fixture {OmitAutoProperties = true};
+            var assertion = new GuardClauseAssertion(fixture);
+            // Exercise system and verify outcome
+            assertion.Verify(typeof (TestableJSendApiController).GetConstructors());
         }
 
         [Fact]
@@ -75,13 +62,59 @@ namespace JSendWebApi.Tests
         }
 
         [Fact]
-        public void ConstructorsThrowsWhenAnyArgumentIsNull()
+        public void EncodingIsUtf8WhenNoArgumentsAreSpecified()
         {
             // Fixture setup
-            var fixture = new Fixture {OmitAutoProperties = true};
-            var assertion = new GuardClauseAssertion(fixture);
-            // Exercise system and verify outcome
-            assertion.Verify(typeof (TestableJSendApiController).GetConstructors());
+            var controller = new TestableJSendApiController();
+            // Exercise system
+            var encoding = controller.Encoding;
+            // Verify outcome
+            encoding.Should().BeOfType<UTF8Encoding>();
+        }
+
+        [Fact]
+        public void EncodingIsUtf8WhenOnlySettingsAreSpecified()
+        {
+            // Fixture setup
+            var controller = new TestableJSendApiController(new JsonSerializerSettings());
+            // Exercise system
+            var encoding = controller.Encoding;
+            // Verify outcome
+            encoding.Should().BeOfType<UTF8Encoding>();
+        }
+
+        [Fact]
+        public void JsonSerializerSettingsAreDefaultSettings()
+        {
+            // Fixture setup
+            var controller = new TestableJSendApiController();
+            // Exercise system
+            var settings = controller.JsonSerializerSettings;
+            // Verify outcome
+            settings.ShouldBeEquivalentTo(new JsonSerializerSettings());
+        }
+
+        [Fact]
+        public void JSendOkReturnsJSendOkResult()
+        {
+            // Fixture setup
+            var controller = new TestableJSendApiController();
+            // Exercise system
+            var result = controller.JSendOk();
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendOkResult>();
+        }
+
+        [Fact]
+        public void JSendOkWithContentReturnsJSendOkResult()
+        {
+            // Fixture setup
+            var controller = new TestableJSendApiController();
+            var model = new Model();
+            // Exercise system
+            var result = controller.JSendOk(model);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendOkResult<Model>>();
         }
     }
 }

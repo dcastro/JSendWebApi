@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -41,6 +42,46 @@ namespace JSendWebApi.Tests.Results
             // Verify outcome
             var content = await message.Content.ReadAsStringAsync();
             content.Should().Be(jsendSuccess);
+        }
+
+        [Fact]
+        public async Task SetsStatusCodeTo200()
+        {
+            // Fixture setup
+            var controller = new TestableJSendApiController {Request = new HttpRequestMessage()};
+            var result = new JSendOkResult(controller);
+            // Exercise system
+            var message = await result.ExecuteAsync(new CancellationToken());
+            // Verify outcome
+            message.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task SetsCharSetHeader()
+        {
+            // Fixture setup
+            var encoding = Encoding.ASCII;
+            var controller = new TestableJSendApiController(new JsonSerializerSettings(), encoding)
+            {
+                Request = new HttpRequestMessage()
+            };
+            var result = new JSendOkResult(controller);
+            // Exercise system
+            var message = await result.ExecuteAsync(new CancellationToken());
+            // Verify outcome
+            message.Content.Headers.ContentType.CharSet = encoding.WebName;
+        }
+
+        [Fact]
+        public async Task SetsContentTypeHeader()
+        {
+            // Fixture setup
+            var controller = new TestableJSendApiController {Request = new HttpRequestMessage()};
+            var result = new JSendOkResult(controller);
+            // Exercise system
+            var message = await result.ExecuteAsync(new CancellationToken());
+            // Verify outcome
+            message.Content.Headers.ContentType.MediaType.Should().Be("application/json");
         }
     }
 }
