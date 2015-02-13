@@ -17,10 +17,17 @@ namespace JSendWebApi.Tests.Responses
         }
 
         [Theory, JSendAutoData]
+        public void DataIsNull(SuccessJSendResponse response)
+        {
+            // Exercise system and verify outcome
+            response.Data.Should().BeNull();
+        }
+
+        [Theory, JSendAutoData]
         public void SerializesCorrectly(SuccessJSendResponse response)
         {
             // Fixture setup
-            var expectedSerializedResponse = JObject.Parse(@"{""status"":""success""}");
+            var expectedSerializedResponse = JObject.Parse(@"{""status"":""success"",""data"":null}");
             // Exercise system
             var serializedResponse = JObject.FromObject(response);
             // Verify outcome

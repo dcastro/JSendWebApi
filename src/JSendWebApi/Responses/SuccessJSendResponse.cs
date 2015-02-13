@@ -14,5 +14,11 @@ namespace JSendWebApi.Responses
         {
             get { return "success"; }
         }
+
+        [JsonProperty("data", Order = 2, NullValueHandling = NullValueHandling.Include)]
+        public object Data
+        {
+            get { return null; }
+        }
     }
 }

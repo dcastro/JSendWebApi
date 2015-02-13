@@ -27,6 +27,15 @@ namespace JSendWebApi.Tests.Responses
         }
 
         [Theory, JSendAutoData]
+        public void DataIsCorrectlyInitialized(Model model)
+        {
+            // Exercise system
+            var response = new SuccessJSendResponse<Model>(model);
+            // Verify outcome
+            response.Data.Should().BeSameAs(model);
+        }
+
+        [Theory, JSendAutoData]
         public void SerializesCorrectly([Frozen] Model model, SuccessJSendResponse<Model> response)
         {
             // Fixture setup

@@ -14,11 +14,11 @@ namespace JSendWebApi.Results
 {
     public class JSendOkResult<T> : IHttpActionResult
     {
-        private readonly JsonResult<SuccessJSendResponse> _result;
+        private readonly JsonResult<SuccessJSendResponse<T>> _result;
 
         public JSendOkResult(JSendApiController controller, T content)
         {
-            _result = new JsonResult<SuccessJSendResponse>(
+            _result = new JsonResult<SuccessJSendResponse<T>>(
                 new SuccessJSendResponse<T>(content),
                 controller.JsonSerializerSettings,
                 controller.Encoding,

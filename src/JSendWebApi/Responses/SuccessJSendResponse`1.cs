@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace JSendWebApi.Responses
 {
-    public class SuccessJSendResponse<T> : SuccessJSendResponse
+    public class SuccessJSendResponse<T>
     {
         private readonly T _data;
 
@@ -16,6 +16,12 @@ namespace JSendWebApi.Responses
         {
             if (data == null) throw new ArgumentNullException("data");
             _data = data;
+        }
+
+        [JsonProperty("status", Order = 1)]
+        public string Status
+        {
+            get { return "success"; }
         }
 
         [JsonProperty("data", Order = 2)]
