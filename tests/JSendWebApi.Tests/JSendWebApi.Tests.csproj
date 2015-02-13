@@ -87,6 +87,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Responses\FailJSendResponseTests.cs" />
     <Compile Include="Responses\GenericSuccessJSendResponseTests.cs" />
     <Compile Include="JSendApiControllerTests.cs" />
     <Compile Include="Results\JSendOkResultTests.cs" />
