@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 using System.Web.Http.Results;
 using JSendWebApi.Results;
 using Newtonsoft.Json;
@@ -63,6 +64,11 @@ namespace JSendWebApi
         protected internal virtual JSendBadRequestResult<string> JSendBadRequest(string reason)
         {
             return new JSendBadRequestResult<string>(this, reason);
+        }
+
+        protected internal virtual JSendInvalidModelStateResult JSendBadRequest(ModelStateDictionary modelState)
+        {
+            return new JSendInvalidModelStateResult(this, modelState);
         }
     }
 }

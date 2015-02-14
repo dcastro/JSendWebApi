@@ -91,6 +91,7 @@
     <Compile Include="Responses\GenericSuccessJSendResponseTests.cs" />
     <Compile Include="JSendApiControllerTests.cs" />
     <Compile Include="Results\JSendBadRequestResultTests.cs" />
+    <Compile Include="Results\JSendInvalidModelStateResultTests.cs" />
     <Compile Include="Results\JSendOkResultTests.cs" />
     <Compile Include="Results\GenericJSendOkResultTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

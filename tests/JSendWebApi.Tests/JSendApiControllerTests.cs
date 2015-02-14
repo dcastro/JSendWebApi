@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 using FluentAssertions;
 using JSendWebApi.Results;
 using JSendWebApi.Tests.FixtureCustomizations;
@@ -119,6 +120,17 @@ namespace JSendWebApi.Tests
             var result = controller.JSendBadRequest(reason);
             // Verify outcome
             result.Should().BeAssignableTo<JSendBadRequestResult<string>>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendBadRequestWithModelState_Returns_JSendInvalidModelStateResult(ModelStateDictionary modelState, JSendApiController controller)
+        {
+            // Fixture setup
+            modelState.AddModelError("", "");
+            // Exercise system
+            var result = controller.JSendBadRequest(modelState);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendInvalidModelStateResult>();
         }
     }
 }

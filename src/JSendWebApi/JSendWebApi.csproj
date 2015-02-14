@@ -61,6 +61,7 @@
     <Compile Include="Responses\SuccessJSendResponse`1.cs" />
     <Compile Include="Results\JSendResult.cs" />
     <Compile Include="Results\JSendBadRequestResult.cs" />
+    <Compile Include="Results\JSendInvalidModelStateResult.cs" />
     <Compile Include="Results\JSendOkResult.cs" />
     <Compile Include="Results\JSendOkResult`1.cs" />
     <Compile Include="Responses\SuccessJSendResponse.cs" />
