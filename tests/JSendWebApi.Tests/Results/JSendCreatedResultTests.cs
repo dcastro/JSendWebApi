@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Controllers;
 using FluentAssertions;
 using JSendWebApi.Responses;
 using JSendWebApi.Results;
@@ -21,10 +21,10 @@ using Xunit.Extensions;
 
 namespace JSendWebApi.Tests.Results
 {
-    public class JSendBadRequestResultTests
+    public class JSendCreatedResultTests
     {
         [Theory, JSendAutoData]
-        public void IsHttpActionResult(JSendBadRequestResult<Model> result)
+        public void IsHttpActionResult(JSendCreatedResult<Model> result)
         {
             // Exercise system and verify outcome
             result.Should().BeAssignableTo<IHttpActionResult>();
@@ -34,28 +34,28 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
         {
             // Exercise system and verify outcome
-            assertion.Verify(typeof (JSendBadRequestResult<Model>).GetConstructors());
+            assertion.Verify(typeof (JSendCreatedResult<Model>).GetConstructors());
         }
 
         [Theory, JSendAutoData]
-        public async Task ReturnsFailJSendResponse([Frozen] Model model, JSendBadRequestResult<Model> result)
+        public async Task ReturnsSuccessJSendResponse([Frozen] Model model, JSendCreatedResult<Model> result)
         {
             // Fixture setup
-            var jsendFail = JsonConvert.SerializeObject(new FailJSendResponse<Model>(model));
+            var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse<Model>(model));
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             var content = await message.Content.ReadAsStringAsync();
-            content.Should().Be(jsendFail);
+            content.Should().Be(jsendSuccess);
         }
 
         [Theory, JSendAutoData]
-        public async Task StatusCodeIs400(JSendBadRequestResult<Model> result)
+        public async Task StatusCodeIs201(JSendCreatedResult<Model> result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            message.StatusCode.Should().Be(HttpStatusCode.Created);
         }
 
         [Theory, JSendAutoData]
@@ -65,7 +65,7 @@ namespace JSendWebApi.Tests.Results
             var encoding = Encoding.ASCII;
             fixture.Inject(encoding);
 
-            var result = fixture.Create<JSendBadRequestResult<Model>>();
+            var result = fixture.Create<JSendCreatedResult<Model>>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -73,12 +73,21 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsContentTypeHeader(JSendBadRequestResult<Model> result)
+        public async Task SetsContentTypeHeader(JSendCreatedResult<Model> result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             message.Content.Headers.ContentType.MediaType.Should().Be("application/json");
+        }
+
+        [Theory, JSendAutoData]
+        public async Task SetsLocationHeader([Frozen] Uri expectedLocation, JSendCreatedResult<Model> result)
+        {
+            // Exercise system
+            var message = await result.ExecuteAsync(new CancellationToken());
+            // Verify outcome
+            message.Headers.Location.Should().Be(expectedLocation);
         }
     }
 }
