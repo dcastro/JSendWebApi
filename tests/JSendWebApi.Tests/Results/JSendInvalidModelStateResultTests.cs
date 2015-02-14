@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using JSendWebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
@@ -31,14 +33,26 @@ namespace JSendWebApi.Tests.Results
             }
         }
 
-        [Fact]
-        public void IsHttpActionResult()
+        private class InvalidModelStateAttribute : CustomizeAttribute
         {
-            // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions()).Customize(new InvalidModelCustomization());
-            var result = fixture.Create<JSendInvalidModelStateResult>();
+            public override ICustomization GetCustomization(ParameterInfo parameter)
+            {
+                return new InvalidModelCustomization();
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public void IsHttpActionResult([InvalidModelState] JSendInvalidModelStateResult result)
+        {
             // Exercise system and verify outcome
             result.Should().BeAssignableTo<IHttpActionResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorsThrowWhenAnyArgumentIsNull([InvalidModelState] GuardClauseAssertion assertion)
+        {
+            // Exercise system and verify outcome
+            assertion.Verify(typeof (JSendInvalidModelStateResult).GetConstructors());
         }
 
         [Theory, JSendAutoData]
@@ -48,12 +62,9 @@ namespace JSendWebApi.Tests.Results
             Assert.Throws<ArgumentException>(() => new JSendInvalidModelStateResult(controller, modelState));
         }
 
-        [Fact]
-        public async Task ReturnFailJSendResponse()
+        [Theory, JSendAutoData]
+        public async Task ReturnFailJSendResponse([InvalidModelState] JSendInvalidModelStateResult result)
         {
-            // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions()).Customize(new InvalidModelCustomization());
-            var result = fixture.Create<JSendInvalidModelStateResult>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -61,11 +72,10 @@ namespace JSendWebApi.Tests.Results
             content.Should().Contain(@"""status"":""fail""");
         }
 
-        [Fact]
-        public async Task ExtractsErrorMessages()
+        [Theory, JSendAutoData]
+        public async Task ExtractsErrorMessages(IFixture fixture)
         {
             // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions());
             fixture.Customize<ModelStateDictionary>(c =>
                 c.Do(dic => dic.AddModelError("age", "error1"))
                     .Do(dic => dic.AddModelError("age", "error2")));
@@ -85,11 +95,10 @@ namespace JSendWebApi.Tests.Results
             JToken.DeepEquals(jContent["data"], expectedErrorMessages).Should().BeTrue();
         }
 
-        [Fact]
-        public async Task ExtractsExceptionMessages()
+        [Theory, JSendAutoData]
+        public async Task ExtractsExceptionMessages(IFixture fixture)
         {
             // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions());
             fixture.Customize<ModelStateDictionary>(c =>
                 c.Do(dic => dic.AddModelError("age", new Exception("exceptionMessage1")))
                     .Do(dic => dic.AddModelError("age", new Exception("exceptionMessage2"))));
@@ -110,20 +119,18 @@ namespace JSendWebApi.Tests.Results
             JToken.DeepEquals(jContent["data"], expectedExceptionMessages).Should().BeTrue();
         }
 
-        [Fact]
-        public async Task InsertsDefaultMessageInsteadOfExceptionMessage_If_ControllerIsConfuguredToNotIncludeErrorDetails()
+        [Theory, JSendAutoData]
+        public async Task InsertsDefaultMessageInsteadOfExceptionMessage_If_ControllerIsConfuguredToNotIncludeErrorDetails(
+            IFixture fixture, [Frozen] JSendApiController controller)
         {
             // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions());
             fixture.Customize<ModelStateDictionary>(c =>
                 c.Do(dic => dic.AddModelError("age", new Exception("exceptionMessage1"))));
-            fixture.Freeze<JSendApiController>().RequestContext.IncludeErrorDetail = false;
+            controller.RequestContext.IncludeErrorDetail = false;
 
             var result = fixture.Create<JSendInvalidModelStateResult>();
-
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
-
             // Verify outcome
             var content = await message.Content.ReadAsStringAsync();
             var jContent = JObject.Parse(content);
@@ -137,11 +144,10 @@ namespace JSendWebApi.Tests.Results
                 .NotBeEmpty();
         }
 
-        [Fact]
-        public async Task InsertsDefaultMessage_If_ErrorMessageIsEmpty()
+        [Theory, JSendAutoData]
+        public async Task InsertsDefaultMessage_If_ErrorMessageIsEmpty(IFixture fixture)
         {
             // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions());
             fixture.Customize<ModelStateDictionary>(c =>
                 c.Do(dic => dic.AddModelError("age", errorMessage: "")));
 
@@ -160,43 +166,30 @@ namespace JSendWebApi.Tests.Results
             ageErrors.First.ToString().Should().NotBeEmpty();
         }
 
-        [Fact]
-        public async Task StatusCodeIs400()
+        [Theory, JSendAutoData]
+        public async Task StatusCodeIs400([InvalidModelState] JSendInvalidModelStateResult result)
         {
-            // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions())
-                .Customize(new InvalidModelCustomization());
-            var result = fixture.Create<JSendInvalidModelStateResult>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             message.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
-        [Fact]
-        public async Task SetsCharSetHeader()
+        [Theory, JSendAutoData]
+        public async Task SetsCharSetHeader([InvalidModelState] IFixture fixture, JSendInvalidModelStateResult result)
         {
             // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions())
-                .Customize(new InvalidModelCustomization());
             var encoding = Encoding.ASCII;
             fixture.Inject(encoding);
-
-            var result = fixture.Create<JSendInvalidModelStateResult>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             message.Content.Headers.ContentType.CharSet = encoding.WebName;
         }
 
-        [Fact]
-        public async Task SetsContentTypeHeader()
+        [Theory, JSendAutoData]
+        public async Task SetsContentTypeHeader([InvalidModelState] JSendInvalidModelStateResult result)
         {
-            // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions())
-                .Customize(new InvalidModelCustomization());
-
-            var result = fixture.Create<JSendInvalidModelStateResult>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome

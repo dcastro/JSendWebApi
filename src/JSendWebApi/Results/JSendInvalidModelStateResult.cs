@@ -18,6 +18,8 @@ namespace JSendWebApi.Results
 
         public JSendInvalidModelStateResult(JSendApiController controller, ModelStateDictionary modelState)
         {
+            if (controller == null) throw new ArgumentNullException("controller");
+
             HttpError validationErrors =
                 new HttpError(modelState, controller.RequestContext.IncludeErrorDetail).ModelState;
 
