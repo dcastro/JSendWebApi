@@ -71,7 +71,7 @@ namespace JSendWebApi.Tests.Results
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.Content.Headers.ContentType.CharSet = encoding.WebName;
+            message.Content.Headers.ContentType.CharSet.Should().Be(encoding.WebName);
         }
 
         [Theory, JSendAutoData]
