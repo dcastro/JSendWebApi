@@ -82,5 +82,17 @@ namespace JSendWebApi
         {
             return new JSendInvalidModelStateResult(this, modelState);
         }
+
+        protected internal virtual JSendCreatedResult<T> JSendCreated<T>(Uri location, T content)
+        {
+            return new JSendCreatedResult<T>(this, location, content);
+        }
+
+        protected internal virtual JSendCreatedResult<T> JSendCreated<T>(string location, T content)
+        {
+            if (location == null) throw new ArgumentNullException("location");
+
+            return JSendCreated(new Uri(location, UriKind.RelativeOrAbsolute), content);
+        }
     }
 }

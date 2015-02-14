@@ -166,5 +166,50 @@ namespace JSendWebApi.Tests
             // Verify outcome
             result.Should().BeAssignableTo<JSendInvalidModelStateResult>();
         }
+
+        [Theory, JSendAutoData]
+        public void JSendCreatedWithUri_Returns_JSendCreatedResult(Uri uri, Model model, JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSendCreated(uri, model);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendCreatedResult<Model>>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendCreatedWithString_Returns_JSendCreatedResult(Model model, JSendApiController controller)
+        {
+            // Fixture setup
+            const string location = "http://localhost/";
+            // Exercise system
+            var result = controller.JSendCreated(location, model);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendCreatedResult<Model>>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendCreatedWithString_Throws_IfLocationIsNull(Model model, JSendApiController controller)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => controller.JSendCreated(null as string, model));
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendCreatedWithString_AcceptsAbsoluteUris(Model model, JSendApiController controller)
+        {
+            // Fixture setup
+            const string location = "http://localhost/";
+            // Exercise system and verify outcome
+            Assert.DoesNotThrow(() => controller.JSendCreated(location, model));
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendCreatedWithString_AcceptsRelativeUris(Model model, JSendApiController controller)
+        {
+            // Fixture setup
+            const string location = "/about";
+            // Exercise system and verify outcome
+            Assert.DoesNotThrow(() => controller.JSendCreated(location, model));
+        }
     }
 }
