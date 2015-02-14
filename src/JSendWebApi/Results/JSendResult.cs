@@ -11,12 +11,12 @@ using System.Web.Http.Results;
 
 namespace JSendWebApi.Results
 {
-    public abstract class BaseJSendResult<TResponse> : IHttpActionResult
+    public sealed class JSendResult<TResponse> : IHttpActionResult
     {
         private readonly HttpStatusCode _statusCode;
         private readonly JsonResult<TResponse> _jsonResult;
 
-        protected BaseJSendResult(JSendApiController controller, TResponse response, HttpStatusCode statusCode)
+        public JSendResult(JSendApiController controller, TResponse response, HttpStatusCode statusCode)
         {
             if (controller == null) throw new ArgumentNullException("controller");
             if (response == null) throw new ArgumentNullException("response");
