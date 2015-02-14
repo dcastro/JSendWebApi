@@ -15,6 +15,7 @@ using JSendWebApi.Tests.TestTypes;
 using Moq;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
@@ -28,6 +29,13 @@ namespace JSendWebApi.Tests.Results
         {
             // Exercise system and verify outcome
             result.Should().BeAssignableTo<IHttpActionResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
+        {
+            // Exercise system and verify outcome
+            assertion.Verify(typeof (JSendOkResult<Model>).GetConstructors());
         }
 
         [Theory, JSendAutoData]
