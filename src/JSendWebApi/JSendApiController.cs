@@ -16,8 +16,8 @@ namespace JSendWebApi
 {
     public abstract class JSendApiController : ApiController
     {
-        private readonly JsonSerializerSettings _settings;
-        private readonly Encoding _encoding;
+        private JsonSerializerSettings _settings;
+        private Encoding _encoding;
 
         protected JSendApiController()
             : this(new JsonSerializerSettings())
@@ -44,11 +44,23 @@ namespace JSendWebApi
         public JsonSerializerSettings JsonSerializerSettings
         {
             get { return _settings; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                _settings = value;
+            }
         }
 
         public Encoding Encoding
         {
             get { return _encoding; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                _encoding = value;
+            }
         }
 
         protected internal virtual JSendOkResult JSendOk()

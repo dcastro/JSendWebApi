@@ -1,4 +1,7 @@
-﻿using Ploeh.AutoFixture;
+﻿using System.Net.Http;
+using System.Text;
+using Newtonsoft.Json;
+using Ploeh.AutoFixture;
 
 namespace JSendWebApi.Tests.FixtureCustomizations
 {
@@ -9,7 +12,9 @@ namespace JSendWebApi.Tests.FixtureCustomizations
             fixture.Customize<JSendApiController>(
                 c => c.FromFactory(() => new TestableJSendApiController())
                     .OmitAutoProperties()
-                    .With(a => a.Request));
+                    .With(a => a.Request, new HttpRequestMessage())
+                    .With(a => a.JsonSerializerSettings, new JsonSerializerSettings())
+                    .With(a => a.Encoding, new UTF8Encoding()));
         }
     }
 }

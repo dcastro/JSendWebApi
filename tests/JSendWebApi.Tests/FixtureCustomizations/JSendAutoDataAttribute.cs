@@ -14,9 +14,9 @@ namespace JSendWebApi.Tests.FixtureCustomizations
     internal class JSendTestConventions : CompositeCustomization
     {
         public JSendTestConventions()
-            : base(new JSendApiControllerCustomization(), new HttpRequestMessageCustomization())
+            : base(new JSendApiControllerCustomization())
         {
-            
+
         }
     }
 }

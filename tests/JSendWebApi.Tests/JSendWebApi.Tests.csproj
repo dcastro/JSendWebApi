@@ -99,7 +99,6 @@
     <Compile Include="TestableJSendApiController.cs" />
     <Compile Include="TestTypes\Model.cs" />
     <Compile Include="FixtureCustomizations\JSendAutoDataAttribute.cs" />
-    <Compile Include="FixtureCustomizations\HttpRequestMessageCustomization.cs" />
     <Compile Include="FixtureCustomizations\JSendApiControllerCustomization.cs" />
   </ItemGroup>
   <ItemGroup>
