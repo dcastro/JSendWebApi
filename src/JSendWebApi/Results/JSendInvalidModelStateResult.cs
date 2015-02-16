@@ -14,7 +14,7 @@ namespace JSendWebApi.Results
 {
     public class JSendInvalidModelStateResult : IHttpActionResult
     {
-        private readonly JSendResult<FailJSendResponse<HttpError>> _result;
+        private readonly JSendResult<FailJSendResponse> _result;
 
         public JSendInvalidModelStateResult(JSendApiController controller, ModelStateDictionary modelState)
         {
@@ -23,9 +23,9 @@ namespace JSendWebApi.Results
             HttpError validationErrors =
                 new HttpError(modelState, controller.RequestContext.IncludeErrorDetail).ModelState;
 
-            _result = new JSendResult<FailJSendResponse<HttpError>>(
+            _result = new JSendResult<FailJSendResponse>(
                 controller,
-                new FailJSendResponse<HttpError>(validationErrors),
+                new FailJSendResponse(validationErrors),
                 HttpStatusCode.BadRequest);
         }
 

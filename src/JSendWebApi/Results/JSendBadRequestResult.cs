@@ -9,11 +9,11 @@ namespace JSendWebApi.Results
 {
     public class JSendBadRequestResult<T> : IHttpActionResult
     {
-        private readonly JSendResult<FailJSendResponse<T>> _result;
+        private readonly JSendResult<FailJSendResponse> _result;
 
         public JSendBadRequestResult(JSendApiController controller, T content)
         {
-            _result = new JSendResult<FailJSendResponse<T>>(controller, new FailJSendResponse<T>(content),
+            _result = new JSendResult<FailJSendResponse>(controller, new FailJSendResponse(content),
                 HttpStatusCode.BadRequest);
         }
 

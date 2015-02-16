@@ -41,7 +41,7 @@ namespace JSendWebApi.Tests.Results
         public async Task ReturnsFailJSendResponse([Frozen] Model model, JSendBadRequestResult<Model> result)
         {
             // Fixture setup
-            var jsendFail = JsonConvert.SerializeObject(new FailJSendResponse<Model>(model));
+            var jsendFail = JsonConvert.SerializeObject(new FailJSendResponse(model));
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome

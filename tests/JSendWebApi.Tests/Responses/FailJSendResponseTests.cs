@@ -17,28 +17,38 @@ namespace JSendWebApi.Tests.Responses
 {
     public class FailJSendResponseTests
     {
-        [Fact]
-        public void ThrowsIfDataIsNull()
-        {
-            // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new FailJSendResponse<Model>(null));
-        }
 
         [Theory, JSendAutoData]
-        public void StatusIsFail(FailJSendResponse<Model> response)
+        public void StatusIsFail(FailJSendResponse response)
         {
             // Exercise system and verify outcome
             response.Status.Should().Be("fail");
         }
 
+        [Fact]
+        public void ConstructorThrowsWhenDataIsNull()
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => new FailJSendResponse(null));
+        }
+
         [Theory, JSendAutoData]
-        public void SerializesCorrectly([Frozen] Model model, FailJSendResponse<Model> response)
+        public void DataIsCorrectlyInitialized(object data)
+        {
+            // Exercise system
+            var response = new FailJSendResponse(data);
+            // Verify outcome
+            response.Data.Should().BeSameAs(data);
+        }
+
+        [Theory, JSendAutoData]
+        public void SerializesCorrectly(object data, FailJSendResponse response)
         {
             // Fixture setup
             var expectedSerializedResponse = new JObject
             {
                 {"status", "fail"},
-                {"data", JObject.FromObject(model)}
+                {"data", JObject.FromObject(data)}
             };
             // Exercise system
             var serializedResponse = JObject.FromObject(response);
