@@ -25,6 +25,9 @@ namespace JSendWebApi.Tests.FixtureCustomizations
 
             fixture.Customize<HttpConfiguration>(
                 c => c.Without(x => x.DependencyResolver));
+
+            fixture.Customize<HttpRequestMessage>(
+                c => c.OmitAutoProperties());
         }
     }
 }
