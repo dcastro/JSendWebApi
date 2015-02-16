@@ -24,7 +24,7 @@ namespace JSendWebApi.Tests.Results
     public class JSendBadRequestResultTests
     {
         [Theory, JSendAutoData]
-        public void IsHttpActionResult(JSendBadRequestResult<Model> result)
+        public void IsHttpActionResult(JSendBadRequestResult result)
         {
             // Exercise system and verify outcome
             result.Should().BeAssignableTo<IHttpActionResult>();
@@ -34,14 +34,14 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
         {
             // Exercise system and verify outcome
-            assertion.Verify(typeof (JSendBadRequestResult<Model>).GetConstructors());
+            assertion.Verify(typeof (JSendBadRequestResult).GetConstructors());
         }
 
         [Theory, JSendAutoData]
-        public async Task ReturnsFailJSendResponse([Frozen] Model model, JSendBadRequestResult<Model> result)
+        public async Task ReturnsFailJSendResponse([Frozen] string reason, JSendBadRequestResult result)
         {
             // Fixture setup
-            var jsendFail = JsonConvert.SerializeObject(new FailJSendResponse(model));
+            var jsendFail = JsonConvert.SerializeObject(new FailJSendResponse(reason));
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -50,7 +50,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task StatusCodeIs400(JSendBadRequestResult<Model> result)
+        public async Task StatusCodeIs400(JSendBadRequestResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
@@ -65,7 +65,7 @@ namespace JSendWebApi.Tests.Results
             var encoding = Encoding.ASCII;
             fixture.Inject(encoding);
 
-            var result = fixture.Create<JSendBadRequestResult<Model>>();
+            var result = fixture.Create<JSendBadRequestResult>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -73,7 +73,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsContentTypeHeader(JSendBadRequestResult<Model> result)
+        public async Task SetsContentTypeHeader(JSendBadRequestResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());

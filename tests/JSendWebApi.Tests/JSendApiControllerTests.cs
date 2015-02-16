@@ -155,7 +155,7 @@ namespace JSendWebApi.Tests
             // Exercise system
             var result = controller.JSendBadRequest(reason);
             // Verify outcome
-            result.Should().BeAssignableTo<JSendBadRequestResult<string>>();
+            result.Should().BeAssignableTo<JSendBadRequestResult>();
         }
 
         [Theory, JSendAutoData]

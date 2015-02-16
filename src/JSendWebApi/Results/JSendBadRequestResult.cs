@@ -7,13 +7,13 @@ using JSendWebApi.Responses;
 
 namespace JSendWebApi.Results
 {
-    public class JSendBadRequestResult<T> : IHttpActionResult
+    public class JSendBadRequestResult : IHttpActionResult
     {
         private readonly JSendResult<FailJSendResponse> _result;
 
-        public JSendBadRequestResult(JSendApiController controller, T content)
+        public JSendBadRequestResult(JSendApiController controller, string reason)
         {
-            _result = new JSendResult<FailJSendResponse>(controller, new FailJSendResponse(content),
+            _result = new JSendResult<FailJSendResponse>(controller, new FailJSendResponse(reason),
                 HttpStatusCode.BadRequest);
         }
 
