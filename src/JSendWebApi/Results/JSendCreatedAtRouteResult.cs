@@ -15,14 +15,14 @@ namespace JSendWebApi.Results
 {
     public class JSendCreatedAtRouteResult<T> : IHttpActionResult
     {
-        private readonly JSendResult<SuccessJSendResponse<T>> _result;
+        private readonly JSendResult<SuccessJSendResponse> _result;
         private readonly Uri _location;
 
         public JSendCreatedAtRouteResult(JSendApiController controller, string routeName,
             IDictionary<string, object> routeValues, T content)
         {
-            _result = new JSendResult<SuccessJSendResponse<T>>(
-                controller, new SuccessJSendResponse<T>(content), HttpStatusCode.Created);
+            _result = new JSendResult<SuccessJSendResponse>(
+                controller, new SuccessJSendResponse(content), HttpStatusCode.Created);
 
             UrlHelper urlFactory = controller.Url ?? new UrlHelper(controller.Request);
 

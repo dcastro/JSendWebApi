@@ -31,17 +31,24 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
+        public void ConstructorThrowsWhenControllerIsNull(Uri location, Model content)
         {
             // Exercise system and verify outcome
-            assertion.Verify(typeof (JSendCreatedResult<Model>).GetConstructors());
+            Assert.Throws<ArgumentNullException>(() => new JSendCreatedResult<Model>(null, location, content));
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenLocationIsNull(JSendApiController controller, Model content)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => new JSendCreatedResult<Model>(controller, null, content));
         }
 
         [Theory, JSendAutoData]
         public async Task ReturnsSuccessJSendResponse([Frozen] Model model, JSendCreatedResult<Model> result)
         {
             // Fixture setup
-            var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse<Model>(model));
+            var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse(model));
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome

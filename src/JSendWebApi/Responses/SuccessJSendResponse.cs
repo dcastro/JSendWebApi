@@ -7,11 +7,30 @@ using Newtonsoft.Json;
 
 namespace JSendWebApi.Responses
 {
-    public class SuccessJSendResponse : BaseJSendResponse<object>
+    public class SuccessJSendResponse
     {
+        private readonly object _data;
+
         public SuccessJSendResponse()
-            : base("success")
+            : this(null)
         {
+        }
+
+        public SuccessJSendResponse(object data)
+        {
+            _data = data;
+        }
+
+        [JsonProperty("status", Order = 1)]
+        public string Status
+        {
+            get { return "success"; }
+        }
+
+        [JsonProperty("data", Order = 2, NullValueHandling = NullValueHandling.Include)]
+        public object Data
+        {
+            get { return _data; }
         }
     }
 }

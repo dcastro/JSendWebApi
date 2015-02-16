@@ -65,26 +65,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenContentIsNull(IFixture fixture)
-        {
-            // Fixture setup
-            fixture.Customize(new RouteCustomization());
-
-            var controller = fixture.Create<JSendApiController>();
-            var routeName = fixture.Create<string>();
-            var routeValues = fixture.Create<Dictionary<string, object>>();
-            // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(
-                () => new JSendCreatedAtRouteResult<Model>(controller, routeName, routeValues, null));
-        }
-
-        [Theory, JSendAutoData]
         public async Task ReturnsSuccessJSendResponse(IFixture fixture)
         {
             // Fixture setup
             fixture.Customize(new RouteCustomization());
             var model = fixture.Freeze<Model>();
-            var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse<Model>(model));
+            var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse(model));
 
             var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             // Exercise system

@@ -59,7 +59,6 @@
     <Compile Include="Responses\ErrorJSendResponse.cs" />
     <Compile Include="Responses\FailJSendResponse.cs" />
     <Compile Include="Responses\BaseJSendResponse.cs" />
-    <Compile Include="Responses\SuccessJSendResponse`1.cs" />
     <Compile Include="Results\JSendCreatedAtRouteResult.cs" />
     <Compile Include="Results\JSendCreatedResult.cs" />
     <Compile Include="Results\JSendResult.cs" />

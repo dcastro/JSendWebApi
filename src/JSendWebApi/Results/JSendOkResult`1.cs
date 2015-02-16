@@ -9,11 +9,11 @@ namespace JSendWebApi.Results
 {
     public class JSendOkResult<T> : IHttpActionResult
     {
-        private readonly JSendResult<SuccessJSendResponse<T>> _result;
+        private readonly JSendResult<SuccessJSendResponse> _result;
 
         public JSendOkResult(JSendApiController controller, T content)
         {
-            _result = new JSendResult<SuccessJSendResponse<T>>(controller, new SuccessJSendResponse<T>(content),
+            _result = new JSendResult<SuccessJSendResponse>(controller, new SuccessJSendResponse(content),
                 HttpStatusCode.OK);
         }
 
