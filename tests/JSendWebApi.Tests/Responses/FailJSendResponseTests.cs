@@ -25,7 +25,7 @@ namespace JSendWebApi.Tests.Responses
         }
 
         [Theory, JSendAutoData]
-        public void StatisIsFail(FailJSendResponse<Model> response)
+        public void StatusIsFail(FailJSendResponse<Model> response)
         {
             // Exercise system and verify outcome
             response.Status.Should().Be("fail");
