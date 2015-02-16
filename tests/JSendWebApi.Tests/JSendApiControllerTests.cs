@@ -116,7 +116,9 @@ namespace JSendWebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void JsonSerializerSettingsCanBeSet([NoAutoProperties] JsonSerializerSettings expectedSettings, JSendApiController controller)
+        public void JsonSerializerSettingsCanBeSet(
+            [NoAutoProperties] JsonSerializerSettings expectedSettings,
+            JSendApiController controller)
         {
             // Exercise system
             controller.JsonSerializerSettings = expectedSettings;
@@ -150,7 +152,7 @@ namespace JSendWebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void JSendBadRequestReturnsJSendBadRequestResult(string reason, JSendApiController controller)
+        public void JSendBadRequestWithString_Returns_JSendBadRequestResult(string reason, JSendApiController controller)
         {
             // Exercise system
             var result = controller.JSendBadRequest(reason);
@@ -159,7 +161,31 @@ namespace JSendWebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void JSendBadRequestWithModelState_Returns_JSendInvalidModelStateResult(ModelStateDictionary modelState, JSendApiController controller)
+        public void JSendBadRequestWithArray_Returns_JSendBadRequestResult(
+            string[] reasons,
+            JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSendBadRequest(reasons);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendBadRequestResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendBadRequestWithEnumerable_Returns_JSendBadRequestResult(
+            IEnumerable<string> reasons,
+            JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSendBadRequest(reasons);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendBadRequestResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendBadRequestWithModelState_Returns_JSendInvalidModelStateResult(
+            ModelStateDictionary modelState,
+            JSendApiController controller)
         {
             // Fixture setup
             modelState.AddModelError("", "");

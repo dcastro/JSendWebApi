@@ -76,7 +76,17 @@ namespace JSendWebApi
 
         protected internal virtual JSendBadRequestResult JSendBadRequest(string reason)
         {
-            return new JSendBadRequestResult(this, reason);
+            return JSendBadRequest(new[] {reason});
+        }
+
+        protected internal virtual JSendBadRequestResult JSendBadRequest(params string[] reasons)
+        {
+            return JSendBadRequest(reasons as IEnumerable<string>);
+        }
+
+        protected internal virtual JSendBadRequestResult JSendBadRequest(IEnumerable<string> reasons)
+        {
+            return new JSendBadRequestResult(this, reasons);
         }
 
         protected internal virtual JSendInvalidModelStateResult JSendBadRequest(ModelStateDictionary modelState)
