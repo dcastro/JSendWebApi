@@ -58,11 +58,10 @@ namespace JSendWebApi.Tests.Results
             message.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        [Fact]
-        public async Task SetsCharSetHeader()
+        [Theory, JSendAutoData]
+        public async Task SetsCharSetHeader(IFixture fixture)
         {
             // Fixture setup
-            var fixture = new Fixture().Customize(new TestConventions());
             var encoding = Encoding.ASCII;
             fixture.Inject(encoding);
 

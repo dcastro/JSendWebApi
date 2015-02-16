@@ -33,7 +33,7 @@ namespace JSendWebApi.Tests.Results
             {
                 var urlFactoryMock = new Mock<UrlHelper>();
                 urlFactoryMock.Setup(x => x.Link(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>()))
-                    .Returns((string routeName, IDictionary<string, object> v) => RouteLink);
+                    .Returns((string name, IDictionary<string, object> values) => RouteLink);
 
                 fixture.Inject(urlFactoryMock.Object);
             }

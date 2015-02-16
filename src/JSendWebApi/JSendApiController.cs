@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.Results;
+using System.Web.Http.Routing;
 using JSendWebApi.Results;
 using Newtonsoft.Json;
 
@@ -93,6 +94,18 @@ namespace JSendWebApi
             if (location == null) throw new ArgumentNullException("location");
 
             return JSendCreated(new Uri(location, UriKind.RelativeOrAbsolute), content);
+        }
+
+        protected internal virtual JSendCreatedAtRouteResult<T> JSendCreatedAtRoute<T>(string routeName,
+            IDictionary<string, object> routeValues, T content)
+        {
+            return new JSendCreatedAtRouteResult<T>(this, routeName, routeValues, content);
+        }
+
+        protected internal virtual JSendCreatedAtRouteResult<T> JSendCreatedAtRoute<T>(string routeName,
+            object routeValues, T content)
+        {
+            return JSendCreatedAtRoute(routeName, new HttpRouteValueDictionary(routeValues), content);
         }
     }
 }

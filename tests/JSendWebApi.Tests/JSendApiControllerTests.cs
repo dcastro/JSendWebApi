@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
+using System.Web.Http.Routing;
 using FluentAssertions;
 using JSendWebApi.Results;
 using JSendWebApi.Tests.FixtureCustomizations;
 using JSendWebApi.Tests.TestTypes;
+using Moq;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
@@ -210,6 +212,48 @@ namespace JSendWebApi.Tests
             const string location = "/about";
             // Exercise system and verify outcome
             Assert.DoesNotThrow(() => controller.JSendCreated(location, model));
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendCreatedAtRouteWithDictionary_ReturnsJSendCreatedAtRouteResult(IFixture fixture)
+        {
+            // Fixture setup
+            const string routeLink = "http://localhost/models/";
+            var urlFactoryMock = new Mock<UrlHelper>();
+            urlFactoryMock.Setup(x => x.Link(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>()))
+                .Returns((string name, IDictionary<string, object> values) => routeLink);
+
+            fixture.Inject(urlFactoryMock.Object);
+
+            var routeName = fixture.Create<string>();
+            var routeValues = fixture.Create<Dictionary<string, object>>();
+            var model = fixture.Create<Model>();
+            var controller = fixture.Create<JSendApiController>();
+            // Exercise system
+            var result = controller.JSendCreatedAtRoute(routeName, routeValues, model);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendCreatedAtRouteResult<Model>>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendCreatedAtRouteWithObject_ReturnsJSendCreatedAtRouteResult(IFixture fixture)
+        {
+            // Fixture setup
+            const string routeLink = "http://localhost/models/";
+            var urlFactoryMock = new Mock<UrlHelper>();
+            urlFactoryMock.Setup(x => x.Link(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>()))
+                .Returns((string name, IDictionary<string, object> values) => routeLink);
+
+            fixture.Inject(urlFactoryMock.Object);
+
+            var routeName = fixture.Create<string>();
+            var routeValues = new {id = 5};
+            var model = fixture.Create<Model>();
+            var controller = fixture.Create<JSendApiController>();
+            // Exercise system
+            var result = controller.JSendCreatedAtRoute(routeName, routeValues, model);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendCreatedAtRouteResult<Model>>();
         }
     }
 }
