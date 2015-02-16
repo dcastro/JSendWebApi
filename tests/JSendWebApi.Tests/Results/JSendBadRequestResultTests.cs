@@ -38,37 +38,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenReasonsIsEmpty(JSendApiController controller)
-        {
-            // Fixture setup
-            var reasons = new string[0];
-            // Exercise system and verify outcome
-            var ex = Assert.Throws<ArgumentException>(() => new JSendBadRequestResult(controller, reasons));
-            ex.ParamName.Should().Be("reasons");
-        }
-
-        [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenAReasonIsNull(List<string> reasons, JSendApiController controller)
-        {
-            // Fixture setup
-            reasons.Add(null);
-            // Exercise system and verify outcome
-            var ex = Assert.Throws<ArgumentException>(() => new JSendBadRequestResult(controller, reasons));
-            ex.ParamName.Should().Be("reasons");
-        }
-
-        [Theory, JSendAutoData]
-        public void CostructorThrowsWhenAReasonIsWhiteSpace(List<string> reasons, JSendApiController controller)
-        {
-            // Fixture setup
-            reasons.Add("  ");
-            // Exercise system and verify outcome
-            var ex = Assert.Throws<ArgumentException>(() => new JSendBadRequestResult(controller, reasons));
-            ex.ParamName.Should().Be("reasons");
-        }
-
-        [Theory, JSendAutoData]
-        public async Task ReturnsFailJSendResponse([Frozen] IEnumerable<string> reason, JSendBadRequestResult result)
+        public async Task ReturnsFailJSendResponse([Frozen] string reason, JSendBadRequestResult result)
         {
             // Fixture setup
             var jsendFail = JsonConvert.SerializeObject(new FailJSendResponse(reason));
