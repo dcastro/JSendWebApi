@@ -58,7 +58,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Responses\ErrorJSendResponse.cs" />
     <Compile Include="Responses\FailJSendResponse.cs" />
-    <Compile Include="Responses\BaseJSendResponse.cs" />
     <Compile Include="Results\JSendCreatedAtRouteResult.cs" />
     <Compile Include="Results\JSendCreatedResult.cs" />
     <Compile Include="Results\JSendResult.cs" />
