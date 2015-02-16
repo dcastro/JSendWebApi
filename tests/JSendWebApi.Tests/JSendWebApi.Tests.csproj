@@ -90,6 +90,7 @@
     <Compile Include="FixtureCustomizations\EncodingCustomization.cs" />
     <Compile Include="FixtureCustomizations\HttpRequestMessageCustomization.cs" />
     <Compile Include="FixtureCustomizations\JsonSerializerSettingsCustomization.cs" />
+    <Compile Include="FixtureCustomizations\TestConventions.cs" />
     <Compile Include="Responses\FailJSendResponseTests.cs" />
     <Compile Include="Responses\GenericSuccessJSendResponseTests.cs" />
     <Compile Include="JSendApiControllerTests.cs" />

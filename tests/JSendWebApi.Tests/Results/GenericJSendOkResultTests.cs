@@ -63,7 +63,7 @@ namespace JSendWebApi.Tests.Results
         public async Task SetsCharSetHeader()
         {
             // Fixture setup
-            var fixture = new Fixture().Customize(new JSendTestConventions());
+            var fixture = new Fixture().Customize(new TestConventions());
             var encoding = Encoding.ASCII;
             fixture.Inject(encoding);
 
