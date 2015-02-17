@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;
+using Xunit;
 using Xunit.Extensions;
 
 namespace JSendWebApi.Tests.Results
@@ -28,17 +29,19 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorsThrownWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
+        public void ConstructorThrownsWhenControllerIsNull(string message, int? errorCode, object data)
         {
             // Exercise system and verify outcome
-            assertion.Verify(typeof (JSendInternalServerErrorResult).GetConstructors());
+            Assert.Throws<ArgumentNullException>(
+                () => new JSendInternalServerErrorResult(null, message, errorCode, data));
         }
 
         [Theory, JSendAutoData]
-        public async Task ReturnsErrorJSendMessage([Frozen] string errorMessage, JSendInternalServerErrorResult result)
+        public async Task ReturnsErrorJSendResponse([Frozen] string errorMessage, [Frozen] int? code, object data,
+            JSendInternalServerErrorResult result)
         {
             // Fixture setup
-            var jsendError = JsonConvert.SerializeObject(new ErrorJSendResponse(errorMessage));
+            var jsendError = JsonConvert.SerializeObject(new ErrorJSendResponse(errorMessage, code, data));
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome

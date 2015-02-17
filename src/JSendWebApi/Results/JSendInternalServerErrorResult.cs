@@ -16,10 +16,12 @@ namespace JSendWebApi.Results
     {
         private readonly JSendResult<ErrorJSendResponse> _result;
 
-        public JSendInternalServerErrorResult(JSendApiController controller, string message)
+        public JSendInternalServerErrorResult(JSendApiController controller, string message, int? errorCode, object data)
         {
+            var response = new ErrorJSendResponse(message, errorCode, data);
+
             _result = new JSendResult<ErrorJSendResponse>(
-                controller, new ErrorJSendResponse(message), HttpStatusCode.InternalServerError);
+                controller, response, HttpStatusCode.InternalServerError);
         }
 
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
