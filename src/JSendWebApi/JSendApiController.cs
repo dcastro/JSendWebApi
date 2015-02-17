@@ -127,5 +127,15 @@ namespace JSendWebApi
         {
             return JSendNotFound(null);
         }
+
+        protected internal virtual JSendRedirectResult JSendRedirect(Uri location)
+        {
+            return new JSendRedirectResult(this, location);
+        }
+
+        protected internal virtual JSendRedirectResult JSendRedirect(string location)
+        {
+            return JSendRedirect(new Uri(location));
+        }
     }
 }

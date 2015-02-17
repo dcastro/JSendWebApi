@@ -293,5 +293,25 @@ namespace JSendWebApi.Tests
             // Verify outcome
             result.Should().BeAssignableTo<JSendNotFoundResult>();
         }
+
+        [Theory, JSendAutoData]
+        public void JSendRedirectWithUri_Returns_JSendRedirectResult(Uri uri, JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSendRedirect(uri);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendRedirectResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendRedirectWithString_Returns_JSendRedirectResult(JSendApiController controller)
+        {
+            // Fixture setup
+            const string location = "http://localhost/";
+            // Exercise system
+            var result = controller.JSendRedirect(location);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendRedirectResult>();
+        }
     }
 }
