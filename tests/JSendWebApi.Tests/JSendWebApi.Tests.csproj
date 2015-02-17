@@ -104,6 +104,7 @@
     <Compile Include="Results\GenericJSendOkResultTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Responses\SuccessJSendResponseTests.cs" />
+    <Compile Include="Results\JSendRedirectResultTests.cs" />
     <Compile Include="Results\JSendResultTests.cs" />
     <Compile Include="TestableJSendApiController.cs" />
     <Compile Include="TestTypes\Model.cs" />
