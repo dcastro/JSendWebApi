@@ -38,6 +38,13 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenReasonIsWhiteSpace(JSendApiController controller)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentException>(() => new JSendBadRequestResult(controller, "  "));
+        }
+
+        [Theory, JSendAutoData]
         public async Task ReturnsFailJSendResponse([Frozen] string reason, JSendBadRequestResult result)
         {
             // Fixture setup

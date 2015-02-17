@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,12 @@ namespace JSendWebApi.Results
 
         public JSendBadRequestResult(JSendApiController controller, string reason)
         {
+            if (reason == null)
+                throw new ArgumentNullException("reason");
+
+            if (string.IsNullOrWhiteSpace(reason))
+                throw new ArgumentException("Reason cannot be an empty string.", "reason");
+
             _result = new JSendResult<FailJSendResponse>(controller, new FailJSendResponse(reason),
                 HttpStatusCode.BadRequest);
         }

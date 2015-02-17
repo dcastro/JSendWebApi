@@ -27,6 +27,18 @@ namespace JSendWebApi.Tests.Responses
         }
 
         [Theory, JSendAutoData]
+        public void ConstructorsThrowWhenMessageIsWhiteSpace(int code, object data)
+        {
+            // Fixture setup
+            const string whiteSpace = "  ";
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentException>(() => new ErrorJSendResponse(whiteSpace));
+            Assert.Throws<ArgumentException>(() => new ErrorJSendResponse(whiteSpace, code));
+            Assert.Throws<ArgumentException>(() => new ErrorJSendResponse(whiteSpace, data));
+            Assert.Throws<ArgumentException>(() => new ErrorJSendResponse(whiteSpace, code, data));
+        }
+
+        [Theory, JSendAutoData]
         public void StatusIsError(ErrorJSendResponse response)
         {
             // Exercise system and verify outcome

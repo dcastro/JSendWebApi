@@ -33,7 +33,11 @@ namespace JSendWebApi.Responses
 
         public ErrorJSendResponse(string message, int? code, object data)
         {
-            if (message == null) throw new ArgumentNullException("message");
+            if (message == null)
+                throw new ArgumentNullException("message");
+
+            if (string.IsNullOrWhiteSpace(message))
+                throw new ArgumentException("Message cannot be an empty string.", "message");
 
             _message = message;
             _code = code;
