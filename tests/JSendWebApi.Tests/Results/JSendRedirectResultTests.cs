@@ -61,6 +61,13 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void ResponseDataIsNull(JSendRedirectResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Data.Should().BeNull();
+        }
+
+        [Theory, JSendAutoData]
         public async Task StatusCodeIs302(JSendRedirectResult result)
         {
             // Exercise system

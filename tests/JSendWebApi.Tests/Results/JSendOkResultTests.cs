@@ -64,7 +64,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseDataIsNull([Frozen] object content, JSendOkResult result)
+        public void ResponseDataIsNull(JSendOkResult result)
         {
             // Exercise system and verify outcome
             result.Response.Data.Should().BeNull();
