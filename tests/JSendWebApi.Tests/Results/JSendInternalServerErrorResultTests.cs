@@ -37,15 +37,31 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task ReturnsErrorJSendResponse([Frozen] string errorMessage, [Frozen] int? code, object data,
-            JSendInternalServerErrorResult result)
+        public void ConstructorThrowsWhenMessageIsNull(JSendApiController controller, int? errorCode, object data)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(
+                () => new JSendInternalServerErrorResult(controller, null, errorCode, data));
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenMessageIsWhiteSpace(JSendApiController controller, int? errorCode, object data)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentException>(
+                () => new JSendInternalServerErrorResult(controller, " ", errorCode, data));
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ReturnsErrorJSendResponse([Frozen] string message, [Frozen] int? code,
+            [Frozen] object data, JSendInternalServerErrorResult result)
         {
             // Fixture setup
-            var jsendError = JsonConvert.SerializeObject(new ErrorJSendResponse(errorMessage, code, data));
+            var jsendError = JsonConvert.SerializeObject(new ErrorJSendResponse(message, code, data));
             // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
+            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
+            var content = await httpResponseMessage.Content.ReadAsStringAsync();
             content.Should().Be(jsendError);
         }
 
