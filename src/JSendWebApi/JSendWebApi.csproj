@@ -62,6 +62,7 @@
     <Compile Include="Results\JSendCreatedResult.cs" />
     <Compile Include="Results\JSendExceptionResult.cs" />
     <Compile Include="Results\JSendInternalServerErrorResult.cs" />
+    <Compile Include="Results\JSendNotFoundResult.cs" />
     <Compile Include="Results\JSendResult.cs" />
     <Compile Include="Results\JSendBadRequestResult.cs" />
     <Compile Include="Results\JSendInvalidModelStateResult.cs" />
