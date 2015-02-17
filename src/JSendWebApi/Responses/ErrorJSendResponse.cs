@@ -19,7 +19,7 @@ namespace JSendWebApi.Responses
 
         }
 
-        public ErrorJSendResponse(string message, int code)
+        public ErrorJSendResponse(string message, int? code)
             : this(message, code, null)
         {
 
@@ -31,13 +31,7 @@ namespace JSendWebApi.Responses
 
         }
 
-        public ErrorJSendResponse(string message, int code, object data)
-            : this(message, code as int?, data)
-        {
-
-        }
-
-        private ErrorJSendResponse(string message, int? code, object data)
+        public ErrorJSendResponse(string message, int? code, object data)
         {
             if (message == null) throw new ArgumentNullException("message");
 
