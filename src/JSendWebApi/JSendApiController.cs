@@ -107,5 +107,15 @@ namespace JSendWebApi
         {
             return JSendCreatedAtRoute(routeName, new HttpRouteValueDictionary(routeValues), content);
         }
+
+        protected internal virtual JSendInternalServerErrorResult JSendInternalServerError(string message, int? errorCode = null, object data = null)
+        {
+            return new JSendInternalServerErrorResult(this, message, errorCode, data);
+        }
+
+        protected internal virtual JSendExceptionResult JSendInternalServerError(Exception ex, string message = null, int? errorCode = null, object data = null)
+        {
+            return new JSendExceptionResult(this, ex, message, errorCode, data);
+        }
     }
 }

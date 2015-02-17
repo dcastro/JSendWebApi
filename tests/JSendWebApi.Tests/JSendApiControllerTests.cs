@@ -255,5 +255,25 @@ namespace JSendWebApi.Tests
             // Verify outcome
             result.Should().BeAssignableTo<JSendCreatedAtRouteResult<Model>>();
         }
+
+        [Theory, JSendAutoData]
+        public void JSendInternalServerErrorWithMessage_ReturnsJSendInternalServerErrorResult(
+            string message, int code, object data, JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSendInternalServerError(message, code, data);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendInternalServerErrorResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendInternalServerErrorWithException_ReturnsJSendExceptionResult(
+            Exception ex, string message, int code, object data, JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSendInternalServerError(ex, message, code, data);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendExceptionResult>();
+        }
     }
 }
