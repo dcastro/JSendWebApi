@@ -117,5 +117,15 @@ namespace JSendWebApi
         {
             return new JSendExceptionResult(this, ex, message, errorCode, data);
         }
+
+        protected internal virtual JSendNotFoundResult JSendNotFound(string reason)
+        {
+            return new JSendNotFoundResult(this, reason);
+        }
+
+        protected internal virtual JSendNotFoundResult JSendNotFound()
+        {
+            return JSendNotFound(null);
+        }
     }
 }

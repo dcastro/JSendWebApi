@@ -275,5 +275,23 @@ namespace JSendWebApi.Tests
             // Verify outcome
             result.Should().BeAssignableTo<JSendExceptionResult>();
         }
+
+        [Theory, JSendAutoData]
+        public void JSendNotFoundWithReason_ReturnsJSendNotFoundResult(string reason, JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSendNotFound(reason);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendNotFoundResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendNotFound_ReturnsJSendNotFoundResult(JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSendNotFound();
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendNotFoundResult>();
+        }
     }
 }
