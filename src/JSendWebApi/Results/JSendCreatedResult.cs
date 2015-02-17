@@ -26,6 +26,11 @@ namespace JSendWebApi.Results
             _location = location;
         }
 
+        public SuccessJSendResponse Response
+        {
+            get { return _result.Response; }
+        }
+
         public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             var message = await _result.ExecuteAsync(cancellationToken);

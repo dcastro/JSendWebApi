@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using FluentAssertions;
+using JSendWebApi.Responses;
 using JSendWebApi.Results;
 using JSendWebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
@@ -44,103 +45,103 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task ReturnsErrorJSendResponse(JSendExceptionResult result)
+        public void ResponseIsInitialized(JSendExceptionResult result)
         {
+            // Exercise system and verify outcome
+            result.Response.Should().NotBeNull();
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseIsError(JSendExceptionResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().BeAssignableTo<ErrorJSendResponse>();
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ResponseIsSerializedIntoBody(JSendExceptionResult result)
+        {
+            // Fixture setup
+            var serializedResponse = JsonConvert.SerializeObject(result.Response);
             // Exercise system
             var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            content.Should().Contain(@"""status"":""error""");
+            content.Should().Be(serializedResponse);
         }
 
         [Theory, JSendAutoData]
-        public async Task SerializesMessageIfNotNull([Frozen] string message, JSendExceptionResult result)
+        public void ResponseMessageIsSetToMessage_When_MessageIsNotNull(
+            [Frozen] string message, JSendExceptionResult result)
         {
-            // Exercise system
-            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
-            // Verify outcome
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            var messageField = jContent.Value<string>("message");
-            messageField.Should().Be(message);
+            // Exercise system and verify outcome
+            result.Response.Message.Should().Be(message);
         }
 
         [Theory, JSendAutoData]
-        public async Task SerializesExceptionMessage_If_MessageIsNull_And_ControllerIsConfuguredToIncludeErrorDetails(
+        public void ResponseMessageIsSetToExceptionMessage_When_MessageIsNull_And_ControllerIsConfiguredToIncludeErrorDetails(
             JSendApiController controller, Exception ex, int? code, object data)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = true;
-            var result = new JSendExceptionResult(controller, ex, null, code, data);
             // Exercise system
-            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
+            var result = new JSendExceptionResult(controller, ex, null, code, data);
             // Verify outcome
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            var messageField = jContent.Value<string>("message");
-            messageField.Should().Be(ex.Message);
+            result.Response.Message.Should().Be(ex.Message);
         }
 
         [Theory, JSendAutoData]
-        public async Task SerializesDefaultMessage_If_MessageIsNull_And_ControllerIsConfuguredToNotIncludeErrorDetails(
+        public void ResponseMessageIsSetToDefaultMessage_When_MessageIsNull_And_ControllerIsConfiguredToNotIncludeErrorDetails(
             JSendApiController controller, Exception ex, int? code, object data)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = false;
-            var result = new JSendExceptionResult(controller, ex, null, code, data);
             // Exercise system
-            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
+            var result = new JSendExceptionResult(controller, ex, null, code, data);
             // Verify outcome
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            var messageField = jContent.Value<string>("message");
-            messageField.Should().Be("An error has occurred.");
+            result.Response.Message.Should().Be("An error has occurred.");
         }
 
         [Theory, JSendAutoData]
-        public async Task SerializesDataIfNotNull(JSendApiController controller, Exception ex, string message, int? code)
+        public void ResponseDataIsSetToData_When_DataIsNotNull(
+            JSendApiController controller, Exception ex, string message, int? code, object data)
         {
-            // Fixture setup
-            const string data = "some string";
+            // Exercise system 
             var result = new JSendExceptionResult(controller, ex, message, code, data);
-            // Exercise system
-            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            var dataField = jContent.Value<string>("data");
-            dataField.Should().Be(data);
+            result.Response.Data.Should().BeSameAs(data);
         }
 
         [Theory, JSendAutoData]
-        public async Task SerializesException_If_DataIsNull_And_ControllerIsConfuguredToIncludeErrorDetails(
+        public void ResponseDataIsSetToStringifiedException_When_DataIsNull_And_ControllerIsConfiguredToIncludeErrorDetails(
             JSendApiController controller, Exception ex, string message, int? code)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = true;
-            var result = new JSendExceptionResult(controller, ex, message, code, null);
             // Exercise system
-            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
+            var result = new JSendExceptionResult(controller, ex, message, code, null);
             // Verify outcome
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            var dataField = jContent.Value<string>("data");
-            dataField.Should().Be(ex.ToString());
+            result.Response.Data.Should().Be(ex.ToString());
         }
 
         [Theory, JSendAutoData]
-        public async Task DoesNotSerializeDataField_If_DataIsNull_And_ControllerIsConfuguredToNotIncludeErrorDetails(
+        public void ResponseDataIsSetToNull_When_DataIsNull_And_ControllerIsConfiguredToNotIncludeErrorDetails(
             JSendApiController controller, Exception ex, string message, int? code)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = false;
-            var result = new JSendExceptionResult(controller, ex, message, code, null);
             // Exercise system
-            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
+            var result = new JSendExceptionResult(controller, ex, message, code, null);
             // Verify outcome
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            jContent.Should().NotContainKey("data");
+            result.Response.Data.Should().BeNull();
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseCodeIsCorrectlySet([Frozen] int? code, JSendExceptionResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Code.Should().HaveValue()
+                .And.Be(code);
         }
 
         [Theory, JSendAutoData]

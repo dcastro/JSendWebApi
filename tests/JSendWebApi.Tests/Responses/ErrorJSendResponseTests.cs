@@ -61,8 +61,8 @@ namespace JSendWebApi.Tests.Responses
             var response = new ErrorJSendResponse(message, code);
             // Verify outcome
             response.Message.Should().Be(message);
-            response.Code.Should().HaveValue();
-            response.Code.Should().Be(code);
+            response.Code.Should().HaveValue()
+                .And.Be(code);
         }
 
         [Theory, JSendAutoData]
@@ -82,8 +82,8 @@ namespace JSendWebApi.Tests.Responses
             var response = new ErrorJSendResponse(message, code, data);
             // Verify outcome
             response.Message.Should().Be(message);
-            response.Code.Should().HaveValue();
-            response.Code.Should().Be(code);
+            response.Code.Should().HaveValue()
+                .And.Be(code);
             response.Data.Should().BeSameAs(data);
         }
 

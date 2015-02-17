@@ -44,16 +44,38 @@ namespace JSendWebApi.Tests.Results
             Assert.Throws<ArgumentNullException>(() => new JSendCreatedResult<Model>(controller, null, content));
         }
 
+
         [Theory, JSendAutoData]
-        public async Task ReturnsSuccessJSendResponse([Frozen] Model model, JSendCreatedResult<Model> result)
+        public void ResponseIsInitialized(JSendCreatedResult<Model> result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().NotBeNull();
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseIsSuccess(JSendCreatedResult<Model> result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().BeAssignableTo<SuccessJSendResponse>();
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ResponseIsSerializedIntoBody(JSendCreatedResult<Model> result)
         {
             // Fixture setup
-            var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse(model));
+            var serializedResponse = JsonConvert.SerializeObject(result.Response);
             // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
+            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
-            content.Should().Be(jsendSuccess);
+            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            content.Should().Be(serializedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseDataIsCorrectlySet([Frozen] Model content, JSendCreatedResult<Model> result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Data.Should().BeSameAs(content);
         }
 
         [Theory, JSendAutoData]

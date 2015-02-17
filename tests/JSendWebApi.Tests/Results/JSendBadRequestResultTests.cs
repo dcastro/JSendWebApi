@@ -44,16 +44,38 @@ namespace JSendWebApi.Tests.Results
             Assert.Throws<ArgumentException>(() => new JSendBadRequestResult(controller, "  "));
         }
 
+
         [Theory, JSendAutoData]
-        public async Task ReturnsFailJSendResponse([Frozen] string reason, JSendBadRequestResult result)
+        public void ResponseIsInitialized(JSendBadRequestResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().NotBeNull();
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseIsFail(JSendBadRequestResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().BeAssignableTo<FailJSendResponse>();
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ResponseIsSerializedIntoBody(JSendBadRequestResult result)
         {
             // Fixture setup
-            var jsendFail = JsonConvert.SerializeObject(new FailJSendResponse(reason));
+            var serializedResponse = JsonConvert.SerializeObject(result.Response);
             // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
+            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
-            content.Should().Be(jsendFail);
+            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            content.Should().Be(serializedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseDataIsCorrectlySet([Frozen] string reason, JSendBadRequestResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Data.Should().Be(reason);
         }
 
         [Theory, JSendAutoData]

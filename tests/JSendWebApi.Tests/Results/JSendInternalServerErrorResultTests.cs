@@ -53,16 +53,51 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task ReturnsErrorJSendResponse([Frozen] string message, [Frozen] int? code,
-            [Frozen] object data, JSendInternalServerErrorResult result)
+        public void ResponseIsInitialized(JSendInternalServerErrorResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().NotBeNull();
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseIsError(JSendInternalServerErrorResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().BeAssignableTo<ErrorJSendResponse>();
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ResponseIsSerializedIntoBody(JSendInternalServerErrorResult result)
         {
             // Fixture setup
-            var jsendError = JsonConvert.SerializeObject(new ErrorJSendResponse(message, code, data));
+            var serializedResponse = JsonConvert.SerializeObject(result.Response);
             // Exercise system
             var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            content.Should().Be(jsendError);
+            content.Should().Be(serializedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseMessageIsCorrectlySet([Frozen] string message, JSendInternalServerErrorResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Message.Should().Be(message);
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseCodeIsCorrectlySet([Frozen] int? code, JSendInternalServerErrorResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Code.Should().HaveValue()
+                .And.Be(code);
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseDataIsCorrectlySet([Frozen] object data, JSendInternalServerErrorResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Data.Should().BeSameAs(data);
         }
 
         [Theory, JSendAutoData]

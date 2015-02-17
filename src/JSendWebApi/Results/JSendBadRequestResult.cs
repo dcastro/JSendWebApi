@@ -24,6 +24,11 @@ namespace JSendWebApi.Results
                 HttpStatusCode.BadRequest);
         }
 
+        public FailJSendResponse Response
+        {
+            get { return _result.Response; }
+        }
+
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             return _result.ExecuteAsync(cancellationToken);

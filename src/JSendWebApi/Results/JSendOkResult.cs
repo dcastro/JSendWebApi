@@ -16,6 +16,11 @@ namespace JSendWebApi.Results
             _result = new JSendResult<SuccessJSendResponse>(controller, new SuccessJSendResponse(), HttpStatusCode.OK);
         }
 
+        public SuccessJSendResponse Response
+        {
+            get { return _result.Response; }
+        }
+
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             return _result.ExecuteAsync(cancellationToken);

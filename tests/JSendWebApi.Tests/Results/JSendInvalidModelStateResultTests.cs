@@ -63,17 +63,33 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task ReturnFailJSendResponse([InvalidModelState] JSendInvalidModelStateResult result)
+        public void ResponseIsInitialized([InvalidModelState] JSendInvalidModelStateResult result)
         {
-            // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
-            // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
-            content.Should().Contain(@"""status"":""fail""");
+            // Exercise system and verify outcome
+            result.Response.Should().NotBeNull();
         }
 
         [Theory, JSendAutoData]
-        public async Task ExtractsErrorMessages(IFixture fixture)
+        public void ResponseIsFail([InvalidModelState] JSendInvalidModelStateResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().BeAssignableTo<FailJSendResponse>();
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ResponseIsSerializedIntoBody([InvalidModelState] JSendInvalidModelStateResult result)
+        {
+            // Fixture setup
+            var serializedResponse = JsonConvert.SerializeObject(result.Response);
+            // Exercise system
+            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
+            // Verify outcome
+            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            content.Should().Be(serializedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public void ExtractsErrorMessages_IntoResponseData(IFixture fixture)
         {
             // Fixture setup
             fixture.Customize<ModelStateDictionary>(c =>
@@ -84,19 +100,16 @@ namespace JSendWebApi.Tests.Results
             {
                 {"age", new JArray("error1", "error2")}
             };
-            var result = fixture.Create<JSendInvalidModelStateResult>();
 
             // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
-
+            var result = fixture.Create<JSendInvalidModelStateResult>();
             // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            JToken.DeepEquals(jContent["data"], expectedErrorMessages).Should().BeTrue();
+            var jData = JObject.FromObject(result.Response.Data);
+            JToken.DeepEquals(jData, expectedErrorMessages).Should().BeTrue();
         }
 
         [Theory, JSendAutoData]
-        public async Task ExtractsExceptionMessages(IFixture fixture)
+        public void ExtractsExceptionMessages_IntoResponseData(IFixture fixture)
         {
             // Fixture setup
             fixture.Customize<ModelStateDictionary>(c =>
@@ -108,36 +121,30 @@ namespace JSendWebApi.Tests.Results
             {
                 {"age", new JArray("exceptionMessage1", "exceptionMessage2")}
             };
+            // Exercise system
             var result = fixture.Create<JSendInvalidModelStateResult>();
 
-            // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
-
             // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            JToken.DeepEquals(jContent["data"], expectedExceptionMessages).Should().BeTrue();
+            var jData = JObject.FromObject(result.Response.Data);
+            JToken.DeepEquals(jData, expectedExceptionMessages).Should().BeTrue();
         }
 
         [Theory, JSendAutoData]
-        public async Task InsertsDefaultMessageInsteadOfExceptionMessage_If_ControllerIsConfuguredToNotIncludeErrorDetails(
+        public void InsertsDefaultMessageInsteadOfExceptionMessage_If_ControllerIsConfiguredToNotIncludeErrorDetails(
             IFixture fixture, [Frozen] JSendApiController controller)
         {
             // Fixture setup
             fixture.Customize<ModelStateDictionary>(c =>
                 c.Do(dic => dic.AddModelError("age", new Exception("exceptionMessage1"))));
             controller.RequestContext.IncludeErrorDetail = false;
-
-            var result = fixture.Create<JSendInvalidModelStateResult>();
             // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
+            var result = fixture.Create<JSendInvalidModelStateResult>();
             // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            var ageErrors = jContent["data"].Value<JArray>("age");
+            var jData = JObject.FromObject(result.Response.Data);
+            var ageErrors = jData.Value<JArray>("age");
 
             ageErrors.Should().NotBeNull();
-            ageErrors.Count.Should().Be(1);
+            ageErrors.Should().HaveCount(1);
             ageErrors.First.ToString().Should()
                 .NotBe("exceptionMessage1")
                 .And
@@ -145,21 +152,18 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task InsertsDefaultMessage_If_ErrorMessageIsEmpty(IFixture fixture)
+        public void InsertsDefaultMessage_If_ErrorMessageIsEmpty(IFixture fixture)
         {
             // Fixture setup
             fixture.Customize<ModelStateDictionary>(c =>
                 c.Do(dic => dic.AddModelError("age", errorMessage: "")));
 
+            // Exercise system
             var result = fixture.Create<JSendInvalidModelStateResult>();
 
-            // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
-
             // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
-            var jContent = JObject.Parse(content);
-            var ageErrors = jContent["data"].Value<JArray>("age");
+            var jData = JObject.FromObject(result.Response.Data);
+            var ageErrors = jData.Value<JArray>("age");
 
             ageErrors.Should().NotBeNull();
             ageErrors.Count.Should().Be(1);

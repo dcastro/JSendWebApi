@@ -28,10 +28,17 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SerializesResponse([Frozen] SuccessJSendResponse response, JSendResult<SuccessJSendResponse> result)
+        public void ResponseIsCorrectlyInitialized([Frozen] SuccessJSendResponse response, JSendResult<SuccessJSendResponse> result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().BeSameAs(response);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task SerializesResponse(JSendResult<SuccessJSendResponse> result)
         {
             // Fixture setup
-            var expectedContent = JsonConvert.SerializeObject(response);
+            var expectedContent = JsonConvert.SerializeObject(result.Response);
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome

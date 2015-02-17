@@ -39,19 +39,40 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task ExecuteAsyncReturnsSuccessJSendResponse([Frozen] Model model, JSendOkResult<Model> result)
+        public void ResponseIsInitialized(JSendOkResult<Model> result)
         {
-            // Fixture setup
-            var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse(model));
-            // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
-            // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
-            content.Should().Be(jsendSuccess);
+            // Exercise system and verify outcome
+            result.Response.Should().NotBeNull();
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsStatusCodeTo200(JSendOkResult<Model> result)
+        public void ResponseIsSuccess(JSendOkResult<Model> result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Should().BeAssignableTo<SuccessJSendResponse>();
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ResponseIsSerializedIntoBody(JSendOkResult<Model> result)
+        {
+            // Fixture setup
+            var serializedResponse = JsonConvert.SerializeObject(result.Response);
+            // Exercise system
+            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
+            // Verify outcome
+            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            content.Should().Be(serializedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseDataIsCorrectlySet([Frozen] Model content, JSendOkResult<Model> result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Data.Should().BeSameAs(content);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task StatusCodeIs200(JSendOkResult<Model> result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());

@@ -27,6 +27,11 @@ namespace JSendWebApi.Results
                 controller, response, HttpStatusCode.InternalServerError);
         }
 
+        public ErrorJSendResponse Response
+        {
+            get { return _result.Response; }
+        }
+
         private static ErrorJSendResponse BuildResponse(bool includeErrorDetail, Exception ex, string message,
             int? errorCode, object data)
         {

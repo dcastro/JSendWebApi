@@ -65,19 +65,48 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task ReturnsSuccessJSendResponse(IFixture fixture)
+        public void ResponseIsInitialized(IFixture fixture)
         {
             // Fixture setup
             fixture.Customize(new RouteCustomization());
-            var model = fixture.Freeze<Model>();
-            var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse(model));
-
             var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
+            // Exercise system and verify outcome
+            result.Response.Should().NotBeNull();
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseIsSuccess(IFixture fixture)
+        {
+            // Fixture setup
+            fixture.Customize(new RouteCustomization());
+            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
+            // Exercise system and verify outcome
+            result.Response.Should().BeAssignableTo<SuccessJSendResponse>();
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ResponseIsSerializedIntoBody(IFixture fixture)
+        {
+            // Fixture setup
+            fixture.Customize(new RouteCustomization());
+            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
+            var serializedResponse = JsonConvert.SerializeObject(result.Response);
             // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
+            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            var content = await message.Content.ReadAsStringAsync();
-            content.Should().Be(jsendSuccess);
+            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            content.Should().Be(serializedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseDataIsCorrectlySet(IFixture fixture)
+        {
+            // Fixture setup
+            fixture.Customize(new RouteCustomization());
+            var content = fixture.Freeze<Model>();
+            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
+            // Exercise system and verify outcome
+            result.Response.Data.Should().BeSameAs(content);
         }
 
         [Theory, JSendAutoData]
