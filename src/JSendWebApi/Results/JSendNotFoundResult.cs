@@ -18,7 +18,7 @@ namespace JSendWebApi.Results
         public JSendNotFoundResult(JSendApiController controller, string reason)
         {
             if (reason == null)
-                throw new ArgumentNullException("reason");
+                reason = "The requested resource could not be found.";
 
             if (string.IsNullOrWhiteSpace(reason))
                 throw new ArgumentException("Reason cannot be an empty string.", "reason");

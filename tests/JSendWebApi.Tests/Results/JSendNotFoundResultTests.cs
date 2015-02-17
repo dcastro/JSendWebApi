@@ -29,10 +29,10 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
+        public void ConstructorThrowsWhenControllerIsNull(string reason)
         {
             // Exercise system and verify outcome
-            assertion.Verify(typeof (JSendNotFoundResult).GetConstructors());
+            Assert.Throws<ArgumentNullException>(() => new JSendNotFoundResult(null, reason));
         }
 
         [Theory, JSendAutoData]
@@ -73,6 +73,15 @@ namespace JSendWebApi.Tests.Results
         {
             // Exercise system and verify outcome
             result.Response.Data.Should().Be(reason);
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseDataIsSetToDefaultMessage_When_ReasonIsNull(JSendApiController controller)
+        {
+            // Exercise system
+            var result = new JSendNotFoundResult(controller, null);
+            // Verify outcome
+            result.Response.Data.Should().Be("The requested resource could not be found.");
         }
 
         [Theory, JSendAutoData]
