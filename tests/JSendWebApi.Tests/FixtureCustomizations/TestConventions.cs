@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoMoq;
 
 namespace JSendWebApi.Tests.FixtureCustomizations
 {
@@ -13,7 +14,8 @@ namespace JSendWebApi.Tests.FixtureCustomizations
             : base(
                 new JSendApiControllerCustomization(),
                 new EncodingCustomization(),
-                new JsonSerializerSettingsCustomization())
+                new JsonSerializerSettingsCustomization(),
+                new AutoConfiguredMoqCustomization())
         {
 
         }

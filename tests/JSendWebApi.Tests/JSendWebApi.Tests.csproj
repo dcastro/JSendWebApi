@@ -50,8 +50,12 @@
     <Reference Include="Ploeh.Albedo">
       <HintPath>..\..\packages\Albedo.1.0.1\lib\net35\Ploeh.Albedo.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture">
-      <HintPath>..\..\packages\AutoFixture.3.23.1\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+    <Reference Include="Ploeh.AutoFixture, Version=3.23.2.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\AutoFixture.3.23.2\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture.AutoMoq">
+      <HintPath>..\..\packages\AutoFixture.AutoMoq.3.23.2\lib\net40\Ploeh.AutoFixture.AutoMoq.dll</HintPath>
     </Reference>
     <Reference Include="Ploeh.AutoFixture.Idioms">
       <HintPath>..\..\packages\AutoFixture.Idioms.3.23.1\lib\net40\Ploeh.AutoFixture.Idioms.dll</HintPath>
@@ -90,6 +94,7 @@
     <Compile Include="FixtureCustomizations\EncodingCustomization.cs" />
     <Compile Include="FixtureCustomizations\JsonSerializerSettingsCustomization.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
+    <Compile Include="JSendMediaTypeFormatterTests.cs" />
     <Compile Include="Responses\ErrorJSendResponseTests.cs" />
     <Compile Include="Responses\FailJSendResponseTests.cs" />
     <Compile Include="JSendApiControllerTests.cs" />
