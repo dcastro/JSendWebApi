@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,12 +37,16 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenExceptionIsNull(
-            JSendApiController controller, string message, int? code, object data)
+        public void ConstructorsThrowWhenExceptionIsNull(
+            JSendApiController controller, bool includeErrorDetail, JsonSerializerSettings settings, Encoding encoding,
+            HttpRequestMessage request, string message, int? code, object data)
         {
+            // Fixture setup
+            Exception ex = null;
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
-                () => new JSendExceptionResult(controller, null, message, code, data));
+                () => new JSendExceptionResult(includeErrorDetail, settings, encoding, request, ex, message, code, data));
+            Assert.Throws<ArgumentNullException>(() => new JSendExceptionResult(controller, ex, message, code, data));
         }
 
         [Theory, JSendAutoData]

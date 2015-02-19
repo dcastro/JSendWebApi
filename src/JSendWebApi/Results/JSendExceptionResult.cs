@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using JSendWebApi.Responses;
+using Newtonsoft.Json;
 
 namespace JSendWebApi.Results
 {
@@ -17,14 +18,29 @@ namespace JSendWebApi.Results
 
         public JSendExceptionResult(JSendApiController controller, Exception exception, string message, int? errorCode,
             object data)
+            : this(new ControllerDependencyProvider(controller), exception, message, errorCode, data)
         {
-            if (controller == null) throw new ArgumentNullException("controller");
+
+        }
+
+        public JSendExceptionResult(bool includeErrorDetail, JsonSerializerSettings settings, Encoding encoding,
+            HttpRequestMessage request, Exception exception, string message, int? errorCode, object data)
+            : this(new DirectDependencyProvider(includeErrorDetail, settings, encoding, request),
+                exception, message, errorCode, data)
+        {
+
+        }
+
+        private JSendExceptionResult(IDependencyProvider dependencies, Exception exception, string message,
+            int? errorCode, object data)
+        {
             if (exception == null) throw new ArgumentNullException("exception");
 
-            var response = BuildResponse(controller.RequestContext.IncludeErrorDetail, exception, message, errorCode, data);
+            var response = BuildResponse(dependencies.IncludeErrorDetail, exception, message, errorCode, data);
 
             _result = new JSendResult<ErrorJSendResponse>(
-                controller, response, HttpStatusCode.InternalServerError);
+                dependencies.JsonSerializerSettings, dependencies.Encoding, dependencies.RequestMessage, response,
+                HttpStatusCode.InternalServerError);
         }
 
         public ErrorJSendResponse Response
@@ -63,6 +79,82 @@ namespace JSendWebApi.Results
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             return _result.ExecuteAsync(cancellationToken);
+        }
+
+        private interface IDependencyProvider
+        {
+            bool IncludeErrorDetail { get; }
+            JsonSerializerSettings JsonSerializerSettings { get; }
+            Encoding Encoding { get; }
+            HttpRequestMessage RequestMessage { get; }
+        }
+
+        private class DirectDependencyProvider : IDependencyProvider
+        {
+            private readonly bool _includeErrorDetail;
+            private readonly JsonSerializerSettings _jsonSerializerSettings;
+            private readonly Encoding _encoding;
+            private readonly HttpRequestMessage _requestMessage;
+
+            public DirectDependencyProvider(bool includeErrorDetail, JsonSerializerSettings jsonSerializerSettings,
+                Encoding encoding, HttpRequestMessage requestMessage)
+            {
+                _includeErrorDetail = includeErrorDetail;
+                _jsonSerializerSettings = jsonSerializerSettings;
+                _encoding = encoding;
+                _requestMessage = requestMessage;
+            }
+
+            public bool IncludeErrorDetail
+            {
+                get { return _includeErrorDetail; }
+            }
+
+            public JsonSerializerSettings JsonSerializerSettings
+            {
+                get { return _jsonSerializerSettings; }
+            }
+
+            public Encoding Encoding
+            {
+                get { return _encoding; }
+            }
+
+            public HttpRequestMessage RequestMessage
+            {
+                get { return _requestMessage; }
+            }
+        }
+
+        private class ControllerDependencyProvider : IDependencyProvider
+        {
+            private readonly JSendApiController _controller;
+
+            public ControllerDependencyProvider(JSendApiController controller)
+            {
+                if (controller == null) throw new ArgumentNullException("controller");
+                _controller = controller;
+            }
+
+            public bool IncludeErrorDetail
+            {
+                get { return _controller.RequestContext.IncludeErrorDetail; }
+            }
+
+            public JsonSerializerSettings JsonSerializerSettings
+            {
+                get { return _controller.JsonSerializerSettings; }
+            }
+
+            public Encoding Encoding
+            {
+                get { return _controller.Encoding; }
+            }
+
+            public HttpRequestMessage RequestMessage
+            {
+                get { return _controller.Request; }
+            }
         }
     }
 }
