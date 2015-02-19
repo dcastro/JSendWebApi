@@ -24,9 +24,10 @@ namespace JSendWebApi
 
         private static object ConvertValueToJSendResponse(object value)
         {
-            var error = value as HttpError;
-            if (error == null)
+            if (!(value is HttpError))
                 return new SuccessJSendResponse(value);
+
+            var error = (HttpError) value;
 
             if (!string.IsNullOrWhiteSpace(error.ExceptionMessage))
                 return new ErrorJSendResponse(message: error.ExceptionMessage, data: error);
