@@ -91,6 +91,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="DelegatingActionDescriptorTests.cs" />
     <Compile Include="FixtureCustomizations\EncodingCustomization.cs" />
     <Compile Include="FixtureCustomizations\JsonSerializerSettingsCustomization.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
