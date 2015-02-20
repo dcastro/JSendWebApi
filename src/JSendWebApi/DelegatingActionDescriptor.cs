@@ -23,6 +23,11 @@ namespace JSendWebApi
             _resultConverter = resultConverter;
         }
 
+        public HttpActionDescriptor InnerActionDescriptor
+        {
+            get { return _descriptor; }
+        }
+
         public override IActionResultConverter ResultConverter
         {
             get { return _resultConverter; }

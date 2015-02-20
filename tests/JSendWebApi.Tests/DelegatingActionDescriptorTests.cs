@@ -31,54 +31,69 @@ namespace JSendWebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void InitializesConverterCorrectly(HttpActionDescriptor wrappedDescriptor,
+        public void InitializesConverterCorrectly(HttpActionDescriptor innerDescriptor,
             IActionResultConverter converter)
         {
             // Exercise system
-            var descriptor = new DelegatingActionDescriptor(wrappedDescriptor, converter);
+            var descriptor = new DelegatingActionDescriptor(innerDescriptor, converter);
             // Verify outcome
             descriptor.ResultConverter.Should().BeSameAs(converter);
         }
 
         [Theory, JSendAutoData]
-        public void DelegatesGetParameters([Frozen] HttpActionDescriptor wrappedDescriptor,
-            DelegatingActionDescriptor descriptor)
+        public void InitializesInnerActionDescriptorCorrectly(HttpActionDescriptor innerDescriptor,
+            IActionResultConverter converter)
         {
             // Exercise system
-            var result = descriptor.GetParameters();
+            var descriptor = new DelegatingActionDescriptor(innerDescriptor, converter);
             // Verify outcome
-            result.Should().BeSameAs(wrappedDescriptor.GetParameters());
+            descriptor.InnerActionDescriptor.Should().Be(innerDescriptor);
+        }
+
+        [Theory, JSendAutoData]
+        public void DelegatesGetParameters(DelegatingActionDescriptor descriptor)
+        {
+            // Fixture setup
+            var expectedParameters = descriptor.InnerActionDescriptor.GetParameters();
+            // Exercise system
+            var parameters = descriptor.GetParameters();
+            // Verify outcome
+            parameters.Should().BeSameAs(expectedParameters);
         }
 
         [Theory, JSendAutoData]
         public void DelegatesExecuteAsync(
             [NoAutoProperties] HttpControllerContext context, IDictionary<string, object> args, CancellationToken token,
-            [Frozen] HttpActionDescriptor wrappedDescriptor, DelegatingActionDescriptor descriptor)
+            DelegatingActionDescriptor descriptor)
         {
+            // Fixture setup
+            var expectedTask = descriptor.InnerActionDescriptor.ExecuteAsync(context, args, token);
             // Exercise system
-            var result = descriptor.ExecuteAsync(null, args, token);
+            var task = descriptor.ExecuteAsync(context, args, token);
             // Verify outcome
-            result.Should().BeSameAs(wrappedDescriptor.ExecuteAsync(context, args, token));
+            task.Should().BeSameAs(expectedTask);
         }
 
         [Theory, JSendAutoData]
-        public void DelegatesActionName([Frozen] HttpActionDescriptor wrappedDescriptor,
-            DelegatingActionDescriptor descriptor)
+        public void DelegatesActionName(DelegatingActionDescriptor descriptor)
         {
+            // Fixture setup
+            var expectedActionName = descriptor.InnerActionDescriptor.ActionName;
             // Exercise system
-            var result = descriptor.ActionName;
+            var actionName = descriptor.ActionName;
             // Verify outcome
-            result.Should().BeSameAs(wrappedDescriptor.ActionName);
+            actionName.Should().BeSameAs(expectedActionName);
         }
 
         [Theory, JSendAutoData]
-        public void DelegatesReturnType([Frozen] HttpActionDescriptor wrappedDescriptor,
-            DelegatingActionDescriptor descriptor)
+        public void DelegatesReturnType(DelegatingActionDescriptor descriptor)
         {
+            // Fixture setup
+            var expectedReturnType = descriptor.InnerActionDescriptor.ReturnType;
             // Exercise system
-            var result = descriptor.ReturnType;
+            var returnType = descriptor.ReturnType;
             // Verify outcome
-            result.Should().BeSameAs(wrappedDescriptor.ReturnType);
+            returnType.Should().BeSameAs(expectedReturnType);
         }
     }
 }
