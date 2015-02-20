@@ -96,6 +96,7 @@
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
     <Compile Include="JSendExceptionHandlerTests.cs" />
     <Compile Include="JSendMediaTypeFormatterTests.cs" />
+    <Compile Include="JSendVoidResultConverterTests.cs" />
     <Compile Include="Responses\ErrorJSendResponseTests.cs" />
     <Compile Include="Responses\FailJSendResponseTests.cs" />
     <Compile Include="JSendApiControllerTests.cs" />
