@@ -93,8 +93,10 @@
   <ItemGroup>
     <Compile Include="DelegatingActionDescriptorTests.cs" />
     <Compile Include="FixtureCustomizations\EncodingCustomization.cs" />
+    <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\JsonSerializerSettingsCustomization.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
+    <Compile Include="VoidActionFilterTests.cs" />
     <Compile Include="JSendExceptionHandlerTests.cs" />
     <Compile Include="JSendMediaTypeFormatterTests.cs" />
     <Compile Include="JSendVoidResultConverterTests.cs" />
