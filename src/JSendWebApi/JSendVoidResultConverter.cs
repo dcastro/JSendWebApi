@@ -18,6 +18,9 @@ namespace JSendWebApi
 
         public JSendVoidResultConverter(JsonSerializerSettings serializerSettings, Encoding encoding)
         {
+            if (serializerSettings == null) throw new ArgumentNullException("serializerSettings");
+            if (encoding == null) throw new ArgumentNullException("encoding");
+
             _serializerSettings = serializerSettings;
             _encoding = encoding;
         }

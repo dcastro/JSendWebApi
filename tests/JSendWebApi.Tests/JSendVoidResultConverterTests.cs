@@ -12,6 +12,7 @@ using JSendWebApi.Responses;
 using JSendWebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
@@ -43,6 +44,13 @@ namespace JSendWebApi.Tests
         {
             // Exercise system and verify outcome
             converter.Should().BeAssignableTo<IActionResultConverter>();
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
+        {
+            // Exercise system and verify outcome
+            assertion.Verify(typeof (JSendVoidResultConverter).GetConstructors());
         }
 
         [Theory, JSendAutoData]
