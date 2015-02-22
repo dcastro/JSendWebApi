@@ -66,21 +66,24 @@ namespace JSendWebApi.Tests
                 .InnerActionDescriptor.Should().Be(initialDescriptorMock.Object);
         }
 
-        [Theory, JSendAutoData]
+        [Theory]
+        [InlineJSendAutoData(typeof (string), typeof (JSendValueResultConverter<string>))]
+        [InlineJSendAutoData(typeof (Model), typeof (JSendValueResultConverter<Model>))]
+        [InlineJSendAutoData(typeof (object), typeof (JSendValueResultConverter<object>))]
         public void ComposesActionDescriptor_WithValueResultConverter_WhenActionReturnsValue(
-            IFixture fixture, ValueActionFilter filter)
+            Type actionType, Type expectedConverterType, IFixture fixture, ValueActionFilter filter)
         {
             // Fixture setup
             fixture.Customize(new HttpActionContextCustomization());
             fixture.Freeze<Mock<HttpActionDescriptor>>()
                 .SetupGet(des => des.ReturnType)
-                .Returns(typeof (Model));
+                .Returns(actionType);
 
             var context = fixture.Create<HttpActionContext>();
             // Exercise system
             filter.OnActionExecuting(context);
             // Verify outcome
-            context.ActionDescriptor.ResultConverter.Should().BeAssignableTo<JSendValueResultConverter<Model>>();
+            context.ActionDescriptor.ResultConverter.Should().BeOfType(expectedConverterType);
         }
 
         [Theory]

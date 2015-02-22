@@ -31,8 +31,8 @@ namespace JSendWebApi
 
             if (returnType != null &&
                 !returnType.IsGenericParameter &&
-                !returnType.IsAssignableFrom(typeof (HttpResponseMessage)) &&
-                !returnType.IsAssignableFrom(typeof (IHttpActionResult)))
+                !typeof (HttpResponseMessage).IsAssignableFrom(returnType) &&
+                !typeof (IHttpActionResult).IsAssignableFrom(returnType))
             {
                 Type valueConverterType = typeof (JSendValueResultConverter<>).MakeGenericType(returnType);
                 var valueConverter =
