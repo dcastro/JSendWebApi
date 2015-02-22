@@ -97,6 +97,7 @@
     <Compile Include="FixtureCustomizations\JsonSerializerSettingsCustomization.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
     <Compile Include="JSendValueResultConverterTests.cs" />
+    <Compile Include="ValueActionFilterTests.cs" />
     <Compile Include="VoidActionFilterTests.cs" />
     <Compile Include="JSendExceptionHandlerTests.cs" />
     <Compile Include="JSendMediaTypeFormatterTests.cs" />
