@@ -1,9 +1,12 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using JSendWebApi.Responses;
+using Newtonsoft.Json;
 
 namespace JSendWebApi.Results
 {
@@ -13,7 +16,21 @@ namespace JSendWebApi.Results
 
         public JSendOkResult(JSendApiController controller, T content)
         {
-            _result = new JSendResult<SuccessJSendResponse>(controller, new SuccessJSendResponse(content),
+            if (controller == null) throw new ArgumentNullException("controller");
+
+            _result = InitializeResult(controller.JsonSerializerSettings, controller.Encoding, controller.Request,
+                content);
+        }
+
+        public JSendOkResult(JsonSerializerSettings settings, Encoding encoding, HttpRequestMessage request, T content)
+        {
+            _result = InitializeResult(settings, encoding, request, content);
+        }
+
+        private static JSendResult<SuccessJSendResponse> InitializeResult(JsonSerializerSettings settings,
+            Encoding encoding, HttpRequestMessage request, T content)
+        {
+            return new JSendResult<SuccessJSendResponse>(settings, encoding, request, new SuccessJSendResponse(content),
                 HttpStatusCode.OK);
         }
 

@@ -39,6 +39,30 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenSerializerSettingsAreNull(Encoding encoding, HttpRequestMessage request,
+            Model model)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(null, encoding, request, model));
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenEncodingIsNull(JsonSerializerSettings settings, HttpRequestMessage request,
+            Model model)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(settings, null, request, model));
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenRequestIsNull(JsonSerializerSettings settings, Encoding encoding, Model model)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(settings, encoding, null, model));
+        }
+
+
+        [Theory, JSendAutoData]
         public void ResponseIsInitialized(JSendOkResult<Model> result)
         {
             // Exercise system and verify outcome
