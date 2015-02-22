@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DelegatingActionDescriptor.cs" />
+    <Compile Include="JSendValueResultConverter.cs" />
     <Compile Include="VoidActionFilter.cs" />
     <Compile Include="JSendApiController.cs" />
     <Compile Include="JSendExceptionHandler.cs" />
