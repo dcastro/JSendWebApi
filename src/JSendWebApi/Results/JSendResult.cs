@@ -8,11 +8,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
+using JSendWebApi.Responses;
 using Newtonsoft.Json;
 
 namespace JSendWebApi.Results
 {
-    public sealed class JSendResult<TResponse> : IHttpActionResult
+    public sealed class JSendResult<TResponse> : IHttpActionResult where TResponse : IJSendResponse
     {
         private readonly TResponse _response;
         private readonly HttpStatusCode _statusCode;

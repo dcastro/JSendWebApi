@@ -24,11 +24,12 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
         {
             // Exercise system and verify outcome
-            assertion.Verify(typeof (JSendResult<string>).GetConstructors());
+            assertion.Verify(typeof (JSendResult<SuccessResponse>).GetConstructors());
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized([Frozen] SuccessResponse response, JSendResult<SuccessResponse> result)
+        public void ResponseIsCorrectlyInitialized([Frozen] SuccessResponse response,
+            JSendResult<SuccessResponse> result)
         {
             // Exercise system and verify outcome
             result.Response.Should().BeSameAs(response);
