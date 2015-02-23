@@ -28,22 +28,21 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void StatusCodeIsCorrectlyInitialized(JSendApiController controller, IJSendResponse response)
-        {
-            // Fixture setup
-            const HttpStatusCode expectedStatusCode = HttpStatusCode.Continue;
-            // Exercise system
-            var result = new JSendResult<IJSendResponse>(controller, response, expectedStatusCode);
-            // Verify outcome
-            result.StatusCode.Should().Be(expectedStatusCode);
-        }
-
-        [Theory, JSendAutoData]
         public void ResponseIsCorrectlyInitialized([Frozen] SuccessResponse response,
             JSendResult<SuccessResponse> result)
         {
             // Exercise system and verify outcome
             result.Response.Should().BeSameAs(response);
+        }
+
+        [Theory, JSendAutoData]
+        public void StatusCodeIsCorrectlyInitialized(JSendApiController controller, IJSendResponse response,
+            HttpStatusCode expectedStatusCode)
+        {
+            // Exercise system
+            var result = new JSendResult<IJSendResponse>(controller, response, expectedStatusCode);
+            // Verify outcome
+            result.StatusCode.Should().Be(expectedStatusCode);
         }
 
         [Theory, JSendAutoData]

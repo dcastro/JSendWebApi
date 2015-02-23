@@ -16,6 +16,7 @@ namespace JSendWebApi.Tests.FixtureCustomizations
                 new EncodingCustomization(),
                 new JsonSerializerSettingsCustomization(),
                 new UrlHelperCustomization(),
+                new RandomHttpStatusCodeCustomization(),
                 new AutoConfiguredMoqCustomization())
         {
 
