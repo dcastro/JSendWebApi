@@ -14,7 +14,7 @@ namespace JSendWebApi.Results
 {
     public class JSendExceptionResult : IHttpActionResult
     {
-        private readonly JSendResult<ErrorJSendResponse> _result;
+        private readonly JSendResult<ErrorResponse> _result;
 
         public JSendExceptionResult(JSendApiController controller, Exception exception, string message, int? errorCode,
             object data)
@@ -38,20 +38,20 @@ namespace JSendWebApi.Results
 
             var response = BuildResponse(dependencies.IncludeErrorDetail, exception, message, errorCode, data);
 
-            _result = new JSendResult<ErrorJSendResponse>(
+            _result = new JSendResult<ErrorResponse>(
                 dependencies.JsonSerializerSettings, dependencies.Encoding, dependencies.RequestMessage, response,
                 HttpStatusCode.InternalServerError);
         }
 
-        public ErrorJSendResponse Response
+        public ErrorResponse Response
         {
             get { return _result.Response; }
         }
 
-        private static ErrorJSendResponse BuildResponse(bool includeErrorDetail, Exception ex, string message,
+        private static ErrorResponse BuildResponse(bool includeErrorDetail, Exception ex, string message,
             int? errorCode, object data)
         {
-            return new ErrorJSendResponse(
+            return new ErrorResponse(
                 message: BuildErrorMessage(includeErrorDetail, ex, message),
                 code: errorCode,
                 data: BuildData(includeErrorDetail, ex, data));

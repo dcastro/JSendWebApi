@@ -7,31 +7,31 @@ using Newtonsoft.Json;
 
 namespace JSendWebApi.Responses
 {
-    public class ErrorJSendResponse
+    public class ErrorResponse
     {
         private readonly string _message;
         private readonly int? _code;
         private readonly object _data;
 
-        public ErrorJSendResponse(string message)
+        public ErrorResponse(string message)
             : this(message, null, null)
         {
 
         }
 
-        public ErrorJSendResponse(string message, int? code)
+        public ErrorResponse(string message, int? code)
             : this(message, code, null)
         {
 
         }
 
-        public ErrorJSendResponse(string message, object data)
+        public ErrorResponse(string message, object data)
             : this(message, null, data)
         {
 
         }
 
-        public ErrorJSendResponse(string message, int? code, object data)
+        public ErrorResponse(string message, int? code, object data)
         {
             if (message == null)
                 throw new ArgumentNullException("message");

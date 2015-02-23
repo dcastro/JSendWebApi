@@ -14,17 +14,17 @@ namespace JSendWebApi.Results
 {
     public class JSendInternalServerErrorResult : IHttpActionResult
     {
-        private readonly JSendResult<ErrorJSendResponse> _result;
+        private readonly JSendResult<ErrorResponse> _result;
 
         public JSendInternalServerErrorResult(JSendApiController controller, string message, int? errorCode, object data)
         {
-            var response = new ErrorJSendResponse(message, errorCode, data);
+            var response = new ErrorResponse(message, errorCode, data);
 
-            _result = new JSendResult<ErrorJSendResponse>(
+            _result = new JSendResult<ErrorResponse>(
                 controller, response, HttpStatusCode.InternalServerError);
         }
 
-        public ErrorJSendResponse Response
+        public ErrorResponse Response
         {
             get { return _result.Response; }
         }

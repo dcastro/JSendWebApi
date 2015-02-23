@@ -12,7 +12,7 @@ namespace JSendWebApi.Results
 {
     public class JSendOkResult : IHttpActionResult
     {
-        private readonly JSendResult<SuccessJSendResponse> _result;
+        private readonly JSendResult<SuccessResponse> _result;
 
         public JSendOkResult(JSendApiController controller)
         {
@@ -26,14 +26,14 @@ namespace JSendWebApi.Results
             _result = InitializeResult(settings, encoding, request);
         }
 
-        private static JSendResult<SuccessJSendResponse> InitializeResult(JsonSerializerSettings settings, Encoding encoding,
+        private static JSendResult<SuccessResponse> InitializeResult(JsonSerializerSettings settings, Encoding encoding,
             HttpRequestMessage request)
         {
-            return new JSendResult<SuccessJSendResponse>(settings, encoding, request, new SuccessJSendResponse(),
+            return new JSendResult<SuccessResponse>(settings, encoding, request, new SuccessResponse(),
                 HttpStatusCode.OK);
         }
 
-        public SuccessJSendResponse Response
+        public SuccessResponse Response
         {
             get { return _result.Response; }
         }

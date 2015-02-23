@@ -56,7 +56,7 @@ namespace JSendWebApi.Tests.Results
         public void ResponseIsSuccess(JSendCreatedResult<Model> result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<SuccessJSendResponse>();
+            result.Response.Should().BeAssignableTo<SuccessResponse>();
         }
 
         [Theory, JSendAutoData]

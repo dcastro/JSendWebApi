@@ -28,14 +28,14 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized([Frozen] SuccessJSendResponse response, JSendResult<SuccessJSendResponse> result)
+        public void ResponseIsCorrectlyInitialized([Frozen] SuccessResponse response, JSendResult<SuccessResponse> result)
         {
             // Exercise system and verify outcome
             result.Response.Should().BeSameAs(response);
         }
 
         [Theory, JSendAutoData]
-        public async Task SerializesResponse(JSendResult<SuccessJSendResponse> result)
+        public async Task SerializesResponse(JSendResult<SuccessResponse> result)
         {
             // Fixture setup
             var expectedContent = JsonConvert.SerializeObject(result.Response);
@@ -47,11 +47,11 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsStatusCode(JSendApiController controller, SuccessJSendResponse response)
+        public async Task SetsStatusCode(JSendApiController controller, SuccessResponse response)
         {
             // Fixture setup
             const HttpStatusCode expectedStatusCode = HttpStatusCode.InternalServerError;
-            var result = new JSendResult<SuccessJSendResponse>(controller, response, expectedStatusCode);
+            var result = new JSendResult<SuccessResponse>(controller, response, expectedStatusCode);
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -65,7 +65,7 @@ namespace JSendWebApi.Tests.Results
             var encoding = Encoding.ASCII;
             fixture.Inject(encoding);
 
-            var result = fixture.Create<JSendResult<SuccessJSendResponse>>();
+            var result = fixture.Create<JSendResult<SuccessResponse>>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -73,7 +73,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsContentTypeHeader(JSendResult<SuccessJSendResponse> result)
+        public async Task SetsContentTypeHeader(JSendResult<SuccessResponse> result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());

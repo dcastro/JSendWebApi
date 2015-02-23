@@ -14,18 +14,18 @@ namespace JSendWebApi.Results
     public class JSendRedirectResult : IHttpActionResult
     {
         private readonly Uri _location;
-        private readonly JSendResult<SuccessJSendResponse> _result;
+        private readonly JSendResult<SuccessResponse> _result;
 
         public JSendRedirectResult(JSendApiController controller, Uri location)
         {
             if (location == null) throw new ArgumentNullException("location");
 
             _location = location;
-            _result = new JSendResult<SuccessJSendResponse>(
-                controller, new SuccessJSendResponse(), HttpStatusCode.Redirect);
+            _result = new JSendResult<SuccessResponse>(
+                controller, new SuccessResponse(), HttpStatusCode.Redirect);
         }
 
-        public SuccessJSendResponse Response
+        public SuccessResponse Response
         {
             get { return _result.Response; }
         }

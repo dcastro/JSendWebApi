@@ -81,7 +81,7 @@ namespace JSendWebApi.Tests.Results
             fixture.Customize(new RouteCustomization());
             var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<SuccessJSendResponse>();
+            result.Response.Should().BeAssignableTo<SuccessResponse>();
         }
 
         [Theory, JSendAutoData]

@@ -13,20 +13,20 @@ namespace JSendWebApi.Results
 {
     public class JSendCreatedResult<T> : IHttpActionResult
     {
-        private readonly JSendResult<SuccessJSendResponse> _result;
+        private readonly JSendResult<SuccessResponse> _result;
         private readonly Uri _location;
 
         public JSendCreatedResult(JSendApiController controller, Uri location, T content)
         {
             if (location == null) throw new ArgumentNullException("location");
 
-            _result = new JSendResult<SuccessJSendResponse>(
-                controller, new SuccessJSendResponse(content), HttpStatusCode.Created);
+            _result = new JSendResult<SuccessResponse>(
+                controller, new SuccessResponse(content), HttpStatusCode.Created);
 
             _location = location;
         }
 
-        public SuccessJSendResponse Response
+        public SuccessResponse Response
         {
             get { return _result.Response; }
         }

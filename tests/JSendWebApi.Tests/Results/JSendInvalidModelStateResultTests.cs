@@ -73,7 +73,7 @@ namespace JSendWebApi.Tests.Results
         public void ResponseIsFail([InvalidModelState] JSendInvalidModelStateResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<FailJSendResponse>();
+            result.Response.Should().BeAssignableTo<FailResponse>();
         }
 
         [Theory, JSendAutoData]

@@ -13,7 +13,7 @@ namespace JSendWebApi.Results
 {
     public class JSendNotFoundResult : IHttpActionResult
     {
-        private readonly JSendResult<FailJSendResponse> _result;
+        private readonly JSendResult<FailResponse> _result;
 
         public JSendNotFoundResult(JSendApiController controller, string reason)
         {
@@ -23,11 +23,11 @@ namespace JSendWebApi.Results
             if (string.IsNullOrWhiteSpace(reason))
                 throw new ArgumentException("Reason cannot be an empty string.", "reason");
 
-            _result = new JSendResult<FailJSendResponse>(
-                controller, new FailJSendResponse(reason), HttpStatusCode.NotFound);
+            _result = new JSendResult<FailResponse>(
+                controller, new FailResponse(reason), HttpStatusCode.NotFound);
         }
 
-        public FailJSendResponse Response
+        public FailResponse Response
         {
             get { return _result.Response; }
         }

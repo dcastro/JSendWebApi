@@ -15,11 +15,11 @@ using Xunit.Extensions;
 
 namespace JSendWebApi.Tests.Responses
 {
-    public class FailJSendResponseTests
+    public class FailResponseTests
     {
 
         [Theory, JSendAutoData]
-        public void StatusIsFail(FailJSendResponse response)
+        public void StatusIsFail(FailResponse response)
         {
             // Exercise system and verify outcome
             response.Status.Should().Be("fail");
@@ -29,20 +29,20 @@ namespace JSendWebApi.Tests.Responses
         public void ConstructorThrowsWhenDataIsNull()
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new FailJSendResponse(null));
+            Assert.Throws<ArgumentNullException>(() => new FailResponse(null));
         }
 
         [Theory, JSendAutoData]
         public void DataIsCorrectlyInitialized(object data)
         {
             // Exercise system
-            var response = new FailJSendResponse(data);
+            var response = new FailResponse(data);
             // Verify outcome
             response.Data.Should().BeSameAs(data);
         }
 
         [Theory, JSendAutoData]
-        public void SerializesCorrectly(object data, FailJSendResponse response)
+        public void SerializesCorrectly(object data, FailResponse response)
         {
             // Fixture setup
             var expectedSerializedResponse = new JObject

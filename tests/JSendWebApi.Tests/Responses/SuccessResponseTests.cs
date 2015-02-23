@@ -11,10 +11,10 @@ using Xunit.Extensions;
 
 namespace JSendWebApi.Tests.Responses
 {
-    public class SuccessJSendResponseTests
+    public class SuccessResponseTests
     {
         [Theory, JSendAutoData]
-        public void StatusIsSuccess(SuccessJSendResponse response)
+        public void StatusIsSuccess(SuccessResponse response)
         {
             // Exercise system and verify outcome
             response.Status.Should().Be("success");
@@ -24,7 +24,7 @@ namespace JSendWebApi.Tests.Responses
         public void DataIsCorrectlyInitialized(Model model)
         {
             // Exercise system
-            var response = new SuccessJSendResponse(model);
+            var response = new SuccessResponse(model);
             // Verify outcome
             response.Data.Should().BeSameAs(model);
         }
@@ -33,13 +33,13 @@ namespace JSendWebApi.Tests.Responses
         public void DataIsNullByDefault()
         {
             // Exercise system
-            var response = new SuccessJSendResponse();
+            var response = new SuccessResponse();
             // Verify outcome
             response.Data.Should().BeNull();
         }
 
         [Theory, JSendAutoData]
-        public void SerializesCorrectly(object data, [Greedy] SuccessJSendResponse response)
+        public void SerializesCorrectly(object data, [Greedy] SuccessResponse response)
         {
             // Fixture setup
             var expectedSerializedResponse = new JObject
@@ -59,7 +59,7 @@ namespace JSendWebApi.Tests.Responses
         public void NullDataIsSerialized()
         {
             // Fixture setup
-            var response = new SuccessJSendResponse();
+            var response = new SuccessResponse();
             // Exercise system
             var serializedResponse = JObject.FromObject(response);
             // Verify outcome

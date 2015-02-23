@@ -61,11 +61,11 @@ namespace JSendWebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task ConvertReturnsSuccessJSendMessage([WithRequest] HttpControllerContext context,
+        public async Task ConvertReturnsSuccessMessage([WithRequest] HttpControllerContext context,
             JSendVoidResultConverter converter)
         {
             // Fixture setup
-            var jsendSuccess = JsonConvert.SerializeObject(new SuccessJSendResponse());
+            var jsendSuccess = JsonConvert.SerializeObject(new SuccessResponse());
             // Exercise system
             var message = converter.Convert(context, null);
             // Verify outcome

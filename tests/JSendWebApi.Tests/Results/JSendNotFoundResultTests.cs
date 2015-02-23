@@ -53,7 +53,7 @@ namespace JSendWebApi.Tests.Results
         public void ResponseIsFail(JSendNotFoundResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<FailJSendResponse>();
+            result.Response.Should().BeAssignableTo<FailResponse>();
         }
 
         [Theory, JSendAutoData]

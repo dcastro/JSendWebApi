@@ -14,16 +14,16 @@ using Xunit.Extensions;
 
 namespace JSendWebApi.Tests.Responses
 {
-    public class ErrorJSendResponseTests
+    public class ErrorResponseTests
     {
         [Theory, JSendAutoData]
         public void ConstructorsThrowWhenMessageIsNull(int code, object data)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new ErrorJSendResponse(null));
-            Assert.Throws<ArgumentNullException>(() => new ErrorJSendResponse(null, code));
-            Assert.Throws<ArgumentNullException>(() => new ErrorJSendResponse(null, data));
-            Assert.Throws<ArgumentNullException>(() => new ErrorJSendResponse(null, code, data));
+            Assert.Throws<ArgumentNullException>(() => new ErrorResponse(null));
+            Assert.Throws<ArgumentNullException>(() => new ErrorResponse(null, code));
+            Assert.Throws<ArgumentNullException>(() => new ErrorResponse(null, data));
+            Assert.Throws<ArgumentNullException>(() => new ErrorResponse(null, code, data));
         }
 
         [Theory, JSendAutoData]
@@ -32,14 +32,14 @@ namespace JSendWebApi.Tests.Responses
             // Fixture setup
             const string whiteSpace = "  ";
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentException>(() => new ErrorJSendResponse(whiteSpace));
-            Assert.Throws<ArgumentException>(() => new ErrorJSendResponse(whiteSpace, code));
-            Assert.Throws<ArgumentException>(() => new ErrorJSendResponse(whiteSpace, data));
-            Assert.Throws<ArgumentException>(() => new ErrorJSendResponse(whiteSpace, code, data));
+            Assert.Throws<ArgumentException>(() => new ErrorResponse(whiteSpace));
+            Assert.Throws<ArgumentException>(() => new ErrorResponse(whiteSpace, code));
+            Assert.Throws<ArgumentException>(() => new ErrorResponse(whiteSpace, data));
+            Assert.Throws<ArgumentException>(() => new ErrorResponse(whiteSpace, code, data));
         }
 
         [Theory, JSendAutoData]
-        public void StatusIsError(ErrorJSendResponse response)
+        public void StatusIsError(ErrorResponse response)
         {
             // Exercise system and verify outcome
             response.Status.Should().Be("error");
@@ -49,7 +49,7 @@ namespace JSendWebApi.Tests.Responses
         public void MessageIsCorrectlyInitialized(string message)
         {
             // Exercise system
-            var response = new ErrorJSendResponse(message);
+            var response = new ErrorResponse(message);
             // Verify outcome
             response.Message.Should().Be(message);
         }
@@ -58,7 +58,7 @@ namespace JSendWebApi.Tests.Responses
         public void MessageAndCodeAreCorrectlyInitialized(string message, int code)
         {
             // Exercise system
-            var response = new ErrorJSendResponse(message, code);
+            var response = new ErrorResponse(message, code);
             // Verify outcome
             response.Message.Should().Be(message);
             response.Code.Should().HaveValue()
@@ -69,7 +69,7 @@ namespace JSendWebApi.Tests.Responses
         public void MessageAndDataAreCorrectlyInitialized(string message, object data)
         {
             // Exercise system
-            var response = new ErrorJSendResponse(message, data);
+            var response = new ErrorResponse(message, data);
             // Verify outcome
             response.Message.Should().Be(message);
             response.Data.Should().BeSameAs(data);
@@ -79,7 +79,7 @@ namespace JSendWebApi.Tests.Responses
         public void MessageCodeAndDataAreCorrectlyInitialized(string message, int code, object data)
         {
             // Exercise system
-            var response = new ErrorJSendResponse(message, code, data);
+            var response = new ErrorResponse(message, code, data);
             // Verify outcome
             response.Message.Should().Be(message);
             response.Code.Should().HaveValue()
@@ -91,7 +91,7 @@ namespace JSendWebApi.Tests.Responses
         public void CodeIsNullByDefault(string message)
         {
             // Exercise system
-            var response = new ErrorJSendResponse(message);
+            var response = new ErrorResponse(message);
             // Verify outcome
             response.Code.Should().NotHaveValue();
         }
@@ -100,7 +100,7 @@ namespace JSendWebApi.Tests.Responses
         public void DataIsNullByDefault(string message)
         {
             // Exercise system
-            var response = new ErrorJSendResponse(message);
+            var response = new ErrorResponse(message);
             // Verify outcome
             response.Data.Should().BeNull();
         }
@@ -117,7 +117,7 @@ namespace JSendWebApi.Tests.Responses
                 {"data", JObject.FromObject(data)}
             };
 
-            var response = new ErrorJSendResponse(message, code, data);
+            var response = new ErrorResponse(message, code, data);
             // Exercise system
             var serializedResponse = JObject.FromObject(response);
             // Verify outcome
@@ -129,7 +129,7 @@ namespace JSendWebApi.Tests.Responses
         public void NullCodeIsNotSerialized(string message)
         {
             // Fixture setup
-            var response = new ErrorJSendResponse(message);
+            var response = new ErrorResponse(message);
             // Exercise system
             var serializedResponse = JObject.FromObject(response);
             // Verify outcome
@@ -140,7 +140,7 @@ namespace JSendWebApi.Tests.Responses
         public void NullDataIsNotSerialized(string message)
         {
             // Fixture setup
-            var response = new ErrorJSendResponse(message);
+            var response = new ErrorResponse(message);
             // Exercise system
             var serializedResponse = JObject.FromObject(response);
             // Verify outcome

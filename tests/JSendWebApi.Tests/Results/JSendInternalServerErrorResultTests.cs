@@ -63,7 +63,7 @@ namespace JSendWebApi.Tests.Results
         public void ResponseIsError(JSendInternalServerErrorResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<ErrorJSendResponse>();
+            result.Response.Should().BeAssignableTo<ErrorResponse>();
         }
 
         [Theory, JSendAutoData]
