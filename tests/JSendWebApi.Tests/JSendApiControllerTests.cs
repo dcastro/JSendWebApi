@@ -30,22 +30,16 @@ namespace JSendWebApi.Tests
             controller.Should().BeAssignableTo<ApiController>();
         }
 
-        [Fact]
-        public void ConstructorsThrowWhenAnyArgumentIsNull()
+        [Theory, JSendAutoData]
+        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
         {
-            // Fixture setup
-            var fixture = new Fixture {OmitAutoProperties = true};
-            var assertion = new GuardClauseAssertion(fixture);
             // Exercise system and verify outcome
             assertion.Verify(typeof (TestableJSendApiController).GetConstructors());
         }
 
-        [Fact]
-        public void SettingsAndEncodingAreCorrectlyInitialized()
+        [Theory, JSendAutoData]
+        public void SettingsAndEncodingAreCorrectlyInitialized(JsonSerializerSettings settings, Encoding encoding)
         {
-            // Fixture setup
-            var settings = new JsonSerializerSettings();
-            var encoding = Encoding.UTF8;
             // Exercise system
             var controller = new TestableJSendApiController(settings, encoding);
             // Verify outcome
@@ -53,11 +47,9 @@ namespace JSendWebApi.Tests
             controller.Encoding.Should().BeSameAs(encoding);
         }
 
-        [Fact]
-        public void SettingsAreCorrectlyInitialized()
+        [Theory, JSendAutoData]
+        public void SettingsAreCorrectlyInitialized(JsonSerializerSettings settings)
         {
-            // Fixture setup
-            var settings = new JsonSerializerSettings();
             // Exercise system
             var controller = new TestableJSendApiController(settings);
             // Verify outcome
@@ -116,7 +108,7 @@ namespace JSendWebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void JsonSerializerSettingsCanBeSet([NoAutoProperties] JsonSerializerSettings expectedSettings, JSendApiController controller)
+        public void JsonSerializerSettingsCanBeSet(JsonSerializerSettings expectedSettings, JSendApiController controller)
         {
             // Exercise system
             controller.JsonSerializerSettings = expectedSettings;
