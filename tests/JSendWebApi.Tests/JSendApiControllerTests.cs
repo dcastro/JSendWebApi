@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Controllers;
+using System.Web.Http.ExceptionHandling;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.Routing;
 using FluentAssertions;
@@ -14,7 +16,6 @@ using Moq;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
-using Ploeh.AutoFixture.Kernel;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
@@ -108,7 +109,8 @@ namespace JSendWebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void JsonSerializerSettingsCanBeSet(JsonSerializerSettings expectedSettings, JSendApiController controller)
+        public void JsonSerializerSettingsCanBeSet(JsonSerializerSettings expectedSettings,
+            JSendApiController controller)
         {
             // Exercise system
             controller.JsonSerializerSettings = expectedSettings;
@@ -121,6 +123,50 @@ namespace JSendWebApi.Tests
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => controller.JsonSerializerSettings = null);
+        }
+
+        [Theory, JSendAutoData]
+        public void ReplacesExceptionHandler(TestableJSendApiController controller)
+        {
+            var context = new HttpControllerContext
+            {
+                Configuration = new HttpConfiguration()
+            };
+            var defaultHandler = context.Configuration.Services.GetService(typeof (IExceptionHandler));
+            // Exercise system
+            controller.TestableInitialize(context);
+            // Verify outcome
+            var handler = controller.Configuration.Services.GetService(typeof (IExceptionHandler));
+            handler.Should().NotBe(defaultHandler);
+            handler.Should().BeOfType<JSendExceptionHandler>();
+        }
+
+        [Theory, JSendAutoData]
+        public void AddsValueActionFilter(TestableJSendApiController controller)
+        {
+            var context = new HttpControllerContext
+            {
+                Configuration = new HttpConfiguration()
+            };
+            // Exercise system
+            controller.TestableInitialize(context);
+            // Verify outcome
+            controller.Configuration.Filters.Should().Contain(
+                filter => filter.Instance.GetType() == typeof (ValueActionFilter));
+        }
+
+        [Theory, JSendAutoData]
+        public void AddsVoidActionFilter(TestableJSendApiController controller)
+        {
+            var context = new HttpControllerContext
+            {
+                Configuration = new HttpConfiguration()
+            };
+            // Exercise system
+            controller.TestableInitialize(context);
+            // Verify outcome
+            controller.Configuration.Filters.Should().Contain(
+                filter => filter.Instance.GetType() == typeof (VoidActionFilter));
         }
 
         [Theory, JSendAutoData]
@@ -151,7 +197,8 @@ namespace JSendWebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void JSendBadRequestWithModelState_Returns_JSendInvalidModelStateResult(ModelStateDictionary modelState, JSendApiController controller)
+        public void JSendBadRequestWithModelState_Returns_JSendInvalidModelStateResult(ModelStateDictionary modelState,
+            JSendApiController controller)
         {
             // Fixture setup
             modelState.AddModelError("", "");

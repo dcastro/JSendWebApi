@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Controllers;
+using System.Web.Http.ExceptionHandling;
 using System.Web.Http.ModelBinding;
-using System.Web.Http.Results;
 using System.Web.Http.Routing;
 using JSendWebApi.Results;
 using Newtonsoft.Json;
@@ -64,6 +64,20 @@ namespace JSendWebApi
             }
         }
 
+        protected override void Initialize(HttpControllerContext controllerContext)
+        {
+            base.Initialize(controllerContext);
+
+            this.Configuration.Services.Replace(typeof (IExceptionHandler),
+                new JSendExceptionHandler(_settings, _encoding));
+
+            this.Configuration.Filters.Add(
+                new ValueActionFilter(_settings, _encoding));
+
+            this.Configuration.Filters.Add(
+                new VoidActionFilter(_settings, _encoding));
+        }
+
         protected internal virtual JSendOkResult JSendOk()
         {
             return new JSendOkResult(this);
@@ -108,12 +122,14 @@ namespace JSendWebApi
             return JSendCreatedAtRoute(routeName, new HttpRouteValueDictionary(routeValues), content);
         }
 
-        protected internal virtual JSendInternalServerErrorResult JSendInternalServerError(string message, int? errorCode = null, object data = null)
+        protected internal virtual JSendInternalServerErrorResult JSendInternalServerError(string message,
+            int? errorCode = null, object data = null)
         {
             return new JSendInternalServerErrorResult(this, message, errorCode, data);
         }
 
-        protected internal virtual JSendExceptionResult JSendInternalServerError(Exception ex, string message = null, int? errorCode = null, object data = null)
+        protected internal virtual JSendExceptionResult JSendInternalServerError(Exception ex, string message = null,
+            int? errorCode = null, object data = null)
         {
             return new JSendExceptionResult(this, ex, message, errorCode, data);
         }

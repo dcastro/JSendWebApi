@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http.Controllers;
 using Newtonsoft.Json;
 
 namespace JSendWebApi.Tests
 {
-    internal class TestableJSendApiController : JSendApiController
+    public class TestableJSendApiController : JSendApiController
     {
         public TestableJSendApiController()
         {
@@ -23,6 +24,11 @@ namespace JSendWebApi.Tests
             : base(jsonSerializerSettings, encoding)
         {
 
+        }
+
+        public void TestableInitialize(HttpControllerContext controllerContext)
+        {
+            base.Initialize(controllerContext);
         }
     }
 }
