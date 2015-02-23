@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Routing;
 using FluentAssertions;
 using JSendWebApi.Responses;
 using JSendWebApi.Results;
@@ -16,7 +15,6 @@ using JSendWebApi.Tests.TestTypes;
 using Moq;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
@@ -25,71 +23,39 @@ namespace JSendWebApi.Tests.Results
 {
     public class JSendCreatedAtRouteResultTests
     {
-        private const string RouteLink = "http://localhost/models/";
-
-        private class RouteCustomization : ICustomization
-        {
-            public void Customize(IFixture fixture)
-            {
-                var urlFactoryMock = new Mock<UrlHelper>();
-                urlFactoryMock.Setup(x => x.Link(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>()))
-                    .Returns((string name, IDictionary<string, object> values) => RouteLink);
-
-                fixture.Inject(urlFactoryMock.Object);
-            }
-        }
-
         [Theory, JSendAutoData]
-        public void IsHttpActionResult(IFixture fixture)
+        public void IsHttpActionResult(JSendCreatedAtRouteResult<Model> result)
         {
-            // Fixture setup
-            fixture.Customize(new RouteCustomization());
-            // Exercise system
-            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             // Verify outcome
             result.Should().BeAssignableTo<IHttpActionResult>();
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenControllerIsNull(IFixture fixture)
+        public void ConstructorThrowsWhenControllerIsNull(string routeName, Dictionary<string, object> routeValues, Model content)
         {
-            // Fixture setup
-            fixture.Customize(new RouteCustomization());
-
-            var routeName = fixture.Create<string>();
-            var routeValues = fixture.Create<Dictionary<string, object>>();
-            var content = fixture.Create<Model>();
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
                 () => new JSendCreatedAtRouteResult<Model>(null, routeName, routeValues, content));
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(IFixture fixture)
+        public void ResponseIsInitialized(JSendCreatedAtRouteResult<Model> result)
         {
-            // Fixture setup
-            fixture.Customize(new RouteCustomization());
-            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             // Exercise system and verify outcome
             result.Response.Should().NotBeNull();
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsSuccess(IFixture fixture)
+        public void ResponseIsSuccess(JSendCreatedAtRouteResult<Model> result)
         {
-            // Fixture setup
-            fixture.Customize(new RouteCustomization());
-            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             // Exercise system and verify outcome
             result.Response.Should().BeAssignableTo<SuccessResponse>();
         }
 
         [Theory, JSendAutoData]
-        public async Task ResponseIsSerializedIntoBody(IFixture fixture)
+        public async Task ResponseIsSerializedIntoBody(JSendCreatedAtRouteResult<Model> result)
         {
             // Fixture setup
-            fixture.Customize(new RouteCustomization());
-            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             var serializedResponse = JsonConvert.SerializeObject(result.Response);
             // Exercise system
             var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
@@ -99,23 +65,15 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseDataIsCorrectlySet(IFixture fixture)
+        public void ResponseDataIsCorrectlySet([Frozen] Model content, JSendCreatedAtRouteResult<Model> result)
         {
-            // Fixture setup
-            fixture.Customize(new RouteCustomization());
-            var content = fixture.Freeze<Model>();
-            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             // Exercise system and verify outcome
             result.Response.Data.Should().BeSameAs(content);
         }
 
         [Theory, JSendAutoData]
-        public async Task StatusCodeIs201(IFixture fixture)
+        public async Task StatusCodeIs201(JSendCreatedAtRouteResult<Model> result)
         {
-            // Fixture setup
-            fixture.Customize(new RouteCustomization());
-
-            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -126,7 +84,6 @@ namespace JSendWebApi.Tests.Results
         public async Task SetsCharSetHeader(IFixture fixture)
         {
             // Fixture setup
-            fixture.Customize(new RouteCustomization());
             var encoding = Encoding.ASCII;
             fixture.Inject(encoding);
 
@@ -138,12 +95,8 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsContentTypeHeader(IFixture fixture)
+        public async Task SetsContentTypeHeader(JSendCreatedAtRouteResult<Model> result)
         {
-            // Fixture setup
-            fixture.Customize(new RouteCustomization());
-
-            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -151,16 +104,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsLocationHeader(IFixture fixture)
+        public async Task SetsLocationHeader(JSendCreatedAtRouteResult<Model> result)
         {
-            // Fixture setup
-            fixture.Customize(new RouteCustomization());
-
-            var result = fixture.Create<JSendCreatedAtRouteResult<Model>>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.Headers.Location.Should().Be(RouteLink);
+            message.Headers.Location.Should().Be(UrlHelperCustomization.RouteLink);
         }
     }
 }

@@ -96,6 +96,7 @@
     <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\JsonSerializerSettingsCustomization.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
+    <Compile Include="FixtureCustomizations\UrlHelperCustomization.cs" />
     <Compile Include="JSendValueResultConverterTests.cs" />
     <Compile Include="ValueActionFilterTests.cs" />
     <Compile Include="VoidActionFilterTests.cs" />
