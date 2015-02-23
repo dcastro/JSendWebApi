@@ -17,6 +17,13 @@ namespace JSendWebApi.Tests.Responses
     public class ErrorResponseTests
     {
         [Theory, JSendAutoData]
+        public void IsJSendResponse(ErrorResponse response)
+        {
+            // Exercise system and verify outcome
+            response.Should().BeAssignableTo<IJSendResponse>();
+        }
+
+        [Theory, JSendAutoData]
         public void ConstructorsThrowWhenMessageIsNull(int code, object data)
         {
             // Exercise system and verify outcome

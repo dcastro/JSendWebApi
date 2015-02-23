@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace JSendWebApi.Responses
 {
-    public class ErrorResponse
+    public class ErrorResponse : IJSendResponse
     {
         private readonly string _message;
         private readonly int? _code;

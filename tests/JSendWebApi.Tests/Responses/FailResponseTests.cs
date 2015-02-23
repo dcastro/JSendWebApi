@@ -17,6 +17,12 @@ namespace JSendWebApi.Tests.Responses
 {
     public class FailResponseTests
     {
+        [Theory, JSendAutoData]
+        public void IsJSendResponse(FailResponse response)
+        {
+            // Exercise system and verify outcome
+            response.Should().BeAssignableTo<IJSendResponse>();
+        }
 
         [Theory, JSendAutoData]
         public void StatusIsFail(FailResponse response)
