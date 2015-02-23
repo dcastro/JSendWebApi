@@ -10,6 +10,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.ExceptionHandling;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.Routing;
+using JSendWebApi.Responses;
 using JSendWebApi.Results;
 using Newtonsoft.Json;
 
@@ -164,6 +165,28 @@ namespace JSendWebApi
             object routeValues)
         {
             return JSendRedirectToRoute(routeName, new HttpRouteValueDictionary(routeValues));
+        }
+
+        protected internal virtual JSendResult<TResponse> JSend<TResponse>(HttpStatusCode statusCode, TResponse response)
+            where TResponse : IJSendResponse
+        {
+            return new JSendResult<TResponse>(this, response, statusCode);
+        }
+
+        protected internal virtual JSendResult<SuccessResponse> JSendSuccess(HttpStatusCode statusCode, object data)
+        {
+            return JSend(statusCode, new SuccessResponse(data));
+        }
+
+        protected internal virtual JSendResult<FailResponse> JSendFail(HttpStatusCode statusCode, object data)
+        {
+            return JSend(statusCode, new FailResponse(data));
+        }
+
+        protected internal virtual JSendResult<ErrorResponse> JSendError(HttpStatusCode statusCode, string message,
+            int? errorCode = null, object data = null)
+        {
+            return JSend(statusCode, new ErrorResponse(message, errorCode, data));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -9,6 +10,7 @@ using System.Web.Http.ExceptionHandling;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.Routing;
 using FluentAssertions;
+using JSendWebApi.Responses;
 using JSendWebApi.Results;
 using JSendWebApi.Tests.FixtureCustomizations;
 using JSendWebApi.Tests.TestTypes;
@@ -353,6 +355,54 @@ namespace JSendWebApi.Tests
             var result = controller.JSendRedirectToRoute(routeName, routeValues);
             // Verify outcome
             result.Should().BeAssignableTo<JSendRedirectToRouteResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSend_CreatesNewJSendResult(HttpStatusCode code, SuccessResponse response,
+            JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSend(code, response);
+            // Verify outcome
+            result.Response.Should().Be(response);
+            result.StatusCode.Should().Be(code);
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendSuccess_CreatesNewJSendResult(HttpStatusCode code, Model model, JSendApiController controller)
+        {
+            // Fixture setup
+            var expectedResponse = new SuccessResponse(model);
+            // Exercise system
+            var result = controller.JSendSuccess(code, model);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
+            result.StatusCode.Should().Be(code);
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendFail_CreatesNewJSendResult(HttpStatusCode code, string reason, JSendApiController controller)
+        {
+            // Fixture setup
+            var expectedResponse = new FailResponse(reason);
+            // Exercise system
+            var result = controller.JSendFail(code, reason);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
+            result.StatusCode.Should().Be(code);
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendError_CreatesNewJSendError(HttpStatusCode code, string message, int? errorCode, string data,
+            JSendApiController controller)
+        {
+            // Fixture setup
+            var expectedResponse = new ErrorResponse(message, errorCode, data);
+            // Exercise system
+            var result = controller.JSendError(code, message, errorCode, data);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
+            result.StatusCode.Should().Be(code);
         }
     }
 }
