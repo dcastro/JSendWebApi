@@ -153,5 +153,17 @@ namespace JSendWebApi
         {
             return JSendRedirect(new Uri(location));
         }
+
+        protected internal virtual JSendRedirectToRouteResult JSendRedirectToRoute(string routeName,
+            IDictionary<string, object> routeValues)
+        {
+            return new JSendRedirectToRouteResult(this, routeName, routeValues);
+        }
+
+        protected internal virtual JSendRedirectToRouteResult JSendRedirectToRoute(string routeName,
+            object routeValues)
+        {
+            return JSendRedirectToRoute(routeName, new HttpRouteValueDictionary(routeValues));
+        }
     }
 }

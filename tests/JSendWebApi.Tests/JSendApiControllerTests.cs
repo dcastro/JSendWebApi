@@ -332,5 +332,27 @@ namespace JSendWebApi.Tests
             // Verify outcome
             result.Should().BeAssignableTo<JSendRedirectResult>();
         }
+
+        [Theory, JSendAutoData]
+        public void JSendRedirectToRouteWithDictionary_ReturnsJSendRedirectToRouteResult(string routeName,
+            Dictionary<string, object> routeValues, JSendApiController controller)
+        {
+            // Exercise system
+            var result = controller.JSendRedirectToRoute(routeName, routeValues);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendRedirectToRouteResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendRedirectToRouteWithObject_ReturnsJSendRedirectToRouteResult(string routeName,
+            JSendApiController controller)
+        {
+            // Fixture setup
+            var routeValues = new {id = 5};
+            // Exercise system
+            var result = controller.JSendRedirectToRoute(routeName, routeValues);
+            // Verify outcome
+            result.Should().BeAssignableTo<JSendRedirectToRouteResult>();
+        }
     }
 }
