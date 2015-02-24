@@ -58,6 +58,11 @@
     <Compile Include="JSendValueResultConverter.cs" />
     <Compile Include="Responses\IJSendResponse.cs" />
     <Compile Include="Results\JSendRedirectToRouteResult.cs" />
+    <Compile Include="Properties\StringResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StringResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ValueActionFilter.cs" />
     <Compile Include="VoidActionFilter.cs" />
     <Compile Include="JSendApiController.cs" />
@@ -81,6 +86,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\StringResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
