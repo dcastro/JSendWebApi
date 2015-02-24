@@ -30,6 +30,16 @@ namespace JSendWebApi.Results
             get { return _result.Response; }
         }
 
+        public HttpStatusCode StatusCode
+        {
+            get { return _result.StatusCode; }
+        }
+
+        public Uri Location
+        {
+            get { return _location; }
+        }
+
         public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             var message = await _result.ExecuteAsync(cancellationToken);

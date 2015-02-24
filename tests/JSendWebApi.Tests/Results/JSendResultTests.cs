@@ -28,10 +28,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized([Frozen] SuccessResponse response,
-            JSendResult<SuccessResponse> result)
+        public void ResponseIsCorrectlyInitialized(JSendApiController controller, SuccessResponse response,
+            HttpStatusCode code)
         {
-            // Exercise system and verify outcome
+            // Exercise system
+            var result = new JSendResult<SuccessResponse>(controller, response, code);
+            // Verify outcome
             result.Response.Should().BeSameAs(response);
         }
 

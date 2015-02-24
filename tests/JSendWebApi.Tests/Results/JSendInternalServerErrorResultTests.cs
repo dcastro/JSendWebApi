@@ -53,17 +53,32 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(JSendInternalServerErrorResult result)
+        public void ResponseIsCorrectlyInitialized(JSendApiController controller, string message, int? errorCode,
+            Exception data)
         {
-            // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            // Fixture setup
+            var expectedResponse = new ErrorResponse(message, errorCode, data);
+            // Exercise system
+            var result = new JSendInternalServerErrorResult(controller, message, errorCode, data);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsError(JSendInternalServerErrorResult result)
+        public void StatusCodeIs500(JSendInternalServerErrorResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<ErrorResponse>();
+            result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        }
+
+        [Theory, JSendAutoData]
+        public void MessageIsCorrectlyInitialized(JSendApiController controller, string message, int? errorCode,
+            Exception data)
+        {
+            // Exercise system
+            var result = new JSendInternalServerErrorResult(controller, message, errorCode, data);
+            // Verify outcome
+            result.Message.Should().Be(message);
         }
 
         [Theory, JSendAutoData]
@@ -79,34 +94,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseMessageIsCorrectlySet([Frozen] string message, JSendInternalServerErrorResult result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Message.Should().Be(message);
-        }
-
-        [Theory, JSendAutoData]
-        public void ResponseCodeIsCorrectlySet([Frozen] int? code, JSendInternalServerErrorResult result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Code.Should().HaveValue()
-                .And.Be(code);
-        }
-
-        [Theory, JSendAutoData]
-        public void ResponseDataIsCorrectlySet([Frozen] object data, JSendInternalServerErrorResult result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Data.Should().BeSameAs(data);
-        }
-
-        [Theory, JSendAutoData]
-        public async Task StatusCodeIs500(JSendInternalServerErrorResult result)
+        public async Task SetsStatusCode(JSendInternalServerErrorResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]

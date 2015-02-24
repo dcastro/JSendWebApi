@@ -40,17 +40,44 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(JSendCreatedAtRouteResult<Model> result)
+        public void ResponseIsCorrectlyInitialized(JSendApiController controller, string routeName,
+            Dictionary<string, object> routeValues, Model content)
         {
-            // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            // Fixture setup
+            var expectedResponse = new SuccessResponse(content);
+            // Exercise system
+            var result = new JSendCreatedAtRouteResult<Model>(controller, routeName, routeValues, content);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsSuccess(JSendCreatedAtRouteResult<Model> result)
+        public void StatusCodeIs201(JSendCreatedAtRouteResult<Model> result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<SuccessResponse>();
+            result.StatusCode.Should().Be(HttpStatusCode.Created);
+        }
+
+        [Theory, JSendAutoData]
+        public void LocationIsCorrectlyInitialized(JSendApiController controller, string routeName,
+            Dictionary<string, object> routeValues, Model content)
+        {
+            // Fixture setup
+            var expectedLocation = new Uri(UrlHelperCustomization.RouteLink);
+            // Exercise system
+            var result = new JSendCreatedAtRouteResult<Model>(controller, routeName, routeValues, content);
+            // Verify outcome
+            result.Location.Should().Be(expectedLocation);
+        }
+
+        [Theory, JSendAutoData]
+        public void ContentIsCorrectlyInitialized(JSendApiController controller, string routeName,
+            Dictionary<string, object> routeValues, Model content)
+        {
+            // Exercise system
+            var result = new JSendCreatedAtRouteResult<Model>(controller, routeName, routeValues, content);
+            // Verify outcome
+            result.Content.Should().Be(content);
         }
 
         [Theory, JSendAutoData]
@@ -66,19 +93,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseDataIsCorrectlySet([Frozen] Model content, JSendCreatedAtRouteResult<Model> result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Data.Should().BeSameAs(content);
-        }
-
-        [Theory, JSendAutoData]
-        public async Task StatusCodeIs201(JSendCreatedAtRouteResult<Model> result)
+        public async Task SetsStatusCode(JSendCreatedAtRouteResult<Model> result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.Created);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]

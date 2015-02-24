@@ -50,10 +50,20 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(JSendExceptionResult result)
+        public void StatusCodeIs500(JSendExceptionResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        }
+
+        [Theory, JSendAutoData]
+        public void ExceptionIsCorrectlyInitialized(JSendApiController controller, Exception ex, string message,
+            int? code, object data)
+        {
+            // Exercise system
+            var result = new JSendExceptionResult(controller, ex, message, code, data);
+            // Verify outcome
+            result.Exception.Should().Be(ex);
         }
 
         [Theory, JSendAutoData]
@@ -150,12 +160,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task StatusCodeIs500(JSendExceptionResult result)
+        public async Task SetsStatusCode(JSendExceptionResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]

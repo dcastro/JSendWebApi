@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,19 +45,31 @@ namespace JSendWebApi.Tests.Results
             Assert.Throws<ArgumentException>(() => new JSendBadRequestResult(controller, "  "));
         }
 
-
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(JSendBadRequestResult result)
+        public void ResponseIsCorrectlyInitialized(JSendApiController controller, string reason)
         {
-            // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            // Fixture setup
+            var expectedResponse = new FailResponse(reason);
+            // Exercise system
+            var result = new JSendBadRequestResult(controller, reason);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsFail(JSendBadRequestResult result)
+        public void StatusCodeIs400(JSendBadRequestResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<FailResponse>();
+            result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Theory, JSendAutoData]
+        public void ReasonIsCorrectlyInitialized(JSendApiController controller, string reason)
+        {
+            // Exercise system
+            var result = new JSendBadRequestResult(controller, reason);
+            // Verify outcome
+            result.Reason.Should().Be(reason);
         }
 
         [Theory, JSendAutoData]
@@ -72,19 +85,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseDataIsCorrectlySet([Frozen] string reason, JSendBadRequestResult result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Data.Should().Be(reason);
-        }
-
-        [Theory, JSendAutoData]
-        public async Task StatusCodeIs400(JSendBadRequestResult result)
+        public async Task SetsStatusCode(JSendBadRequestResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]

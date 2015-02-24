@@ -35,17 +35,30 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(JSendRedirectResult result)
+        public void ResponseIsCorrectlyInitialized(JSendApiController controller, Uri location)
         {
-            // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            // Fixture setup
+            var expectedResponse = new SuccessResponse();
+            // Exercise system
+            var result = new JSendRedirectResult(controller, location);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsSuccess(JSendRedirectResult result)
+        public void StatusCodeIs302(JSendRedirectResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<SuccessResponse>();
+            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
+        }
+
+        [Theory, JSendAutoData]
+        public void LocationIsCorrectlyInitialized(JSendApiController controller, Uri location)
+        {
+            // Exercise system
+            var result = new JSendRedirectResult(controller, location);
+            // Verify outcome
+            result.Location.Should().Be(location);
         }
 
         [Theory, JSendAutoData]
@@ -61,19 +74,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseDataIsNull(JSendRedirectResult result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Data.Should().BeNull();
-        }
-
-        [Theory, JSendAutoData]
-        public async Task StatusCodeIs302(JSendRedirectResult result)
+        public async Task SetsStatusCode(JSendRedirectResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.Redirect);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]

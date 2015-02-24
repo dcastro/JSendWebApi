@@ -46,17 +46,39 @@ namespace JSendWebApi.Tests.Results
 
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(JSendCreatedResult<Model> result)
+        public void ResponseIsCorrectlyInitialized(JSendApiController controller, Uri location, Model content)
         {
-            // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            // Fixture setup
+            var expectedResponse = new SuccessResponse(content);
+            // Exercise system
+            var result = new JSendCreatedResult<Model>(controller, location, content);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsSuccess(JSendCreatedResult<Model> result)
+        public void StatusCodeIs201(JSendCreatedResult<Model> result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<SuccessResponse>();
+            result.StatusCode.Should().Be(HttpStatusCode.Created);
+        }
+
+        [Theory, JSendAutoData]
+        public void LocationIsCorrectlyInitialized(JSendApiController controller, Uri location, Model content)
+        {
+            // Exercise system
+            var result = new JSendCreatedResult<Model>(controller, location, content);
+            // Verify outcome
+            result.Location.Should().Be(location);
+        }
+
+        [Theory, JSendAutoData]
+        public void ContentIsCorrectlyInitialized(JSendApiController controller, Uri location, Model content)
+        {
+            // Exercise system
+            var result = new JSendCreatedResult<Model>(controller, location, content);
+            // Verify outcome
+            result.Content.Should().Be(content);
         }
 
         [Theory, JSendAutoData]
@@ -72,19 +94,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseDataIsCorrectlySet([Frozen] Model content, JSendCreatedResult<Model> result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Data.Should().BeSameAs(content);
-        }
-
-        [Theory, JSendAutoData]
-        public async Task StatusCodeIs201(JSendCreatedResult<Model> result)
+        public async Task SetsStatusCode(JSendCreatedResult<Model> result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.Created);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]

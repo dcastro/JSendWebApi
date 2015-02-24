@@ -63,10 +63,17 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized([InvalidModelState] JSendInvalidModelStateResult result)
+        public void StatusCodeIs400([InvalidModelState] JSendInvalidModelStateResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseDataMatchesModelState([InvalidModelState] JSendInvalidModelStateResult result)
+        {
+            // Exercise system and verify outcome
+            result.Response.Data.ShouldBeEquivalentTo(result.ModelState);
         }
 
         [Theory, JSendAutoData]
@@ -89,27 +96,26 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ExtractsErrorMessages_IntoResponseData(IFixture fixture)
+        public void ExtractsErrorMessages_FromModelState(IFixture fixture)
         {
             // Fixture setup
             fixture.Customize<ModelStateDictionary>(c =>
                 c.Do(dic => dic.AddModelError("age", "error1"))
                     .Do(dic => dic.AddModelError("age", "error2")));
 
-            var expectedErrorMessages = new JObject
+            var expectedValidationErrors = new Dictionary<string, IEnumerable<string>>
             {
-                {"age", new JArray("error1", "error2")}
+                {"age", new[] {"error1", "error2"}}
             };
 
             // Exercise system
             var result = fixture.Create<JSendInvalidModelStateResult>();
             // Verify outcome
-            var jData = JObject.FromObject(result.Response.Data);
-            JToken.DeepEquals(jData, expectedErrorMessages).Should().BeTrue();
+            result.ModelState.ShouldBeEquivalentTo(expectedValidationErrors);
         }
 
         [Theory, JSendAutoData]
-        public void ExtractsExceptionMessages_IntoResponseData(IFixture fixture)
+        public void ExtractsExceptionMessages_FromModelState(IFixture fixture)
         {
             // Fixture setup
             fixture.Customize<ModelStateDictionary>(c =>
@@ -117,16 +123,16 @@ namespace JSendWebApi.Tests.Results
                     .Do(dic => dic.AddModelError("age", new Exception("exceptionMessage2"))));
             fixture.Freeze<JSendApiController>().RequestContext.IncludeErrorDetail = true;
 
-            var expectedExceptionMessages = new JObject
+            var expectedValidationErrors = new Dictionary<string, IEnumerable<string>>
             {
-                {"age", new JArray("exceptionMessage1", "exceptionMessage2")}
+                {"age", new[] {"exceptionMessage1", "exceptionMessage2"}}
             };
+
             // Exercise system
             var result = fixture.Create<JSendInvalidModelStateResult>();
 
             // Verify outcome
-            var jData = JObject.FromObject(result.Response.Data);
-            JToken.DeepEquals(jData, expectedExceptionMessages).Should().BeTrue();
+            result.ModelState.ShouldBeEquivalentTo(expectedValidationErrors);
         }
 
         [Theory, JSendAutoData]
@@ -140,15 +146,9 @@ namespace JSendWebApi.Tests.Results
             // Exercise system
             var result = fixture.Create<JSendInvalidModelStateResult>();
             // Verify outcome
-            var jData = JObject.FromObject(result.Response.Data);
-            var ageErrors = jData.Value<JArray>("age");
-
-            ageErrors.Should().NotBeNull();
-            ageErrors.Should().HaveCount(1);
-            ageErrors.First.ToString().Should()
-                .NotBe("exceptionMessage1")
-                .And
-                .NotBeEmpty();
+            result.ModelState.As<IDictionary<string, IEnumerable<string>>>()
+                .Should().ContainKey("age")
+                .WhichValue.Should().ContainSingle(ageError => ageError != "exceptionMessage1");
         }
 
         [Theory, JSendAutoData]
@@ -162,21 +162,18 @@ namespace JSendWebApi.Tests.Results
             var result = fixture.Create<JSendInvalidModelStateResult>();
 
             // Verify outcome
-            var jData = JObject.FromObject(result.Response.Data);
-            var ageErrors = jData.Value<JArray>("age");
-
-            ageErrors.Should().NotBeNull();
-            ageErrors.Count.Should().Be(1);
-            ageErrors.First.ToString().Should().NotBeEmpty();
+            result.ModelState.As<IDictionary<string, IEnumerable<string>>>()
+                .Should().ContainKey("age")
+                .WhichValue.Should().ContainSingle(ageError => !string.IsNullOrWhiteSpace(ageError));
         }
 
         [Theory, JSendAutoData]
-        public async Task StatusCodeIs400([InvalidModelState] JSendInvalidModelStateResult result)
+        public async Task SetsStatusCode([InvalidModelState] JSendInvalidModelStateResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]

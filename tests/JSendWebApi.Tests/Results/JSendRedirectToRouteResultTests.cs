@@ -38,17 +38,34 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(JSendRedirectToRouteResult result)
+        public void ResponseIsCorrectlyInitialized(JSendApiController controller, string routeName,
+            Dictionary<string, object> routeValues)
         {
-            // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            // Fixture setup
+            var expectedResponse = new SuccessResponse();
+            // Exercise system
+            var result = new JSendRedirectToRouteResult(controller, routeName, routeValues);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsSuccess(JSendRedirectToRouteResult result)
+        public void StatusCodeIs302(JSendRedirectToRouteResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<SuccessResponse>();
+            result.StatusCode.Should().Be(HttpStatusCode.Redirect);
+        }
+
+        [Theory, JSendAutoData]
+        public void LocationIsCorrectlyInitialized(JSendApiController controller, string routeName,
+            Dictionary<string, object> routeValues)
+        {
+            // Fixture setup
+            var expectedLocation = new Uri(UrlHelperCustomization.RouteLink);
+            // Exercise system
+            var result = new JSendRedirectToRouteResult(controller, routeName, routeValues);
+            // Verify outcome
+            result.Location.Should().Be(expectedLocation);
         }
 
         [Theory, JSendAutoData]
@@ -64,19 +81,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseDataIsCorrectlySet(JSendRedirectToRouteResult result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Data.Should().BeNull();
-        }
-
-        [Theory, JSendAutoData]
-        public async Task StatusCodeIs302(JSendRedirectToRouteResult result)
+        public async Task SetsStatusCode(JSendRedirectToRouteResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.Redirect);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]

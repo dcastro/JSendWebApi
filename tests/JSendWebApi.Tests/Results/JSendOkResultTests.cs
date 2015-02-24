@@ -38,17 +38,21 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(JSendOkResult result)
+        public void ResponseIsCorrectlyInitialized(JSendApiController controller)
         {
-            // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            // Fixture setup
+            var expectedResponse = new SuccessResponse();
+            // Exercise system
+            var result = new JSendOkResult(controller);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsSuccess(JSendOkResult result)
+        public void StatusCodeIs200(JSendOkResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<SuccessResponse>();
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Theory, JSendAutoData]
@@ -64,19 +68,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseDataIsNull(JSendOkResult result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Data.Should().BeNull();
-        }
-
-        [Theory, JSendAutoData]
-        public async Task StatusCodeIs200(JSendOkResult result)
+        public async Task SetsStatusCode(JSendOkResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.OK);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]

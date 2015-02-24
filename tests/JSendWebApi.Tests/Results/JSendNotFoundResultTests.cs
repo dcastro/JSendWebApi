@@ -43,17 +43,39 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsInitialized(JSendNotFoundResult result)
+        public void ResponseIsCorrectlyInitialized(JSendApiController controller, string reason)
         {
-            // Exercise system and verify outcome
-            result.Response.Should().NotBeNull();
+            // Fixture setup
+            var expectedResponse = new FailResponse(reason);
+            // Exercise system
+            var result = new JSendNotFoundResult(controller, reason);
+            // Verify outcome
+            result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsFail(JSendNotFoundResult result)
+        public void StatusCodeIs404(JSendNotFoundResult result)
         {
             // Exercise system and verify outcome
-            result.Response.Should().BeAssignableTo<FailResponse>();
+            result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Theory, JSendAutoData]
+        public void ReasonIsCorrectlyInitialized(JSendApiController controller, string reason)
+        {
+            // Exercise system
+            var result = new JSendNotFoundResult(controller, reason);
+            // Verify outcome
+            result.Reason.Should().Be(reason);
+        }
+
+        [Theory, JSendAutoData]
+        public void ReasonIsSetToDefaultMessage_When_ArgumentIsNull(JSendApiController controller)
+        {
+            // Exercise system
+            var result = new JSendNotFoundResult(controller, null);
+            // Verify outcome
+            result.Reason.Should().Be("The requested resource could not be found.");
         }
 
         [Theory, JSendAutoData]
@@ -69,28 +91,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseDataIsCorrectlySet([Frozen] string reason, JSendNotFoundResult result)
-        {
-            // Exercise system and verify outcome
-            result.Response.Data.Should().Be(reason);
-        }
-
-        [Theory, JSendAutoData]
-        public void ResponseDataIsSetToDefaultMessage_When_ReasonIsNull(JSendApiController controller)
-        {
-            // Exercise system
-            var result = new JSendNotFoundResult(controller, null);
-            // Verify outcome
-            result.Response.Data.Should().Be("The requested resource could not be found.");
-        }
-
-        [Theory, JSendAutoData]
-        public async Task StatusCodeIs404(JSendNotFoundResult result)
+        public async Task SetsStatusCode(JSendNotFoundResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]
