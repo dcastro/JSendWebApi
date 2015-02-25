@@ -38,7 +38,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenLocationIsNull(JSendApiController controller, Model content)
+        public void ConstructorThrowsWhenLocationIsNull(Model content, JSendApiController controller)
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => new JSendCreatedResult<Model>(null, content, controller));
@@ -46,7 +46,7 @@ namespace JSendWebApi.Tests.Results
 
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(JSendApiController controller, Uri location, Model content)
+        public void ResponseIsCorrectlyInitialized(Uri location, Model content, JSendApiController controller)
         {
             // Fixture setup
             var expectedResponse = new SuccessResponse(content);
@@ -64,7 +64,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void LocationIsCorrectlyInitialized(JSendApiController controller, Uri location, Model content)
+        public void LocationIsCorrectlyInitialized(Uri location, Model content, JSendApiController controller)
         {
             // Exercise system
             var result = new JSendCreatedResult<Model>(location, content, controller);
@@ -73,7 +73,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ContentIsCorrectlyInitialized(JSendApiController controller, Uri location, Model content)
+        public void ContentIsCorrectlyInitialized(Uri location, Model content, JSendApiController controller)
         {
             // Exercise system
             var result = new JSendCreatedResult<Model>(location, content, controller);
@@ -126,12 +126,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsLocationHeader([Frozen] Uri expectedLocation, JSendCreatedResult<Model> result)
+        public async Task SetsLocationHeader(JSendCreatedResult<Model> result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.Headers.Location.Should().Be(expectedLocation);
+            message.Headers.Location.Should().Be(result.Location);
         }
     }
 }

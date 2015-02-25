@@ -28,18 +28,18 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(JSendApiController controller, SuccessResponse response,
-            HttpStatusCode code)
+        public void ResponseIsCorrectlyInitialized(HttpStatusCode code, IJSendResponse response,
+            JSendApiController controller)
         {
             // Exercise system
-            var result = new JSendResult<SuccessResponse>(code, response, controller);
+            var result = new JSendResult<IJSendResponse>(code, response, controller);
             // Verify outcome
             result.Response.Should().BeSameAs(response);
         }
 
         [Theory, JSendAutoData]
-        public void StatusCodeIsCorrectlyInitialized(JSendApiController controller, IJSendResponse response,
-            HttpStatusCode expectedStatusCode)
+        public void StatusCodeIsCorrectlyInitialized(HttpStatusCode expectedStatusCode, IJSendResponse response,
+            JSendApiController controller)
         {
             // Exercise system
             var result = new JSendResult<IJSendResponse>(expectedStatusCode, response, controller);
@@ -60,15 +60,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsStatusCode(JSendApiController controller, SuccessResponse response)
+        public async Task SetsStatusCode(JSendResult<IJSendResponse> result)
         {
-            // Fixture setup
-            const HttpStatusCode expectedStatusCode = HttpStatusCode.InternalServerError;
-            var result = new JSendResult<SuccessResponse>(expectedStatusCode, response, controller);
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.StatusCode.Should().Be(expectedStatusCode);
+            message.StatusCode.Should().Be(result.StatusCode);
         }
 
         [Theory, JSendAutoData]
@@ -78,7 +75,7 @@ namespace JSendWebApi.Tests.Results
             var encoding = Encoding.ASCII;
             fixture.Inject(encoding);
 
-            var result = fixture.Create<JSendResult<SuccessResponse>>();
+            var result = fixture.Create<JSendResult<IJSendResponse>>();
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
@@ -86,7 +83,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsContentTypeHeader(JSendResult<SuccessResponse> result)
+        public async Task SetsContentTypeHeader(JSendResult<IJSendResponse> result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());

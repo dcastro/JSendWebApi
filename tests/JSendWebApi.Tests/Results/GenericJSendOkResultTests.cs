@@ -39,30 +39,28 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenSerializerSettingsAreNull(Encoding encoding, HttpRequestMessage request,
-            Model model)
+        public void ConstructorThrowsWhenSerializerSettingsAreNull(Model model, Encoding encoding, HttpRequestMessage request)
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null, encoding, request));
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenEncodingIsNull(JsonSerializerSettings settings, HttpRequestMessage request,
-            Model model)
+        public void ConstructorThrowsWhenEncodingIsNull(Model model, JsonSerializerSettings settings, HttpRequestMessage request)
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, settings, null, request));
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenRequestIsNull(JsonSerializerSettings settings, Encoding encoding, Model model)
+        public void ConstructorThrowsWhenRequestIsNull(Model model, JsonSerializerSettings settings, Encoding encoding)
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, settings, encoding, null));
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(JSendApiController controller, Model content)
+        public void ResponseIsCorrectlyInitialized(Model content, JSendApiController controller)
         {
             // Fixture setup
             var expectedResponse = new SuccessResponse(content);
@@ -80,7 +78,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ContentIsCorrectlyInitialized(JSendApiController controller, Model content)
+        public void ContentIsCorrectlyInitialized(Model content, JSendApiController controller)
         {
             // Exercise system
             var result = new JSendOkResult<Model>(content, controller);

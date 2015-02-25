@@ -40,8 +40,8 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(JSendApiController controller, string routeName,
-            Dictionary<string, object> routeValues, Model content)
+        public void ResponseIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
+            Model content, JSendApiController controller)
         {
             // Fixture setup
             var expectedResponse = new SuccessResponse(content);
@@ -59,8 +59,8 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void LocationIsCorrectlyInitialized(JSendApiController controller, string routeName,
-            Dictionary<string, object> routeValues, Model content)
+        public void LocationIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
+            Model content, JSendApiController controller)
         {
             // Fixture setup
             var expectedLocation = new Uri(UrlHelperCustomization.RouteLink);
@@ -71,8 +71,8 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ContentIsCorrectlyInitialized(JSendApiController controller, string routeName,
-            Dictionary<string, object> routeValues, Model content)
+        public void ContentIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
+            Model content, JSendApiController controller)
         {
             // Exercise system
             var result = new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, controller);

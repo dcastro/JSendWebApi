@@ -39,8 +39,8 @@ namespace JSendWebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ConstructorsThrowWhenExceptionIsNull(
-            JSendApiController controller, bool includeErrorDetail, JsonSerializerSettings settings, Encoding encoding,
-            HttpRequestMessage request, string message, int? code, object data)
+            string message, int? code, object data, bool includeErrorDetail, JsonSerializerSettings settings,
+            Encoding encoding, HttpRequestMessage request, JSendApiController controller)
         {
             // Fixture setup
             Exception ex = null;
@@ -58,8 +58,8 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ExceptionIsCorrectlyInitialized(JSendApiController controller, Exception ex, string message,
-            int? code, object data)
+        public void ExceptionIsCorrectlyInitialized(Exception ex, string message, int? code, object data,
+            JSendApiController controller)
         {
             // Exercise system
             var result = new JSendExceptionResult(ex, message, code, data, controller);
@@ -88,15 +88,17 @@ namespace JSendWebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseMessageIsSetToMessage_When_MessageIsNotNull(
-            [Frozen] string message, JSendExceptionResult result)
+            Exception ex, string message, int? code, object data, JSendApiController controller)
         {
-            // Exercise system and verify outcome
+            // Exercise system
+            var result = new JSendExceptionResult(ex, message, code, data, controller);
+            // Verify outcome
             result.Response.Message.Should().Be(message);
         }
 
         [Theory, JSendAutoData]
         public void ResponseMessageIsSetToExceptionMessage_When_MessageIsNull_And_ControllerIsConfiguredToIncludeErrorDetails(
-            JSendApiController controller, Exception ex, int? code, object data)
+            Exception ex, int? code, object data, JSendApiController controller)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = true;
@@ -108,7 +110,7 @@ namespace JSendWebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseMessageIsSetToDefaultMessage_When_MessageIsNull_And_ControllerIsConfiguredToNotIncludeErrorDetails(
-            JSendApiController controller, Exception ex, int? code, object data)
+            Exception ex, int? code, object data, JSendApiController controller)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = false;
@@ -120,7 +122,7 @@ namespace JSendWebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseDataIsSetToData_When_DataIsNotNull(
-            JSendApiController controller, Exception ex, string message, int? code, object data)
+            Exception ex, string message, int? code, object data, JSendApiController controller)
         {
             // Exercise system 
             var result = new JSendExceptionResult(ex, message, code, data, controller);
@@ -130,7 +132,7 @@ namespace JSendWebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseDataIsSetToStringifiedException_When_DataIsNull_And_ControllerIsConfiguredToIncludeErrorDetails(
-            JSendApiController controller, Exception ex, string message, int? code)
+            Exception ex, string message, int? code, JSendApiController controller)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = true;
@@ -142,7 +144,7 @@ namespace JSendWebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseDataIsSetToNull_When_DataIsNull_And_ControllerIsConfiguredToNotIncludeErrorDetails(
-            JSendApiController controller, Exception ex, string message, int? code)
+            Exception ex, string message, int? code, JSendApiController controller)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = false;

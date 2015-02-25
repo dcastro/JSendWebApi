@@ -35,7 +35,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(JSendApiController controller, Uri location)
+        public void ResponseIsCorrectlyInitialized(Uri location, JSendApiController controller)
         {
             // Fixture setup
             var expectedResponse = new SuccessResponse();
@@ -53,7 +53,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void LocationIsCorrectlyInitialized(JSendApiController controller, Uri location)
+        public void LocationIsCorrectlyInitialized(Uri location, JSendApiController controller)
         {
             // Exercise system
             var result = new JSendRedirectResult(location, controller);
@@ -106,12 +106,12 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsLocationHeader([Frozen] Uri expectedLocation, JSendRedirectResult result)
+        public async Task SetsLocationHeader(JSendRedirectResult result)
         {
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.Headers.Location.Should().Be(expectedLocation);
+            message.Headers.Location.Should().Be(result.Location);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(JSendApiController controller, string reason)
+        public void ResponseIsCorrectlyInitialized(string reason, JSendApiController controller)
         {
             // Fixture setup
             var expectedResponse = new FailResponse(reason);
@@ -64,7 +64,7 @@ namespace JSendWebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ReasonIsCorrectlyInitialized(JSendApiController controller, string reason)
+        public void ReasonIsCorrectlyInitialized(string reason, JSendApiController controller)
         {
             // Exercise system
             var result = new JSendNotFoundResult(reason, controller);
