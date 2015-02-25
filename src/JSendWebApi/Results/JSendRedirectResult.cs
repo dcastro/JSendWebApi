@@ -21,8 +21,7 @@ namespace JSendWebApi.Results
             if (location == null) throw new ArgumentNullException("location");
 
             _location = location;
-            _result = new JSendResult<SuccessResponse>(
-                controller, new SuccessResponse(), HttpStatusCode.Redirect);
+            _result = new JSendResult<SuccessResponse>(HttpStatusCode.Redirect, new SuccessResponse(), controller);
         }
 
         public SuccessResponse Response

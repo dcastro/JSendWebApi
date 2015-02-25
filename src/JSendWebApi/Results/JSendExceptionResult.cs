@@ -41,9 +41,7 @@ namespace JSendWebApi.Results
             var response = BuildResponse(dependencies.IncludeErrorDetail, exception, message, errorCode, data);
 
             _exception = exception;
-            _result = new JSendResult<ErrorResponse>(
-                dependencies.JsonSerializerSettings, dependencies.Encoding, dependencies.RequestMessage, response,
-                HttpStatusCode.InternalServerError);
+            _result = new JSendResult<ErrorResponse>(HttpStatusCode.InternalServerError, response, dependencies.JsonSerializerSettings, dependencies.Encoding, dependencies.RequestMessage);
         }
 
         public ErrorResponse Response

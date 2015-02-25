@@ -20,7 +20,7 @@ namespace JSendWebApi.Results
         public JSendRedirectToRouteResult(JSendApiController controller, string routeName,
             IDictionary<string, object> routeValues)
         {
-            _result = new JSendResult<SuccessResponse>(controller, new SuccessResponse(), HttpStatusCode.Redirect);
+            _result = new JSendResult<SuccessResponse>(HttpStatusCode.Redirect, new SuccessResponse(), controller);
 
             UrlHelper urlFactory = controller.Url ?? new UrlHelper(controller.Request);
 

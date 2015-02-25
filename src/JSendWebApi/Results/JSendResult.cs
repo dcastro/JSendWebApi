@@ -19,20 +19,20 @@ namespace JSendWebApi.Results
         private readonly HttpStatusCode _statusCode;
         private readonly JsonResult<TResponse> _jsonResult;
 
-        public JSendResult(JSendApiController controller, TResponse response, HttpStatusCode statusCode)
-            : this(new ControllerDependencyProvider(controller), response, statusCode)
+        public JSendResult(HttpStatusCode statusCode, TResponse response, JSendApiController controller)
+            : this(statusCode, response, new ControllerDependencyProvider(controller))
         {
 
         }
 
-        public JSendResult(JsonSerializerSettings settings, Encoding encoding, HttpRequestMessage request,
-            TResponse response, HttpStatusCode code)
-            : this(new DirectDependencyProvider(settings, encoding, request), response, code)
+        public JSendResult(HttpStatusCode statusCode, TResponse response, JsonSerializerSettings settings,
+            Encoding encoding, HttpRequestMessage request)
+            : this(statusCode, response, new DirectDependencyProvider(settings, encoding, request))
         {
 
         }
 
-        private JSendResult(IDependencyProvider dependencies, TResponse response, HttpStatusCode statusCode)
+        private JSendResult(HttpStatusCode statusCode, TResponse response, IDependencyProvider dependencies)
         {
             if (response == null) throw new ArgumentNullException("response");
 
@@ -61,7 +61,7 @@ namespace JSendWebApi.Results
             message.StatusCode = _statusCode;
             return message;
         }
-        
+
         private interface IDependencyProvider
         {
             JsonSerializerSettings JsonSerializerSettings { get; }

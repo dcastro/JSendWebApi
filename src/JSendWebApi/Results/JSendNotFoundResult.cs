@@ -24,8 +24,7 @@ namespace JSendWebApi.Results
             if (string.IsNullOrWhiteSpace(reason))
                 throw new ArgumentException(StringResources.NotFound_WhiteSpaceReason, "reason");
 
-            _result = new JSendResult<FailResponse>(
-                controller, new FailResponse(reason), HttpStatusCode.NotFound);
+            _result = new JSendResult<FailResponse>(HttpStatusCode.NotFound, new FailResponse(reason), controller);
         }
 
         public FailResponse Response

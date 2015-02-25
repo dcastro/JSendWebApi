@@ -30,8 +30,7 @@ namespace JSendWebApi.Results
         private static JSendResult<SuccessResponse> InitializeResult(JsonSerializerSettings settings,
             Encoding encoding, HttpRequestMessage request, T content)
         {
-            return new JSendResult<SuccessResponse>(settings, encoding, request, new SuccessResponse(content),
-                HttpStatusCode.OK);
+            return new JSendResult<SuccessResponse>(HttpStatusCode.OK, new SuccessResponse(content), settings, encoding, request);
         }
 
         public SuccessResponse Response

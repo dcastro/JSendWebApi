@@ -170,7 +170,7 @@ namespace JSendWebApi
         protected internal virtual JSendResult<TResponse> JSend<TResponse>(HttpStatusCode statusCode, TResponse response)
             where TResponse : IJSendResponse
         {
-            return new JSendResult<TResponse>(this, response, statusCode);
+            return new JSendResult<TResponse>(statusCode, response, this);
         }
 
         protected internal virtual JSendResult<SuccessResponse> JSendSuccess(HttpStatusCode statusCode, object data)

@@ -20,8 +20,7 @@ namespace JSendWebApi.Results
         {
             if (location == null) throw new ArgumentNullException("location");
 
-            _result = new JSendResult<SuccessResponse>(
-                controller, new SuccessResponse(content), HttpStatusCode.Created);
+            _result = new JSendResult<SuccessResponse>(HttpStatusCode.Created, new SuccessResponse(content), controller);
 
             _location = location;
         }

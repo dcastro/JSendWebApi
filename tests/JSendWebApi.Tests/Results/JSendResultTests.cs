@@ -32,7 +32,7 @@ namespace JSendWebApi.Tests.Results
             HttpStatusCode code)
         {
             // Exercise system
-            var result = new JSendResult<SuccessResponse>(controller, response, code);
+            var result = new JSendResult<SuccessResponse>(code, response, controller);
             // Verify outcome
             result.Response.Should().BeSameAs(response);
         }
@@ -42,7 +42,7 @@ namespace JSendWebApi.Tests.Results
             HttpStatusCode expectedStatusCode)
         {
             // Exercise system
-            var result = new JSendResult<IJSendResponse>(controller, response, expectedStatusCode);
+            var result = new JSendResult<IJSendResponse>(expectedStatusCode, response, controller);
             // Verify outcome
             result.StatusCode.Should().Be(expectedStatusCode);
         }
@@ -64,7 +64,7 @@ namespace JSendWebApi.Tests.Results
         {
             // Fixture setup
             const HttpStatusCode expectedStatusCode = HttpStatusCode.InternalServerError;
-            var result = new JSendResult<SuccessResponse>(controller, response, expectedStatusCode);
+            var result = new JSendResult<SuccessResponse>(expectedStatusCode, response, controller);
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome

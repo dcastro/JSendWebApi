@@ -20,8 +20,7 @@ namespace JSendWebApi.Results
         {
             var response = new ErrorResponse(message, errorCode, data);
 
-            _result = new JSendResult<ErrorResponse>(
-                controller, response, HttpStatusCode.InternalServerError);
+            _result = new JSendResult<ErrorResponse>(HttpStatusCode.InternalServerError, response, controller);
         }
 
         public ErrorResponse Response

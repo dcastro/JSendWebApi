@@ -29,10 +29,7 @@ namespace JSendWebApi.Results
             var readOnlyValidationErrors =
                 new ReadOnlyDictionary<string, IEnumerable<string>>(validationErrorsDictionary);
 
-            _result = new JSendResult<FailResponse>(
-                controller,
-                new FailResponse(readOnlyValidationErrors),
-                HttpStatusCode.BadRequest);
+            _result = new JSendResult<FailResponse>(HttpStatusCode.BadRequest, new FailResponse(readOnlyValidationErrors), controller);
         }
 
         public FailResponse Response

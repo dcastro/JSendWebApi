@@ -21,8 +21,7 @@ namespace JSendWebApi.Results
         public JSendCreatedAtRouteResult(JSendApiController controller, string routeName,
             IDictionary<string, object> routeValues, T content)
         {
-            _result = new JSendResult<SuccessResponse>(
-                controller, new SuccessResponse(content), HttpStatusCode.Created);
+            _result = new JSendResult<SuccessResponse>(HttpStatusCode.Created, new SuccessResponse(content), controller);
 
             UrlHelper urlFactory = controller.Url ?? new UrlHelper(controller.Request);
 
