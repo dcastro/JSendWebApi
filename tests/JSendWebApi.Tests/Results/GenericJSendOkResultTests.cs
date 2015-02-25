@@ -35,7 +35,7 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorThrowsWhenControllerIsNull(Model model)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(null, model));
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null));
         }
 
         [Theory, JSendAutoData]
@@ -43,7 +43,7 @@ namespace JSendWebApi.Tests.Results
             Model model)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(null, encoding, request, model));
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null, encoding, request));
         }
 
         [Theory, JSendAutoData]
@@ -51,14 +51,14 @@ namespace JSendWebApi.Tests.Results
             Model model)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(settings, null, request, model));
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, settings, null, request));
         }
 
         [Theory, JSendAutoData]
         public void ConstructorThrowsWhenRequestIsNull(JsonSerializerSettings settings, Encoding encoding, Model model)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(settings, encoding, null, model));
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, settings, encoding, null));
         }
 
         [Theory, JSendAutoData]
@@ -67,7 +67,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedResponse = new SuccessResponse(content);
             // Exercise system
-            var result = new JSendOkResult<Model>(controller, content);
+            var result = new JSendOkResult<Model>(content, controller);
             // Verify outcome
             result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
@@ -83,7 +83,7 @@ namespace JSendWebApi.Tests.Results
         public void ContentIsCorrectlyInitialized(JSendApiController controller, Model content)
         {
             // Exercise system
-            var result = new JSendOkResult<Model>(controller, content);
+            var result = new JSendOkResult<Model>(content, controller);
             // Verify outcome
             result.Content.Should().Be(content);
         }

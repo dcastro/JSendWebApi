@@ -34,14 +34,14 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorThrowsWhenControllerIsNull(Uri location, Model content)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendCreatedResult<Model>(null, location, content));
+            Assert.Throws<ArgumentNullException>(() => new JSendCreatedResult<Model>(location, content, null));
         }
 
         [Theory, JSendAutoData]
         public void ConstructorThrowsWhenLocationIsNull(JSendApiController controller, Model content)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendCreatedResult<Model>(controller, null, content));
+            Assert.Throws<ArgumentNullException>(() => new JSendCreatedResult<Model>(null, content, controller));
         }
 
 
@@ -51,7 +51,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedResponse = new SuccessResponse(content);
             // Exercise system
-            var result = new JSendCreatedResult<Model>(controller, location, content);
+            var result = new JSendCreatedResult<Model>(location, content, controller);
             // Verify outcome
             result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
@@ -67,7 +67,7 @@ namespace JSendWebApi.Tests.Results
         public void LocationIsCorrectlyInitialized(JSendApiController controller, Uri location, Model content)
         {
             // Exercise system
-            var result = new JSendCreatedResult<Model>(controller, location, content);
+            var result = new JSendCreatedResult<Model>(location, content, controller);
             // Verify outcome
             result.Location.Should().Be(location);
         }
@@ -76,7 +76,7 @@ namespace JSendWebApi.Tests.Results
         public void ContentIsCorrectlyInitialized(JSendApiController controller, Uri location, Model content)
         {
             // Exercise system
-            var result = new JSendCreatedResult<Model>(controller, location, content);
+            var result = new JSendCreatedResult<Model>(location, content, controller);
             // Verify outcome
             result.Content.Should().Be(content);
         }

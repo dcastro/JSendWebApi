@@ -16,7 +16,7 @@ namespace JSendWebApi.Results
     {
         private readonly JSendResult<ErrorResponse> _result;
 
-        public JSendInternalServerErrorResult(JSendApiController controller, string message, int? errorCode, object data)
+        public JSendInternalServerErrorResult(string message, int? errorCode, object data, JSendApiController controller)
         {
             var response = new ErrorResponse(message, errorCode, data);
 

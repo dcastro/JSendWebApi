@@ -59,7 +59,7 @@ namespace JSendWebApi.Tests.Results
         public void ThrowsIfModelStateIsValid(JSendApiController controller, ModelStateDictionary modelState)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentException>(() => new JSendInvalidModelStateResult(controller, modelState));
+            Assert.Throws<ArgumentException>(() => new JSendInvalidModelStateResult(modelState, controller));
         }
 
         [Theory, JSendAutoData]

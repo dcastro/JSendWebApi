@@ -33,14 +33,14 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorThrowsWhenControllerIsNull(string reason)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendNotFoundResult(null, reason));
+            Assert.Throws<ArgumentNullException>(() => new JSendNotFoundResult(reason, null));
         }
 
         [Theory, JSendAutoData]
         public void ConstructorThrowsWhenReasonIsWhiteSpace(JSendApiController controller)
         {
             // Exercise system and verify outcome
-            Action ctor = () => new JSendNotFoundResult(controller, "  ");
+            Action ctor = () => new JSendNotFoundResult("  ", controller);
             ctor.ShouldThrow<ArgumentException>()
                 .And.Message.Should().Contain(StringResources.NotFound_WhiteSpaceReason);
         }
@@ -51,7 +51,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedResponse = new FailResponse(reason);
             // Exercise system
-            var result = new JSendNotFoundResult(controller, reason);
+            var result = new JSendNotFoundResult(reason, controller);
             // Verify outcome
             result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
@@ -67,7 +67,7 @@ namespace JSendWebApi.Tests.Results
         public void ReasonIsCorrectlyInitialized(JSendApiController controller, string reason)
         {
             // Exercise system
-            var result = new JSendNotFoundResult(controller, reason);
+            var result = new JSendNotFoundResult(reason, controller);
             // Verify outcome
             result.Reason.Should().Be(reason);
         }
@@ -76,7 +76,7 @@ namespace JSendWebApi.Tests.Results
         public void ReasonIsSetToDefaultMessage_When_ArgumentIsNull(JSendApiController controller)
         {
             // Exercise system
-            var result = new JSendNotFoundResult(controller, null);
+            var result = new JSendNotFoundResult(null, controller);
             // Verify outcome
             result.Reason.Should().Be(StringResources.NotFound_DefaultMessage);
         }

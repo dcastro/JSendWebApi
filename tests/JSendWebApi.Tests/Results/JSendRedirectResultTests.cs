@@ -40,7 +40,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedResponse = new SuccessResponse();
             // Exercise system
-            var result = new JSendRedirectResult(controller, location);
+            var result = new JSendRedirectResult(location, controller);
             // Verify outcome
             result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
@@ -56,7 +56,7 @@ namespace JSendWebApi.Tests.Results
         public void LocationIsCorrectlyInitialized(JSendApiController controller, Uri location)
         {
             // Exercise system
-            var result = new JSendRedirectResult(controller, location);
+            var result = new JSendRedirectResult(location, controller);
             // Verify outcome
             result.Location.Should().Be(location);
         }

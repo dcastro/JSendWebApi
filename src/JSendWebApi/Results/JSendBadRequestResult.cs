@@ -13,7 +13,7 @@ namespace JSendWebApi.Results
     {
         private readonly JSendResult<FailResponse> _result;
 
-        public JSendBadRequestResult(JSendApiController controller, string reason)
+        public JSendBadRequestResult(string reason, JSendApiController controller)
         {
             if (reason == null)
                 throw new ArgumentNullException("reason");

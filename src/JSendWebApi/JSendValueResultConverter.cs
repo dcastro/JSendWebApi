@@ -31,7 +31,7 @@ namespace JSendWebApi
                 throw new ArgumentNullException("controllerContext");
 
             T value = (T) actionResult;
-            var result = new JSendOkResult<T>(_serializerSettings, _encoding, controllerContext.Request, value);
+            var result = new JSendOkResult<T>(value, _serializerSettings, _encoding, controllerContext.Request);
 
             return result.ExecuteAsync(CancellationToken.None).Result;
         }

@@ -33,7 +33,7 @@ namespace JSendWebApi.Tests.Results
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
-                () => new JSendInternalServerErrorResult(null, message, errorCode, data));
+                () => new JSendInternalServerErrorResult(message, errorCode, data, null));
         }
 
         [Theory, JSendAutoData]
@@ -41,7 +41,7 @@ namespace JSendWebApi.Tests.Results
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
-                () => new JSendInternalServerErrorResult(controller, null, errorCode, data));
+                () => new JSendInternalServerErrorResult(null, errorCode, data, controller));
         }
 
         [Theory, JSendAutoData]
@@ -49,7 +49,7 @@ namespace JSendWebApi.Tests.Results
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentException>(
-                () => new JSendInternalServerErrorResult(controller, " ", errorCode, data));
+                () => new JSendInternalServerErrorResult(" ", errorCode, data, controller));
         }
 
         [Theory, JSendAutoData]
@@ -59,7 +59,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedResponse = new ErrorResponse(message, errorCode, data);
             // Exercise system
-            var result = new JSendInternalServerErrorResult(controller, message, errorCode, data);
+            var result = new JSendInternalServerErrorResult(message, errorCode, data, controller);
             // Verify outcome
             result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
@@ -76,7 +76,7 @@ namespace JSendWebApi.Tests.Results
             Exception data)
         {
             // Exercise system
-            var result = new JSendInternalServerErrorResult(controller, message, errorCode, data);
+            var result = new JSendInternalServerErrorResult(message, errorCode, data, controller);
             // Verify outcome
             result.Message.Should().Be(message);
         }

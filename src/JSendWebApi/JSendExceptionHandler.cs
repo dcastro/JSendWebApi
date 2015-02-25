@@ -29,7 +29,7 @@ namespace JSendWebApi
             var includeErrorDetail = context.Request.ShouldIncludeErrorDetail();
 
             context.Result = new JSendExceptionResult(
-                includeErrorDetail, _serializerSettings, _encoding, context.Request, context.Exception, null, null, null);
+                context.Exception, null, null, null, includeErrorDetail, _serializerSettings, _encoding, context.Request);
         }
     }
 }

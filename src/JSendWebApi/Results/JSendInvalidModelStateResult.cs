@@ -17,7 +17,7 @@ namespace JSendWebApi.Results
     {
         private readonly JSendResult<FailResponse> _result;
 
-        public JSendInvalidModelStateResult(JSendApiController controller, ModelStateDictionary modelState)
+        public JSendInvalidModelStateResult(ModelStateDictionary modelState, JSendApiController controller)
         {
             if (controller == null) throw new ArgumentNullException("controller");
 
@@ -29,7 +29,9 @@ namespace JSendWebApi.Results
             var readOnlyValidationErrors =
                 new ReadOnlyDictionary<string, IEnumerable<string>>(validationErrorsDictionary);
 
-            _result = new JSendResult<FailResponse>(HttpStatusCode.BadRequest, new FailResponse(readOnlyValidationErrors), controller);
+            var response = new FailResponse(readOnlyValidationErrors);
+
+            _result = new JSendResult<FailResponse>(HttpStatusCode.BadRequest, response, controller);
         }
 
         public FailResponse Response

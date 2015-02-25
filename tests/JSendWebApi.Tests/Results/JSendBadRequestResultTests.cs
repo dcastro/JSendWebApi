@@ -43,7 +43,7 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorThrowsWhenReasonIsWhiteSpace(JSendApiController controller)
         {
             // Exercise system and verify outcome
-            Action ctor = () => new JSendBadRequestResult(controller, "  ");
+            Action ctor = () => new JSendBadRequestResult("  ", controller);
             ctor.ShouldThrow<ArgumentException>()
                 .And.Message.Should().Contain(StringResources.BadRequest_WhiteSpaceReason);
         }
@@ -54,7 +54,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedResponse = new FailResponse(reason);
             // Exercise system
-            var result = new JSendBadRequestResult(controller, reason);
+            var result = new JSendBadRequestResult(reason, controller);
             // Verify outcome
             result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
@@ -70,7 +70,7 @@ namespace JSendWebApi.Tests.Results
         public void ReasonIsCorrectlyInitialized(JSendApiController controller, string reason)
         {
             // Exercise system
-            var result = new JSendBadRequestResult(controller, reason);
+            var result = new JSendBadRequestResult(reason, controller);
             // Verify outcome
             result.Reason.Should().Be(reason);
         }

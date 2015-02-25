@@ -34,7 +34,7 @@ namespace JSendWebApi.Tests.Results
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
-                () => new JSendRedirectToRouteResult(null, routeName, routeValues));
+                () => new JSendRedirectToRouteResult(routeName, routeValues, null));
         }
 
         [Theory, JSendAutoData]
@@ -44,7 +44,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedResponse = new SuccessResponse();
             // Exercise system
-            var result = new JSendRedirectToRouteResult(controller, routeName, routeValues);
+            var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
             // Verify outcome
             result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
@@ -63,7 +63,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedLocation = new Uri(UrlHelperCustomization.RouteLink);
             // Exercise system
-            var result = new JSendRedirectToRouteResult(controller, routeName, routeValues);
+            var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
             // Verify outcome
             result.Location.Should().Be(expectedLocation);
         }

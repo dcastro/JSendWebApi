@@ -34,7 +34,7 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorThrowsWhenControllerIsNull(Exception ex, string message, int? code, object data)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendExceptionResult(null, ex, message, code, data));
+            Assert.Throws<ArgumentNullException>(() => new JSendExceptionResult(ex, message, code, data, null));
         }
 
         [Theory, JSendAutoData]
@@ -46,8 +46,8 @@ namespace JSendWebApi.Tests.Results
             Exception ex = null;
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
-                () => new JSendExceptionResult(includeErrorDetail, settings, encoding, request, ex, message, code, data));
-            Assert.Throws<ArgumentNullException>(() => new JSendExceptionResult(controller, ex, message, code, data));
+                () => new JSendExceptionResult(ex, message, code, data, includeErrorDetail, settings, encoding, request));
+            Assert.Throws<ArgumentNullException>(() => new JSendExceptionResult(ex, message, code, data, controller));
         }
 
         [Theory, JSendAutoData]
@@ -62,7 +62,7 @@ namespace JSendWebApi.Tests.Results
             int? code, object data)
         {
             // Exercise system
-            var result = new JSendExceptionResult(controller, ex, message, code, data);
+            var result = new JSendExceptionResult(ex, message, code, data, controller);
             // Verify outcome
             result.Exception.Should().Be(ex);
         }
@@ -101,7 +101,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = true;
             // Exercise system
-            var result = new JSendExceptionResult(controller, ex, null, code, data);
+            var result = new JSendExceptionResult(ex, null, code, data, controller);
             // Verify outcome
             result.Response.Message.Should().Be(ex.Message);
         }
@@ -113,7 +113,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = false;
             // Exercise system
-            var result = new JSendExceptionResult(controller, ex, null, code, data);
+            var result = new JSendExceptionResult(ex, null, code, data, controller);
             // Verify outcome
             result.Response.Message.Should().Be(StringResources.DefaultErrorMessage);
         }
@@ -123,7 +123,7 @@ namespace JSendWebApi.Tests.Results
             JSendApiController controller, Exception ex, string message, int? code, object data)
         {
             // Exercise system 
-            var result = new JSendExceptionResult(controller, ex, message, code, data);
+            var result = new JSendExceptionResult(ex, message, code, data, controller);
             // Verify outcome
             result.Response.Data.Should().BeSameAs(data);
         }
@@ -135,7 +135,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = true;
             // Exercise system
-            var result = new JSendExceptionResult(controller, ex, message, code, null);
+            var result = new JSendExceptionResult(ex, message, code, null, controller);
             // Verify outcome
             result.Response.Data.Should().Be(ex.ToString());
         }
@@ -147,7 +147,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = false;
             // Exercise system
-            var result = new JSendExceptionResult(controller, ex, message, code, null);
+            var result = new JSendExceptionResult(ex, message, code, null, controller);
             // Verify outcome
             result.Response.Data.Should().BeNull();
         }

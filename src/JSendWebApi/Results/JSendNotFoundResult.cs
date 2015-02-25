@@ -16,7 +16,7 @@ namespace JSendWebApi.Results
     {
         private readonly JSendResult<FailResponse> _result;
 
-        public JSendNotFoundResult(JSendApiController controller, string reason)
+        public JSendNotFoundResult(string reason, JSendApiController controller)
         {
             if (reason == null)
                 reason = StringResources.NotFound_DefaultMessage;

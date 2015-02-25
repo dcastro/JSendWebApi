@@ -36,7 +36,7 @@ namespace JSendWebApi.Tests.Results
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
-                () => new JSendCreatedAtRouteResult<Model>(null, routeName, routeValues, content));
+                () => new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, null));
         }
 
         [Theory, JSendAutoData]
@@ -46,7 +46,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedResponse = new SuccessResponse(content);
             // Exercise system
-            var result = new JSendCreatedAtRouteResult<Model>(controller, routeName, routeValues, content);
+            var result = new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, controller);
             // Verify outcome
             result.Response.ShouldBeEquivalentTo(expectedResponse);
         }
@@ -65,7 +65,7 @@ namespace JSendWebApi.Tests.Results
             // Fixture setup
             var expectedLocation = new Uri(UrlHelperCustomization.RouteLink);
             // Exercise system
-            var result = new JSendCreatedAtRouteResult<Model>(controller, routeName, routeValues, content);
+            var result = new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, controller);
             // Verify outcome
             result.Location.Should().Be(expectedLocation);
         }
@@ -75,7 +75,7 @@ namespace JSendWebApi.Tests.Results
             Dictionary<string, object> routeValues, Model content)
         {
             // Exercise system
-            var result = new JSendCreatedAtRouteResult<Model>(controller, routeName, routeValues, content);
+            var result = new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, controller);
             // Verify outcome
             result.Content.Should().Be(content);
         }

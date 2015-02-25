@@ -16,7 +16,7 @@ namespace JSendWebApi.Results
         private readonly JSendResult<SuccessResponse> _result;
         private readonly Uri _location;
 
-        public JSendCreatedResult(JSendApiController controller, Uri location, T content)
+        public JSendCreatedResult(Uri location, T content, JSendApiController controller)
         {
             if (location == null) throw new ArgumentNullException("location");
 

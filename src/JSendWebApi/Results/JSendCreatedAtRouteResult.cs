@@ -18,8 +18,8 @@ namespace JSendWebApi.Results
         private readonly JSendResult<SuccessResponse> _result;
         private readonly Uri _location;
 
-        public JSendCreatedAtRouteResult(JSendApiController controller, string routeName,
-            IDictionary<string, object> routeValues, T content)
+        public JSendCreatedAtRouteResult(string routeName, IDictionary<string, object> routeValues, T content,
+            JSendApiController controller)
         {
             _result = new JSendResult<SuccessResponse>(HttpStatusCode.Created, new SuccessResponse(content), controller);
 

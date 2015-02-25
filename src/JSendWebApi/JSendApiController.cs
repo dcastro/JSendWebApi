@@ -86,22 +86,22 @@ namespace JSendWebApi
 
         protected internal virtual JSendOkResult<T> JSendOk<T>(T content)
         {
-            return new JSendOkResult<T>(this, content);
+            return new JSendOkResult<T>(content, this);
         }
 
         protected internal virtual JSendBadRequestResult JSendBadRequest(string reason)
         {
-            return new JSendBadRequestResult(this, reason);
+            return new JSendBadRequestResult(reason, this);
         }
 
         protected internal virtual JSendInvalidModelStateResult JSendBadRequest(ModelStateDictionary modelState)
         {
-            return new JSendInvalidModelStateResult(this, modelState);
+            return new JSendInvalidModelStateResult(modelState, this);
         }
 
         protected internal virtual JSendCreatedResult<T> JSendCreated<T>(Uri location, T content)
         {
-            return new JSendCreatedResult<T>(this, location, content);
+            return new JSendCreatedResult<T>(location, content, this);
         }
 
         protected internal virtual JSendCreatedResult<T> JSendCreated<T>(string location, T content)
@@ -114,7 +114,7 @@ namespace JSendWebApi
         protected internal virtual JSendCreatedAtRouteResult<T> JSendCreatedAtRoute<T>(string routeName,
             IDictionary<string, object> routeValues, T content)
         {
-            return new JSendCreatedAtRouteResult<T>(this, routeName, routeValues, content);
+            return new JSendCreatedAtRouteResult<T>(routeName, routeValues, content, this);
         }
 
         protected internal virtual JSendCreatedAtRouteResult<T> JSendCreatedAtRoute<T>(string routeName,
@@ -126,18 +126,18 @@ namespace JSendWebApi
         protected internal virtual JSendInternalServerErrorResult JSendInternalServerError(string message,
             int? errorCode = null, object data = null)
         {
-            return new JSendInternalServerErrorResult(this, message, errorCode, data);
+            return new JSendInternalServerErrorResult(message, errorCode, data, this);
         }
 
         protected internal virtual JSendExceptionResult JSendInternalServerError(Exception ex, string message = null,
             int? errorCode = null, object data = null)
         {
-            return new JSendExceptionResult(this, ex, message, errorCode, data);
+            return new JSendExceptionResult(ex, message, errorCode, data, this);
         }
 
         protected internal virtual JSendNotFoundResult JSendNotFound(string reason)
         {
-            return new JSendNotFoundResult(this, reason);
+            return new JSendNotFoundResult(reason, this);
         }
 
         protected internal virtual JSendNotFoundResult JSendNotFound()
@@ -147,7 +147,7 @@ namespace JSendWebApi
 
         protected internal virtual JSendRedirectResult JSendRedirect(Uri location)
         {
-            return new JSendRedirectResult(this, location);
+            return new JSendRedirectResult(location, this);
         }
 
         protected internal virtual JSendRedirectResult JSendRedirect(string location)
@@ -158,7 +158,7 @@ namespace JSendWebApi
         protected internal virtual JSendRedirectToRouteResult JSendRedirectToRoute(string routeName,
             IDictionary<string, object> routeValues)
         {
-            return new JSendRedirectToRouteResult(this, routeName, routeValues);
+            return new JSendRedirectToRouteResult(routeName, routeValues, this);
         }
 
         protected internal virtual JSendRedirectToRouteResult JSendRedirectToRoute(string routeName,

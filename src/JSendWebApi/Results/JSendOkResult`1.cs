@@ -14,23 +14,24 @@ namespace JSendWebApi.Results
     {
         private readonly JSendResult<SuccessResponse> _result;
 
-        public JSendOkResult(JSendApiController controller, T content)
+        public JSendOkResult(T content, JSendApiController controller)
         {
             if (controller == null) throw new ArgumentNullException("controller");
 
-            _result = InitializeResult(controller.JsonSerializerSettings, controller.Encoding, controller.Request,
-                content);
+            _result = InitializeResult(content, controller.JsonSerializerSettings, controller.Encoding, controller.Request);
         }
 
-        public JSendOkResult(JsonSerializerSettings settings, Encoding encoding, HttpRequestMessage request, T content)
+        public JSendOkResult(T content, JsonSerializerSettings settings, Encoding encoding, HttpRequestMessage request)
         {
-            _result = InitializeResult(settings, encoding, request, content);
+            _result = InitializeResult(content, settings, encoding, request);
         }
 
-        private static JSendResult<SuccessResponse> InitializeResult(JsonSerializerSettings settings,
-            Encoding encoding, HttpRequestMessage request, T content)
+        private static JSendResult<SuccessResponse> InitializeResult(T content, JsonSerializerSettings settings,
+            Encoding encoding, HttpRequestMessage request)
         {
-            return new JSendResult<SuccessResponse>(HttpStatusCode.OK, new SuccessResponse(content), settings, encoding, request);
+            var response = new SuccessResponse(content);
+
+            return new JSendResult<SuccessResponse>(HttpStatusCode.OK, response, settings, encoding, request);
         }
 
         public SuccessResponse Response

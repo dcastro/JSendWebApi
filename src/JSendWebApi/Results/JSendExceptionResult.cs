@@ -18,30 +18,31 @@ namespace JSendWebApi.Results
         private readonly JSendResult<ErrorResponse> _result;
         private readonly Exception _exception;
 
-        public JSendExceptionResult(JSendApiController controller, Exception exception, string message, int? errorCode,
-            object data)
-            : this(new ControllerDependencyProvider(controller), exception, message, errorCode, data)
+        public JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
+            JSendApiController controller)
+            : this(exception, message, errorCode, data, new ControllerDependencyProvider(controller))
         {
 
         }
 
-        public JSendExceptionResult(bool includeErrorDetail, JsonSerializerSettings settings, Encoding encoding,
-            HttpRequestMessage request, Exception exception, string message, int? errorCode, object data)
-            : this(new DirectDependencyProvider(includeErrorDetail, settings, encoding, request),
-                exception, message, errorCode, data)
+        public JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
+            bool includeErrorDetail, JsonSerializerSettings settings, Encoding encoding, HttpRequestMessage request)
+            : this(exception, message, errorCode, data,
+                new DirectDependencyProvider(includeErrorDetail, settings, encoding, request))
         {
 
         }
 
-        private JSendExceptionResult(IDependencyProvider dependencies, Exception exception, string message,
-            int? errorCode, object data)
+        private JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
+            IDependencyProvider dependencies)
         {
             if (exception == null) throw new ArgumentNullException("exception");
 
             var response = BuildResponse(dependencies.IncludeErrorDetail, exception, message, errorCode, data);
 
             _exception = exception;
-            _result = new JSendResult<ErrorResponse>(HttpStatusCode.InternalServerError, response, dependencies.JsonSerializerSettings, dependencies.Encoding, dependencies.RequestMessage);
+            _result = new JSendResult<ErrorResponse>(HttpStatusCode.InternalServerError, response,
+                dependencies.JsonSerializerSettings, dependencies.Encoding, dependencies.RequestMessage);
         }
 
         public ErrorResponse Response

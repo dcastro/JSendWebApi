@@ -17,8 +17,8 @@ namespace JSendWebApi.Results
         private readonly JSendResult<SuccessResponse> _result;
         private readonly Uri _location;
 
-        public JSendRedirectToRouteResult(JSendApiController controller, string routeName,
-            IDictionary<string, object> routeValues)
+        public JSendRedirectToRouteResult(string routeName, IDictionary<string, object> routeValues,
+            JSendApiController controller)
         {
             _result = new JSendResult<SuccessResponse>(HttpStatusCode.Redirect, new SuccessResponse(), controller);
 
