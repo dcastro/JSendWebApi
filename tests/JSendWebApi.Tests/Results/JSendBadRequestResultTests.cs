@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using FluentAssertions;
+using JSendWebApi.Properties;
 using JSendWebApi.Responses;
 using JSendWebApi.Results;
 using JSendWebApi.Tests.FixtureCustomizations;
@@ -42,7 +43,9 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorThrowsWhenReasonIsWhiteSpace(JSendApiController controller)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentException>(() => new JSendBadRequestResult(controller, "  "));
+            Action ctor = () => new JSendBadRequestResult(controller, "  ");
+            ctor.ShouldThrow<ArgumentException>()
+                .And.Message.Should().Contain(StringResources.BadRequest_WhiteSpaceReason);
         }
 
         [Theory, JSendAutoData]

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using FluentAssertions;
+using JSendWebApi.Properties;
 using JSendWebApi.Responses;
 using JSendWebApi.Results;
 using JSendWebApi.Tests.FixtureCustomizations;
@@ -39,7 +40,9 @@ namespace JSendWebApi.Tests.Results
         public void ConstructorThrowsWhenReasonIsWhiteSpace(JSendApiController controller)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentException>(() => new JSendNotFoundResult(controller, "  "));
+            Action ctor = () => new JSendNotFoundResult(controller, "  ");
+            ctor.ShouldThrow<ArgumentException>()
+                .And.Message.Should().Contain(StringResources.NotFound_WhiteSpaceReason);
         }
 
         [Theory, JSendAutoData]
@@ -75,7 +78,7 @@ namespace JSendWebApi.Tests.Results
             // Exercise system
             var result = new JSendNotFoundResult(controller, null);
             // Verify outcome
-            result.Reason.Should().Be("The requested resource could not be found.");
+            result.Reason.Should().Be(StringResources.NotFound_DefaultMessage);
         }
 
         [Theory, JSendAutoData]

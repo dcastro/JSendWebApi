@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using JSendWebApi.Properties;
 using JSendWebApi.Responses;
 using Newtonsoft.Json;
 
@@ -76,7 +77,7 @@ namespace JSendWebApi.Results
             if (includeErrorDetail)
                 return ex.Message;
 
-            return "An error has occurred.";
+            return StringResources.DefaultErrorMessage;
         }
 
         private static object BuildData(bool includeErrorDetail, Exception ex, object data)

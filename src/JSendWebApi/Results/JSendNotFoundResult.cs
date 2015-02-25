@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using JSendWebApi.Properties;
 using JSendWebApi.Responses;
 
 namespace JSendWebApi.Results
@@ -18,10 +19,10 @@ namespace JSendWebApi.Results
         public JSendNotFoundResult(JSendApiController controller, string reason)
         {
             if (reason == null)
-                reason = "The requested resource could not be found.";
+                reason = StringResources.NotFound_DefaultMessage;
 
             if (string.IsNullOrWhiteSpace(reason))
-                throw new ArgumentException("Reason cannot be an empty string.", "reason");
+                throw new ArgumentException(StringResources.NotFound_WhiteSpaceReason, "reason");
 
             _result = new JSendResult<FailResponse>(
                 controller, new FailResponse(reason), HttpStatusCode.NotFound);

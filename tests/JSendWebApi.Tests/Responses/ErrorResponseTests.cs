@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using JSendWebApi.Properties;
 using JSendWebApi.Responses;
 using JSendWebApi.Tests.FixtureCustomizations;
 using JSendWebApi.Tests.TestTypes;
@@ -33,16 +34,23 @@ namespace JSendWebApi.Tests.Responses
             Assert.Throws<ArgumentNullException>(() => new ErrorResponse(null, code, data));
         }
 
-        [Theory, JSendAutoData]
-        public void ConstructorsThrowWhenMessageIsWhiteSpace(int code, object data)
+        public static IEnumerable<object[]> ConstructorCallsWithWhiteSpaceMessage
         {
-            // Fixture setup
-            const string whiteSpace = "  ";
-            // Exercise system and verify outcome
-            Assert.Throws<ArgumentException>(() => new ErrorResponse(whiteSpace));
-            Assert.Throws<ArgumentException>(() => new ErrorResponse(whiteSpace, code));
-            Assert.Throws<ArgumentException>(() => new ErrorResponse(whiteSpace, data));
-            Assert.Throws<ArgumentException>(() => new ErrorResponse(whiteSpace, code, data));
+            get
+            {
+                yield return new Action[] {() => new ErrorResponse(" ")};
+                yield return new Action[] {() => new ErrorResponse(" ", 2)};
+                yield return new Action[] {() => new ErrorResponse(" ", 2, "data")};
+                yield return new Action[] {() => new ErrorResponse(" ", "data")};
+            }
+        }
+
+        [Theory]
+        [PropertyData("ConstructorCallsWithWhiteSpaceMessage")]
+        public void ConstructorsThrowWhenMessageIsWhiteSpace(Action ctor)
+        {
+            ctor.ShouldThrow<ArgumentException>()
+                .And.Message.Should().Contain(StringResources.ErrorResponse_WhiteSpaceMessage);
         }
 
         [Theory, JSendAutoData]

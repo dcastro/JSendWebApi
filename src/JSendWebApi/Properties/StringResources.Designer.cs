@@ -59,5 +59,50 @@ namespace JSendWebApi.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reason cannot be an empty string..
+        /// </summary>
+        internal static string BadRequest_WhiteSpaceReason {
+            get {
+                return ResourceManager.GetString("BadRequest_WhiteSpaceReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error has occurred..
+        /// </summary>
+        internal static string DefaultErrorMessage {
+            get {
+                return ResourceManager.GetString("DefaultErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message cannot be an empty string..
+        /// </summary>
+        internal static string ErrorResponse_WhiteSpaceMessage {
+            get {
+                return ResourceManager.GetString("ErrorResponse_WhiteSpaceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The requested resource could not be found..
+        /// </summary>
+        internal static string NotFound_DefaultMessage {
+            get {
+                return ResourceManager.GetString("NotFound_DefaultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reason cannot be an empty string..
+        /// </summary>
+        internal static string NotFound_WhiteSpaceReason {
+            get {
+                return ResourceManager.GetString("NotFound_WhiteSpaceReason", resourceCulture);
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using FluentAssertions;
+using JSendWebApi.Properties;
 using JSendWebApi.Responses;
 using JSendWebApi.Results;
 using JSendWebApi.Tests.FixtureCustomizations;
@@ -114,7 +115,7 @@ namespace JSendWebApi.Tests.Results
             // Exercise system
             var result = new JSendExceptionResult(controller, ex, null, code, data);
             // Verify outcome
-            result.Response.Message.Should().Be("An error has occurred.");
+            result.Response.Message.Should().Be(StringResources.DefaultErrorMessage);
         }
 
         [Theory, JSendAutoData]

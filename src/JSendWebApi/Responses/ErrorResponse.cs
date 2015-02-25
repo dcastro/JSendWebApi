@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JSendWebApi.Properties;
 using Newtonsoft.Json;
 
 namespace JSendWebApi.Responses
@@ -37,7 +38,7 @@ namespace JSendWebApi.Responses
                 throw new ArgumentNullException("message");
 
             if (string.IsNullOrWhiteSpace(message))
-                throw new ArgumentException("Message cannot be an empty string.", "message");
+                throw new ArgumentException(StringResources.ErrorResponse_WhiteSpaceMessage, "message");
 
             _message = message;
             _code = code;
