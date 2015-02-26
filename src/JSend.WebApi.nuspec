@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>JSend.WebApi</id>
+        <version>1.0.0</version>
+        <title>JSend Web API</title>
+        <authors>Diogo Castro</authors>
+        <owners>Diogo Castro</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>JSend.WebApi extends ASP.NET Web API 2's ApiController and provides several helper methods to easily build JSend formatted responses.</description>
+        <language>en-US</language>
+        <tags>JSend WebApi REST Controller</tags>
+        <dependencies>
+            <dependency id="Microsoft.AspNet.WebApi.Core" version="5.1.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\bin\JSendWebApi.XML" target="lib\net45\JSendWebApi.XML" />
+        <file src="..\bin\JSendWebApi.pdb" target="lib\net45\JSendWebApi.pdb" />
+        <file src="..\bin\JSendWebApi.dll" target="lib\net45\JSendWebApi.dll" />
+    </files>
+</package>
