@@ -10,22 +10,6 @@ namespace JSendWebApi.Tests
 {
     public class TestableJSendApiController : JSendApiController
     {
-        public TestableJSendApiController()
-        {
-
-        }
-
-        public TestableJSendApiController(JsonSerializerSettings jsonSerializerSettings) : base(jsonSerializerSettings)
-        {
-
-        }
-
-        public TestableJSendApiController(JsonSerializerSettings jsonSerializerSettings, Encoding encoding)
-            : base(jsonSerializerSettings, encoding)
-        {
-
-        }
-
         public void TestableInitialize(HttpControllerContext controllerContext)
         {
             base.Initialize(controllerContext);

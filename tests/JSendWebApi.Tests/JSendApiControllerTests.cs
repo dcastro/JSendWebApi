@@ -33,48 +33,11 @@ namespace JSendWebApi.Tests
             controller.Should().BeAssignableTo<ApiController>();
         }
 
-        [Theory, JSendAutoData]
-        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
-        {
-            // Exercise system and verify outcome
-            assertion.Verify(typeof (TestableJSendApiController).GetConstructors());
-        }
-
-        [Theory, JSendAutoData]
-        public void SettingsAndEncodingAreCorrectlyInitialized(JsonSerializerSettings settings, Encoding encoding)
-        {
-            // Exercise system
-            var controller = new TestableJSendApiController(settings, encoding);
-            // Verify outcome
-            controller.JsonSerializerSettings.Should().BeSameAs(settings);
-            controller.Encoding.Should().BeSameAs(encoding);
-        }
-
-        [Theory, JSendAutoData]
-        public void SettingsAreCorrectlyInitialized(JsonSerializerSettings settings)
-        {
-            // Exercise system
-            var controller = new TestableJSendApiController(settings);
-            // Verify outcome
-            controller.JsonSerializerSettings.Should().BeSameAs(settings);
-        }
-
         [Fact]
-        public void EncodingIsUtf8WhenNoArgumentsAreSpecified()
+        public void EncodingIsUtf8ByDefault()
         {
             // Fixture setup
             var controller = new TestableJSendApiController();
-            // Exercise system
-            var encoding = controller.Encoding;
-            // Verify outcome
-            encoding.Should().BeOfType<UTF8Encoding>();
-        }
-
-        [Fact]
-        public void EncodingIsUtf8WhenOnlySettingsAreSpecified()
-        {
-            // Fixture setup
-            var controller = new TestableJSendApiController(new JsonSerializerSettings());
             // Exercise system
             var encoding = controller.Encoding;
             // Verify outcome
@@ -85,11 +48,12 @@ namespace JSendWebApi.Tests
         public void JsonSerializerSettingsAreDefaultSettings()
         {
             // Fixture setup
+            var expectedSettings = new JsonSerializerSettings();
             var controller = new TestableJSendApiController();
             // Exercise system
             var settings = controller.JsonSerializerSettings;
             // Verify outcome
-            settings.ShouldBeEquivalentTo(new JsonSerializerSettings());
+            settings.ShouldBeEquivalentTo(expectedSettings);
         }
 
         [Theory, JSendAutoData]
