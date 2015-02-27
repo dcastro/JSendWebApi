@@ -9,11 +9,18 @@ using Newtonsoft.Json;
 
 namespace JSendWebApi
 {
+    /// <summary>
+    /// An action filter that selects a <see cref="JSendVoidResultConverter"/> as the action result converter for actions
+    /// that do not return a value.
+    /// </summary>
     public class VoidActionFilter : ActionFilterAttribute
     {
         private readonly JsonSerializerSettings _serializerSettings;
         private readonly Encoding _encoding;
 
+        /// <summary>Initializes a new instance of <see cref="VoidActionFilter"/>.</summary>
+        /// <param name="serializerSettings">The serializer settings to pass into the action result converter.</param>
+        /// <param name="encoding">The encoding to pass into the action result converter.</param>
         public VoidActionFilter(JsonSerializerSettings serializerSettings, Encoding encoding)
         {
             if (serializerSettings == null) throw new ArgumentNullException("serializerSettings");
@@ -23,6 +30,11 @@ namespace JSendWebApi
             _encoding = encoding;
         }
 
+        /// <summary>
+        /// Selects a <see cref="JSendVoidResultConverter"/> as the action result converter for actions
+        /// that return an arbitrary T value.
+        /// </summary>
+        /// <param name="actionContext">The action context.</param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
             var returnType = actionContext.ActionDescriptor.ReturnType;

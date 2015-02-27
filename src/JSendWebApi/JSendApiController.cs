@@ -31,7 +31,7 @@ namespace JSendWebApi
             _encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
         }
 
-        /// <summary>The serializer settings used to serialize JSend formatted responses.</summary>
+        /// <summary>The serializer settings used to serialize JSend responses.</summary>
         public JsonSerializerSettings JsonSerializerSettings
         {
             get { return _settings; }
@@ -43,7 +43,7 @@ namespace JSendWebApi
             }
         }
 
-        /// <summary>The encoding used to encode JSend formatted responses.</summary>
+        /// <summary>The encoding used to encode JSend responses.</summary>
         public Encoding Encoding
         {
             get { return _encoding; }
