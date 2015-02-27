@@ -13,18 +13,32 @@ using Newtonsoft.Json;
 
 namespace JSendWebApi.Results
 {
+    /// <summary>
+    /// Represents an action result that returns the specified JSend response with the specified status code.
+    /// </summary>
+    /// <typeparam name="TResponse">The type of the JSend response.</typeparam>
     public sealed class JSendResult<TResponse> : IHttpActionResult where TResponse : IJSendResponse
     {
         private readonly TResponse _response;
         private readonly HttpStatusCode _statusCode;
         private readonly JsonResult<TResponse> _jsonResult;
 
+        /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
+        /// <param name="statusCode">The HTTP status code for the response message.</param>
+        /// <param name="response">The JSend response to format in the entity body.</param>
+        /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         public JSendResult(HttpStatusCode statusCode, TResponse response, JSendApiController controller)
             : this(statusCode, response, new ControllerDependencyProvider(controller))
         {
 
         }
 
+        /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
+        /// <param name="statusCode">The HTTP status code for the response message.</param>
+        /// <param name="response">The JSend response to format in the entity body.</param>
+        /// <param name="settings">The serializer settings.</param>
+        /// <param name="encoding">The content encoding.</param>
+        /// <param name="request">The request message which led to this result.</param>
         public JSendResult(HttpStatusCode statusCode, TResponse response, JsonSerializerSettings settings,
             Encoding encoding, HttpRequestMessage request)
             : this(statusCode, response, new DirectDependencyProvider(settings, encoding, request))
@@ -45,16 +59,21 @@ namespace JSendWebApi.Results
                 dependencies.RequestMessage);
         }
 
+        /// <summary>Gets the response to be formatted into the message's body.</summary>
         public TResponse Response
         {
             get { return _response; }
         }
 
+        /// <summary>Gets the HTTP status code for the response message.</summary>
         public HttpStatusCode StatusCode
         {
             get { return _statusCode; }
         }
 
+        /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             var message = await _jsonResult.ExecuteAsync(cancellationToken);

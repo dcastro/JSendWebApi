@@ -13,10 +13,17 @@ using JSendWebApi.Responses;
 
 namespace JSendWebApi.Results
 {
+    /// <summary>
+    /// Represents an action result that returns a <see cref="FailResponse"/> containing the specified model state errors
+    /// with status code <see cref="HttpStatusCode.BadRequest"/>.
+    /// </summary>
     public class JSendInvalidModelStateResult : IHttpActionResult
     {
         private readonly JSendResult<FailResponse> _result;
 
+        /// <summary>Initializes a new instance of <see cref="JSendInvalidModelStateResult"/>.</summary>
+        /// <param name="modelState">The invalid model state to include in the response's body as key-value pairs.</param>
+        /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         public JSendInvalidModelStateResult(ModelStateDictionary modelState, JSendApiController controller)
         {
             if (controller == null) throw new ArgumentNullException("controller");
@@ -34,21 +41,27 @@ namespace JSendWebApi.Results
             _result = new JSendResult<FailResponse>(HttpStatusCode.BadRequest, response, controller);
         }
 
+        /// <summary>Gets the response to be formatted into the message's body.</summary>
         public FailResponse Response
         {
             get { return _result.Response; }
         }
 
+        /// <summary>Gets the HTTP status code for the response message.</summary>
         public HttpStatusCode StatusCode
         {
             get { return _result.StatusCode; }
         }
 
+        /// <summary>Gets the model state errors to include in the response.</summary>
         public IReadOnlyDictionary<string, IEnumerable<string>> ModelState
         {
             get { return (IReadOnlyDictionary<string, IEnumerable<string>>) _result.Response.Data; }
         }
 
+        /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             return _result.ExecuteAsync(cancellationToken);

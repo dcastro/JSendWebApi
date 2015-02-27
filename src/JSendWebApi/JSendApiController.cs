@@ -98,7 +98,7 @@ namespace JSendWebApi
         }
 
         /// <summary>Creates a <see cref="JSendInvalidModelStateResult"/> (400 Bad Request) with the specified model state.</summary>
-        /// <param name="modelState">The invalid model state to include the response's body as key-value pairs.</param>
+        /// <param name="modelState">The invalid model state to include in the response's body as key-value pairs.</param>
         /// <returns>A <see cref="JSendInvalidModelStateResult"/> with the specified model state.</returns>
         protected internal virtual JSendInvalidModelStateResult JSendBadRequest(ModelStateDictionary modelState)
         {

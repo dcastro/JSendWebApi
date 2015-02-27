@@ -7,17 +7,38 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Controllers;
 using JSendWebApi.Properties;
 using JSendWebApi.Responses;
 using Newtonsoft.Json;
 
 namespace JSendWebApi.Results
 {
+    /// <summary>
+    /// Represents an action result that returns a <see cref="ErrorResponse"/> containing the specified error details
+    /// with status code <see cref="HttpStatusCode.InternalServerError"/>.
+    /// </summary>
     public class JSendExceptionResult : IHttpActionResult
     {
         private readonly JSendResult<ErrorResponse> _result;
         private readonly Exception _exception;
 
+        /// <summary>Initializes a new instance of <see cref="JSendExceptionResult"/>.</summary>
+        /// <param name="exception">The exception to include in the the error.</param>
+        /// <param name="message">
+        /// An optional meaningful, end-user-readable (or at the least log-worthy) message, explaining what went wrong.
+        /// If none is provided, and if the controller's <see cref="HttpRequestContext.IncludeErrorDetail"/> is set to <see langword="true"/>,
+        /// the exception's message will be used instead.
+        /// </param>
+        /// <param name="errorCode">
+        /// A numeric code corresponding to the error, if applicable.
+        /// </param>
+        /// <param name="data">
+        /// An optional generic container for any other information about the error.
+        /// If none is provided, and if the controller's <see cref="HttpRequestContext.IncludeErrorDetail"/> is set to <see langword="true"/>,
+        /// the exception's details will be used instead.
+        /// </param>
+        /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         public JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
             JSendApiController controller)
             : this(exception, message, errorCode, data, new ControllerDependencyProvider(controller))
@@ -25,6 +46,28 @@ namespace JSendWebApi.Results
 
         }
 
+        /// <summary>Initializes a new instance of <see cref="JSendExceptionResult"/>.</summary>
+        /// <param name="exception">The exception to include in the the error.</param>
+        /// <param name="message">
+        /// An optional meaningful, end-user-readable (or at the least log-worthy) message, explaining what went wrong.
+        /// If none is provided, and if <paramref name="includeErrorDetail"/> is <see langword="true"/>,
+        /// the exception's message will be used instead.
+        /// </param>
+        /// <param name="errorCode">
+        /// A numeric code corresponding to the error, if applicable.
+        /// </param>
+        /// <param name="data">
+        /// An optional generic container for any other information about the error.
+        /// If none is provided, and if <paramref name="includeErrorDetail"/> is <see langword="true"/>,
+        /// the exception's details will be used instead.
+        /// </param>
+        /// <param name="includeErrorDetail">
+        /// <see langword="true"/> if the response should include exception messages/stack traces
+        /// when no <paramref name="message"/> or <paramref name="data"/> are provided; otherwise, <see langword="false"/>.
+        /// </param>
+        /// <param name="settings">The serializer settings.</param>
+        /// <param name="encoding">The content encoding.</param>
+        /// <param name="request">The request message which led to this result.</param>
         public JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
             bool includeErrorDetail, JsonSerializerSettings settings, Encoding encoding, HttpRequestMessage request)
             : this(exception, message, errorCode, data,
@@ -45,16 +88,19 @@ namespace JSendWebApi.Results
                 dependencies.JsonSerializerSettings, dependencies.Encoding, dependencies.RequestMessage);
         }
 
+        /// <summary>Gets the response to be formatted into the message's body.</summary>
         public ErrorResponse Response
         {
             get { return _result.Response; }
         }
 
+        /// <summary>Gets the HTTP status code for the response message.</summary>
         public HttpStatusCode StatusCode
         {
             get { return _result.StatusCode; }
         }
 
+        /// <summary>Gets the exception to include in the error.</summary>
         public Exception Exception
         {
             get { return _exception; }
@@ -88,6 +134,9 @@ namespace JSendWebApi.Results
             return null;
         }
 
+        /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             return _result.ExecuteAsync(cancellationToken);
