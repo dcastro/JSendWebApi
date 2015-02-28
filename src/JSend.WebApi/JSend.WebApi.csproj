@@ -37,7 +37,7 @@
     <DocumentationFile>bin\Release\JSend.WebApi.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>JSend.WebApi.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -98,6 +98,7 @@
     <Compile Include="Responses\SuccessResponse.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="JSend.WebApi.ruleset" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
