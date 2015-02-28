@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>JSend.WebApi</id>
-        <version>1.0.0</version>
+        <version>0.0.0.0</version>
         <title>JSend Web API</title>
         <authors>Diogo Castro</authors>
         <owners>Diogo Castro</owners>
