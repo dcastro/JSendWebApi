@@ -15,6 +15,8 @@ let version = "1.0.0.0"
 // Targets
 Target "Clean" (fun _ ->
     CleanDir buildDir
+    CleanDir nugetDir
+    CleanDir testResultsDir
 )
 
 Target "UpdateVersion" (fun _ ->
@@ -37,10 +39,7 @@ Target "BuildTests" (fun _ ->
 )
 
 Target "RunTests" (fun _ ->
-    let testAssemblies = !! "./tests/**/bin/debug/*.Tests.dll"
-    CleanDir testResultsDir
-
-    testAssemblies 
+    !! "./tests/**/bin/debug/*.Tests.dll" 
         |> xUnit (fun p ->
             {p with 
                 ShadowCopy = false;
@@ -49,14 +48,12 @@ Target "RunTests" (fun _ ->
 )
 
 Target "CreateNuget" (fun _ ->
-    CleanDir nugetDir
-
-    NuGet (fun p ->
+    nuspec
+        |> NuGet (fun p ->
             {p with
                 Version = version
                 OutputPath = nugetDir
                 WorkingDir = buildDir})
-            nuspec
 )
 
 Target "All" DoNothing
