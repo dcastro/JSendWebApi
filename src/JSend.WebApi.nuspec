@@ -15,8 +15,8 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="..\bin\JSend.WebApi.XML" target="lib\net45\JSend.WebApi.XML" />
-        <file src="..\bin\JSend.WebApi.pdb" target="lib\net45\JSend.WebApi.pdb" />
-        <file src="..\bin\JSend.WebApi.dll" target="lib\net45\JSend.WebApi.dll" />
+        <file src="..\build\JSend.WebApi.XML" target="lib\net45\JSend.WebApi.XML" />
+        <file src="..\build\JSend.WebApi.pdb" target="lib\net45\JSend.WebApi.pdb" />
+        <file src="..\build\JSend.WebApi.dll" target="lib\net45\JSend.WebApi.dll" />
     </files>
 </package>

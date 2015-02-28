@@ -7,6 +7,8 @@ RestorePackages()
 // Properties
 let buildDir = "./build/"
 let testResultsDir = "./testresults/"
+let nugetDir = buildDir @@ "nuget"
+let nuspec = "./src/JSend.WebApi.nuspec"
 
 // Targets
 Target "Clean" (fun _ ->
@@ -14,19 +16,19 @@ Target "Clean" (fun _ ->
 )
 
 Target "Build" (fun _ ->
-    !! "src/**/*.csproj"
+    !! "./src/**/*.csproj"
         |> MSBuildRelease buildDir "Build"
         |> Log "Build-Output: "
 )
 
 Target "BuildTests" (fun _ ->
-    !! "tests/**/*.csproj"
+    !! "./tests/**/*.csproj"
         |> MSBuildDebug null "Build"
         |> ignore
 )
 
 Target "RunTests" (fun _ ->
-    let testAssemblies = !! "tests/**/bin/debug/*.Tests.dll"
+    let testAssemblies = !! "./tests/**/bin/debug/*.Tests.dll"
     CleanDir testResultsDir
 
     testAssemblies 
@@ -37,6 +39,16 @@ Target "RunTests" (fun _ ->
                 OutputDir = testResultsDir})
 )
 
+Target "CreateNuget" (fun _ ->
+    CleanDir nugetDir
+
+    NuGet (fun p ->
+            {p with
+                OutputPath = nugetDir
+                WorkingDir = buildDir})
+            nuspec
+)
+
 Target "Default" DoNothing
 
 // Dependencies
@@ -44,6 +56,7 @@ Target "Default" DoNothing
     ==> "Build"
     ==> "BuildTests"
     ==> "RunTests"
+    ==> "CreateNuget"
     ==> "Default"
 
 // Start build
