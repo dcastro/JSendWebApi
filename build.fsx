@@ -59,7 +59,7 @@ Target "CreateNuget" (fun _ ->
             nuspec
 )
 
-Target "Default" DoNothing
+Target "All" DoNothing
 
 // Dependencies
 "Clean"
@@ -68,7 +68,7 @@ Target "Default" DoNothing
     ==> "BuildTests"
     ==> "RunTests"
     ==> "CreateNuget"
-    ==> "Default"
+    ==> "All"
 
 // Start build
-RunTargetOrDefault "Default"
+RunTargetOrDefault "All"
