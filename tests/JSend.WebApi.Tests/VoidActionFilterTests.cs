@@ -15,6 +15,7 @@ using Moq;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;
+using Xunit;
 using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests
@@ -45,6 +46,13 @@ namespace JSend.WebApi.Tests
             fixture.Customize(new HttpActionContextCustomization());
             // Exercise system and verify outcome
             assertion.Verify(typeof (VoidActionFilter).GetConstructors());
+        }
+
+        [Theory, JSendAutoData]
+        public void ThrowsWhenActionContextIsNull(VoidActionFilter filter)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => filter.OnActionExecuting(null));
         }
 
         [Theory, JSendAutoData]

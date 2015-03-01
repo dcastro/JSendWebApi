@@ -13,6 +13,7 @@ namespace JSend.WebApi
     /// An action filter that selects a <see cref="JSendVoidResultConverter"/> as the action result converter for actions
     /// that do not return a value.
     /// </summary>
+    [CLSCompliant(false)]
     public class VoidActionFilter : ActionFilterAttribute
     {
         private readonly JsonSerializerSettings _serializerSettings;
@@ -37,6 +38,9 @@ namespace JSend.WebApi
         /// <param name="actionContext">The action context.</param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
+            if (actionContext == null)
+                throw new ArgumentNullException("actionContext");
+            
             var returnType = actionContext.ActionDescriptor.ReturnType;
 
             if (returnType == null)

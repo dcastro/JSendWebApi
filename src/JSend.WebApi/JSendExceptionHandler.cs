@@ -34,6 +34,8 @@ namespace JSend.WebApi
         /// <param name="context">The exception handler context.</param>
         public override void Handle(ExceptionHandlerContext context)
         {
+            if (context == null) throw new ArgumentNullException("context");
+
             var includeErrorDetail = context.Request.ShouldIncludeErrorDetail();
 
             context.Result = new JSendExceptionResult(

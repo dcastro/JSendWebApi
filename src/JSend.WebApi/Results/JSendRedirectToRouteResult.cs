@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -25,6 +26,7 @@ namespace JSend.WebApi.Results
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="routeValues">The route data to use for generating the URL.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "2", Justification = "The parameter controller is validated by JSendResult<T>'s constructor.")]
         public JSendRedirectToRouteResult(string routeName, IDictionary<string, object> routeValues,
             JSendApiController controller)
         {

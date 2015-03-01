@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -159,6 +160,8 @@ namespace JSend.WebApi
         /// <param name="errorCode">A numeric code corresponding to the error, if applicable.</param>
         /// <param name="data"> An optional generic container for any other information about the error.</param>
         /// <returns>A <see cref="JSendInternalServerErrorResult"/> with the specified values.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
+            Justification = "The default values will never change. Furthermore, since C#, F# and VB.NET support optional parameters, it's acceptable to force other CLS-compliant languages that don't support this feature to explicitly provide arguments for each default parameter.")]
         protected internal virtual JSendInternalServerErrorResult JSendInternalServerError(string message,
             int? errorCode = null, object data = null)
         {
@@ -184,6 +187,8 @@ namespace JSend.WebApi
         /// the exception's details will be used instead.
         /// </param>
         /// <returns>A <see cref="JSendExceptionResult"/> with the specified values.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
+            Justification = "The default values will never change. Furthermore, since C#, F# and VB.NET support optional parameters, it's acceptable to force other CLS-compliant languages that don't support this feature to explicitly provide arguments for each default parameter.")]
         protected internal virtual JSendExceptionResult JSendInternalServerError(Exception exception, string message = null,
             int? errorCode = null, object data = null)
         {
@@ -279,6 +284,8 @@ namespace JSend.WebApi
         /// <param name="errorCode">A numeric code corresponding to the error, if applicable.</param>
         /// <param name="data"> An optional generic container for any other information about the error.</param>
         /// <returns>A <see cref="JSendResult{TResponse}"/> with a <see cref="ErrorResponse"/> and the specified values.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
+            Justification = "The default values will never change. Furthermore, since C#, F# and VB.NET support optional parameters, it's acceptable to force other CLS-compliant languages that don't support this feature to explicitly provide arguments for each default parameter.")]
         protected internal virtual JSendResult<ErrorResponse> JSendError(HttpStatusCode statusCode, string message,
             int? errorCode = null, object data = null)
         {

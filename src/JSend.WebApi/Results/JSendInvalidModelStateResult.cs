@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -54,6 +55,8 @@ namespace JSend.WebApi.Results
         }
 
         /// <summary>Gets the model state errors to include in the response.</summary>
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "Since the nested generic type is the member's return type, and not a parameter type, it places little burden on the client. Additionally, the burden can be mitigated through type inference.")]
         public IReadOnlyDictionary<string, IEnumerable<string>> ModelState
         {
             get { return (IReadOnlyDictionary<string, IEnumerable<string>>) _result.Response.Data; }

@@ -15,6 +15,7 @@ namespace JSend.WebApi
     /// An action filter that selects a <see cref="JSendValueResultConverter{T}"/> as the action result converter for actions
     /// that return an arbitrary T value.
     /// </summary>
+    [CLSCompliant(false)]
     public class ValueActionFilter : ActionFilterAttribute
     {
         private readonly JsonSerializerSettings _serializerSettings;
@@ -39,6 +40,9 @@ namespace JSend.WebApi
         /// <param name="actionContext">The action context.</param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
+            if (actionContext == null)
+                throw new ArgumentNullException("actionContext");
+
             var returnType = actionContext.ActionDescriptor.ReturnType;
 
             if (returnType != null &&

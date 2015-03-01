@@ -9,6 +9,7 @@ using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
+using Xunit;
 using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests
@@ -27,6 +28,13 @@ namespace JSend.WebApi.Tests
         {
             // Exercise system
             assertion.Verify(typeof(JSendExceptionHandler).GetConstructors());
+        }
+
+        [Theory, JSendAutoDataAttribute]
+        public void ThrowsWhenContextIsNull(JSendExceptionHandler handler)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => handler.Handle(null));
         }
 
         [Theory, JSendAutoData]
