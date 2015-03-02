@@ -36,12 +36,12 @@ namespace JSend.WebApi.Results
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
         /// <param name="statusCode">The HTTP status code for the response message.</param>
         /// <param name="response">The JSend response to format in the entity body.</param>
-        /// <param name="settings">The serializer settings.</param>
+        /// <param name="serializerSettings">The serializer settings.</param>
         /// <param name="encoding">The content encoding.</param>
         /// <param name="request">The request message which led to this result.</param>
-        public JSendResult(HttpStatusCode statusCode, TResponse response, JsonSerializerSettings settings,
+        public JSendResult(HttpStatusCode statusCode, TResponse response, JsonSerializerSettings serializerSettings,
             Encoding encoding, HttpRequestMessage request)
-            : this(statusCode, response, new DirectDependencyProvider(settings, encoding, request))
+            : this(statusCode, response, new DirectDependencyProvider(serializerSettings, encoding, request))
         {
 
         }
@@ -90,21 +90,21 @@ namespace JSend.WebApi.Results
 
         private class DirectDependencyProvider : IDependencyProvider
         {
-            private readonly JsonSerializerSettings _settings;
+            private readonly JsonSerializerSettings _serializerSettings;
             private readonly Encoding _encoding;
             private readonly HttpRequestMessage _requestMessage;
 
-            public DirectDependencyProvider(JsonSerializerSettings settings, Encoding encoding,
+            public DirectDependencyProvider(JsonSerializerSettings serializerSettings, Encoding encoding,
                 HttpRequestMessage requestMessage)
             {
-                _settings = settings;
+                _serializerSettings = serializerSettings;
                 _encoding = encoding;
                 _requestMessage = requestMessage;
             }
 
             public JsonSerializerSettings JsonSerializerSettings
             {
-                get { return _settings; }
+                get { return _serializerSettings; }
             }
 
             public Encoding Encoding

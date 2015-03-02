@@ -31,20 +31,21 @@ namespace JSend.WebApi.Results
 
         /// <summary>Initializes a new instance of <see cref="JSendOkResult{T}"/>.</summary>
         /// <param name="content">The content value to format in the entity body.</param>
-        /// <param name="settings">The serializer settings.</param>
+        /// <param name="serializerSettings">The serializer settings.</param>
         /// <param name="encoding">The content encoding.</param>
         /// <param name="request">The request message which led to this result.</param>
-        public JSendOkResult(T content, JsonSerializerSettings settings, Encoding encoding, HttpRequestMessage request)
+        public JSendOkResult(T content, JsonSerializerSettings serializerSettings, Encoding encoding,
+            HttpRequestMessage request)
         {
-            _result = InitializeResult(content, settings, encoding, request);
+            _result = InitializeResult(content, serializerSettings, encoding, request);
         }
 
-        private static JSendResult<SuccessResponse> InitializeResult(T content, JsonSerializerSettings settings,
-            Encoding encoding, HttpRequestMessage request)
+        private static JSendResult<SuccessResponse> InitializeResult(T content,
+            JsonSerializerSettings serializerSettings, Encoding encoding, HttpRequestMessage request)
         {
             var response = new SuccessResponse(content);
 
-            return new JSendResult<SuccessResponse>(HttpStatusCode.OK, response, settings, encoding, request);
+            return new JSendResult<SuccessResponse>(HttpStatusCode.OK, response, serializerSettings, encoding, request);
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>

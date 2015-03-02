@@ -65,13 +65,13 @@ namespace JSend.WebApi.Results
         /// <see langword="true"/> if the response should include exception messages/stack traces
         /// when no <paramref name="message"/> or <paramref name="data"/> are provided; otherwise, <see langword="false"/>.
         /// </param>
-        /// <param name="settings">The serializer settings.</param>
+        /// <param name="serializerSettings">The serializer settings.</param>
         /// <param name="encoding">The content encoding.</param>
         /// <param name="request">The request message which led to this result.</param>
         public JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
-            bool includeErrorDetail, JsonSerializerSettings settings, Encoding encoding, HttpRequestMessage request)
+            bool includeErrorDetail, JsonSerializerSettings serializerSettings, Encoding encoding, HttpRequestMessage request)
             : this(exception, message, errorCode, data,
-                new DirectDependencyProvider(includeErrorDetail, settings, encoding, request))
+                new DirectDependencyProvider(includeErrorDetail, serializerSettings, encoding, request))
         {
 
         }
