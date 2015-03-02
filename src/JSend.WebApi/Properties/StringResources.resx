@@ -132,4 +132,7 @@
   <data name="NotFound_WhiteSpaceReason" xml:space="preserve">
     <value>Reason cannot be an empty string.</value>
   </data>
+  <data name="RequestNotAuthorized" xml:space="preserve">
+    <value>Authorization has been denied for this request.</value>
+  </data>
 </root>

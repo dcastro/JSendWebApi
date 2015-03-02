@@ -104,5 +104,14 @@ namespace JSend.WebApi.Properties {
                 return ResourceManager.GetString("NotFound_WhiteSpaceReason", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorization has been denied for this request..
+        /// </summary>
+        internal static string RequestNotAuthorized {
+            get {
+                return ResourceManager.GetString("RequestNotAuthorized", resourceCulture);
+            }
+        }
     }
 }

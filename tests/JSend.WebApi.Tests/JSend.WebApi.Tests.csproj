@@ -110,6 +110,7 @@
     <Compile Include="FixtureCustomizations\UrlHelperCustomization.cs" />
     <Compile Include="JSendValueResultConverterTests.cs" />
     <Compile Include="Results\JSendRedirectToRouteResultTests.cs" />
+    <Compile Include="Results\JSendUnauthorizedResultTests.cs" />
     <Compile Include="ValueActionFilterTests.cs" />
     <Compile Include="VoidActionFilterTests.cs" />
     <Compile Include="JSendExceptionHandlerTests.cs" />
