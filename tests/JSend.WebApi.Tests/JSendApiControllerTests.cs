@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -319,6 +320,30 @@ namespace JSend.WebApi.Tests
             var result = controller.JSendRedirectToRoute(routeName, routeValues);
             // Verify outcome
             result.Should().BeAssignableTo<JSendRedirectToRouteResult>();
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendUnauthorizedWithEnumerable_CreatesNewJSendUnauthorizedResult(
+            List<AuthenticationHeaderValue> challenges, JSendApiController controller)
+        {
+            // Fixture setup
+            var expectedResult = new JSendUnauthorizedResult(challenges, controller);
+            // Exercise system
+            var result = controller.JSendUnauthorized(challenges);
+            // Verify outcome
+            result.ShouldBeEquivalentTo(expectedResult);
+        }
+
+        [Theory, JSendAutoData]
+        public void JSendUnauthorizedWithArray_CreatesNewJSendUnauthorizedResult(AuthenticationHeaderValue[] challenges,
+            JSendApiController controller)
+        {
+            // Fixture setup
+            var expectedResult = new JSendUnauthorizedResult(challenges, controller);
+            // Exercise system
+            var result = controller.JSendUnauthorized(challenges);
+            // Verify outcome
+            result.ShouldBeEquivalentTo(expectedResult);
         }
 
         [Theory, JSendAutoData]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -244,6 +245,24 @@ namespace JSend.WebApi
             object routeValues)
         {
             return JSendRedirectToRoute(routeName, new HttpRouteValueDictionary(routeValues));
+        }
+
+        /// <summary>Creates a <see cref="JSendUnauthorizedResult"/> (401 Unauthorized) with the specified challenge headers.</summary>
+        /// <param name="challenges">The WWW-Authenticate challenges.</param>
+        /// <returns>A <see cref="JSendUnauthorizedResult"/> with the specified values.</returns>
+        protected internal virtual JSendUnauthorizedResult JSendUnauthorized(
+            IEnumerable<AuthenticationHeaderValue> challenges)
+        {
+            return new JSendUnauthorizedResult(challenges, this);
+        }
+
+        /// <summary>Creates a <see cref="JSendUnauthorizedResult"/> (401 Unauthorized) with the specified challenge headers.</summary>
+        /// <param name="challenges">The WWW-Authenticate challenges.</param>
+        /// <returns>A <see cref="JSendUnauthorizedResult"/> with the specified values.</returns>
+        protected internal virtual JSendUnauthorizedResult JSendUnauthorized(
+            params AuthenticationHeaderValue[] challenges)
+        {
+            return JSendUnauthorized(challenges.AsEnumerable());
         }
 
         /// <summary>Creates a <see cref="JSendResult{TResponse}"/> with the specified status code and JSend response.</summary>
