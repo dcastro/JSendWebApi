@@ -118,7 +118,7 @@ namespace JSend.WebApi.Tests
             controller.TestableInitialize(context);
             // Verify outcome
             controller.Configuration.Filters.Should().Contain(
-                filter => filter.Instance.GetType() == typeof (ValueActionFilter));
+                filter => filter.Instance is ValueActionFilter);
         }
 
         [Theory, JSendAutoData]
@@ -132,7 +132,7 @@ namespace JSend.WebApi.Tests
             controller.TestableInitialize(context);
             // Verify outcome
             controller.Configuration.Filters.Should().Contain(
-                filter => filter.Instance.GetType() == typeof (VoidActionFilter));
+                filter => filter.Instance is VoidActionFilter);
         }
 
         [Theory, JSendAutoData]
