@@ -102,12 +102,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DelegatingActionDescriptorTests.cs" />
-    <Compile Include="FixtureCustomizations\ApiControllerCustomization.cs" />
     <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
-    <Compile Include="FixtureCustomizations\JsonMediaTypeFormatterCustomization.cs" />
-    <Compile Include="FixtureCustomizations\RandomHttpStatusCodeCustomization.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
-    <Compile Include="FixtureCustomizations\UrlHelperCustomization.cs" />
     <Compile Include="JSendValueResultConverterTests.cs" />
     <Compile Include="Results\JSendRedirectToRouteResultTests.cs" />
     <Compile Include="Results\JSendUnauthorizedResultTests.cs" />
@@ -134,7 +130,6 @@
     <Compile Include="TestableJSendApiController.cs" />
     <Compile Include="TestTypes\Model.cs" />
     <Compile Include="FixtureCustomizations\JSendAutoDataAttribute.cs" />
-    <Compile Include="FixtureCustomizations\JSendApiControllerCustomization.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

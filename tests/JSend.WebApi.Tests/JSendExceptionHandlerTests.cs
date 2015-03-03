@@ -40,12 +40,8 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void SetsResultToJSendExceptionResult(IFixture fixture, JSendExceptionHandler handler)
+        public void SetsResultToJSendExceptionResult(ExceptionHandlerContext context, JSendExceptionHandler handler)
         {
-            // Fixture setup
-            fixture.Customize<X509Certificate2>(c => c.OmitAutoProperties());
-
-            var context = fixture.Create<ExceptionHandlerContext>();
             // Exercise system
             handler.Handle(context);
             // Verify outcome

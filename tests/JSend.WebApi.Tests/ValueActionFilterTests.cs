@@ -20,16 +20,6 @@ namespace JSend.WebApi.Tests
 {
     public class ValueActionFilterTests
     {
-        private class HttpActionContextCustomization : ICustomization
-        {
-            public void Customize(IFixture fixture)
-            {
-                fixture.Customize<HttpActionContext>(
-                    c => c.OmitAutoProperties()
-                        .With(ctx => ctx.ActionDescriptor));
-            }
-        }
-
         [Theory, JSendAutoData]
         public void IsActionFilter(ValueActionFilter filter)
         {
@@ -38,10 +28,8 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenAnyArgumentIsNull(IFixture fixture, GuardClauseAssertion assertion)
+        public void ConstructorThrowsWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
         {
-            // Fixture setup
-            fixture.Customize(new HttpActionContextCustomization());
             // Exercise system and verify outcome
             assertion.Verify(typeof (ValueActionFilter).GetConstructors());
         }
@@ -55,11 +43,8 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void ThrowsWhenContinuationIsNull(IFixture fixture, ValueActionFilter filter)
+        public void ThrowsWhenContinuationIsNull(HttpActionContext context, ValueActionFilter filter)
         {
-            // Fixture setup
-            fixture.Customize(new HttpActionContextCustomization());
-            var context = fixture.Create<HttpActionContext>();
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
                 () => filter.ExecuteActionFilterAsync(context, CancellationToken.None, null));
@@ -70,7 +55,6 @@ namespace JSend.WebApi.Tests
             IFixture fixture, Func<Task<HttpResponseMessage>> continuation, ValueActionFilter filter)
         {
             // FIxture  setup
-            fixture.Customize(new HttpActionContextCustomization());
             var initialDescriptorMock = fixture.Freeze<Mock<HttpActionDescriptor>>();
             initialDescriptorMock.SetupGet(des => des.ReturnType)
                 .Returns(typeof (Model));
@@ -95,7 +79,6 @@ namespace JSend.WebApi.Tests
             ValueActionFilter filter)
         {
             // Fixture setup
-            fixture.Customize(new HttpActionContextCustomization());
             fixture.Freeze<Mock<HttpActionDescriptor>>()
                 .SetupGet(des => des.ReturnType)
                 .Returns(actionType);
@@ -115,7 +98,6 @@ namespace JSend.WebApi.Tests
             Type actionType, IFixture fixture, Func<Task<HttpResponseMessage>> continuation, ValueActionFilter filter)
         {
             // Fixture setup
-            fixture.Customize(new HttpActionContextCustomization());
             fixture.Freeze<Mock<HttpActionDescriptor>>()
                 .SetupGet(des => des.ReturnType)
                 .Returns(actionType);
@@ -129,13 +111,11 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task ReturnsContinuationMessage(IFixture fixture, Func<Task<HttpResponseMessage>> continuation,
-            ValueActionFilter filter)
+        public async Task ReturnsContinuationMessage(HttpActionContext context,
+            Func<Task<HttpResponseMessage>> continuation, ValueActionFilter filter)
         {
             // Fixture setup
-            fixture.Customize(new HttpActionContextCustomization());
             var continuationMessage = await continuation();
-            var context = fixture.Create<HttpActionContext>();
             // Exercise system
             var actualMessage = await filter.ExecuteActionFilterAsync(context, CancellationToken.None, continuation);
             // Verify outcome

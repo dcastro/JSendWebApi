@@ -37,6 +37,7 @@ namespace JSend.WebApi.Tests
         [Theory, JSendAutoData]
         public void ReplacesExceptionHandler(TestableJSendApiController controller)
         {
+            // Fixture setup
             var context = new HttpControllerContext
             {
                 Configuration = new HttpConfiguration()
@@ -51,12 +52,8 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void AddsValueActionFilter(TestableJSendApiController controller)
+        public void AddsValueActionFilter(HttpControllerContext context, TestableJSendApiController controller)
         {
-            var context = new HttpControllerContext
-            {
-                Configuration = new HttpConfiguration()
-            };
             // Exercise system
             controller.TestableInitialize(context);
             // Verify outcome
@@ -65,12 +62,8 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void AddsVoidActionFilter(TestableJSendApiController controller)
+        public void AddsVoidActionFilter(HttpControllerContext context, TestableJSendApiController controller)
         {
-            var context = new HttpControllerContext
-            {
-                Configuration = new HttpConfiguration()
-            };
             // Exercise system
             controller.TestableInitialize(context);
             // Verify outcome
