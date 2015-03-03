@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
@@ -61,10 +62,13 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task ConvertReturnsSuccessMessage([WithRequest] HttpControllerContext context, Model model,
+        public async Task ConvertReturnsSuccessMessage(IFixture fixture, Model model,
             JSendValueResultConverter<Model> converter)
         {
             // Fixture setup
+            fixture.Customize<X509Certificate2>(c => c.OmitAutoProperties());
+
+            var context = fixture.Create<HttpControllerContext>();
             var jsendSuccess = JsonConvert.SerializeObject(new SuccessResponse(model));
             // Exercise system
             var message = converter.Convert(context, model);
@@ -74,9 +78,12 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void StatusCodeIs200([WithRequest] HttpControllerContext context, Model model,
+        public void StatusCodeIs200(IFixture fixture, Model model,
             JSendValueResultConverter<Model> converter)
         {
+            // Fixture setup
+            fixture.Customize<X509Certificate2>(c => c.OmitAutoProperties());
+            var context = fixture.Create<HttpControllerContext>();
             // Exercise system
             var message = converter.Convert(context, model);
             // Verify outcome
@@ -84,23 +91,12 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void SetsCharSetHeader(IFixture fixture, [WithRequest] HttpControllerContext context, Model model)
-        {
-            // Fixture setup
-            var encoding = Encoding.ASCII;
-            fixture.Inject(encoding);
-
-            var converter = fixture.Create<JSendValueResultConverter<Model>>();
-            // Exercise system
-            var message = converter.Convert(context, model);
-            // Verify outcome
-            message.Content.Headers.ContentType.CharSet.Should().Be(encoding.WebName);
-        }
-
-        [Theory, JSendAutoData]
-        public void SetsContentTypeHeader([WithRequest] HttpControllerContext context, Model model,
+        public void SetsContentTypeHeader(IFixture fixture, Model model,
             JSendValueResultConverter<Model> converter)
         {
+            // Fixture setup
+            fixture.Customize<X509Certificate2>(c => c.OmitAutoProperties());
+            var context = fixture.Create<HttpControllerContext>();
             // Exercise system
             var message = converter.Convert(context, model);
             // Verify outcome

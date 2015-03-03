@@ -23,40 +23,6 @@ namespace JSend.WebApi
     /// </summary>
     public abstract class JSendApiController : ApiController
     {
-        private JsonSerializerSettings _settings;
-        private Encoding _encoding;
-
-        /// <summary>Initializes a new instance of <see cref="JSendApiController"/>.</summary>
-        protected JSendApiController()
-        {
-            _settings = new JsonSerializerSettings();
-            _encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
-        }
-
-        /// <summary>The serializer settings used to serialize JSend responses.</summary>
-        public JsonSerializerSettings JsonSerializerSettings
-        {
-            get { return _settings; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                _settings = value;
-            }
-        }
-
-        /// <summary>The encoding used to encode JSend responses.</summary>
-        public Encoding Encoding
-        {
-            get { return _encoding; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                _encoding = value;
-            }
-        }
-
         /// <summary>
         /// Initializes the <see cref="JSendApiController"/> instance with the specified <paramref name="controllerContext"/>.
         /// </summary>
@@ -66,13 +32,13 @@ namespace JSend.WebApi
             base.Initialize(controllerContext);
 
             this.Configuration.Services.Replace(typeof (IExceptionHandler),
-                new JSendExceptionHandler(_settings, _encoding));
+                new JSendExceptionHandler());
 
             this.Configuration.Filters.Add(
-                new ValueActionFilter(_settings, _encoding));
+                new ValueActionFilter());
 
             this.Configuration.Filters.Add(
-                new VoidActionFilter(_settings, _encoding));
+                new VoidActionFilter());
         }
 
         /// <summary>Creates a <see cref="JSendOkResult"/> (200 OK).</summary>

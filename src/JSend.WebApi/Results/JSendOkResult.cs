@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,26 +21,26 @@ namespace JSend.WebApi.Results
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         public JSendOkResult(JSendApiController controller)
+            : this(new JSendResult<SuccessResponse>.ControllerDependencyProvider(controller))
         {
-            if (controller == null) throw new ArgumentNullException("controller");
 
-            _result = InitializeResult(controller.JsonSerializerSettings, controller.Encoding, controller.Request);
         }
 
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
-        /// <param name="serializerSettings">The serializer settings.</param>
-        /// <param name="encoding">The content encoding.</param>
+        /// <param name="formatter">The formatter to use to format the content.</param>
         /// <param name="request">The request message which led to this result.</param>
-        public JSendOkResult(JsonSerializerSettings serializerSettings, Encoding encoding, HttpRequestMessage request)
+        public JSendOkResult(JsonMediaTypeFormatter formatter, HttpRequestMessage request)
+            : this(new JSendResult<SuccessResponse>.DirectDependencyProvider(formatter, request))
         {
-            _result = InitializeResult(serializerSettings, encoding, request);
+
         }
 
-        private static JSendResult<SuccessResponse> InitializeResult(JsonSerializerSettings serializerSettings,
-            Encoding encoding, HttpRequestMessage request)
+        private JSendOkResult(JSendResult<SuccessResponse>.IDependencyProvider dependencies)
         {
-            return new JSendResult<SuccessResponse>(HttpStatusCode.OK, new SuccessResponse(), serializerSettings,
-                encoding, request);
+            var response = new SuccessResponse();
+
+            _result = new JSendResult<SuccessResponse>(HttpStatusCode.OK, response,
+                dependencies.Formatter, dependencies.RequestMessage);
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>

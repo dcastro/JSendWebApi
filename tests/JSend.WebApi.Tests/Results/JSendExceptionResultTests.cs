@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,14 +40,14 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ConstructorsThrowWhenExceptionIsNull(
-            string message, int? code, object data, bool includeErrorDetail, JsonSerializerSettings settings,
-            Encoding encoding, HttpRequestMessage request, JSendApiController controller)
+            string message, int? code, object data, bool includeErrorDetail, JsonMediaTypeFormatter formatter,
+            HttpRequestMessage request, ApiController controller)
         {
             // Fixture setup
             Exception ex = null;
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
-                () => new JSendExceptionResult(ex, message, code, data, includeErrorDetail, settings, encoding, request));
+                () => new JSendExceptionResult(ex, message, code, data, includeErrorDetail, formatter, request));
             Assert.Throws<ArgumentNullException>(() => new JSendExceptionResult(ex, message, code, data, controller));
         }
 
@@ -169,20 +170,6 @@ namespace JSend.WebApi.Tests.Results
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             message.StatusCode.Should().Be(result.StatusCode);
-        }
-
-        [Theory, JSendAutoData]
-        public async Task SetsCharSetHeader(IFixture fixture)
-        {
-            // Fixture setup
-            var encoding = Encoding.ASCII;
-            fixture.Inject(encoding);
-
-            var result = fixture.Create<JSendExceptionResult>();
-            // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
-            // Verify outcome
-            message.Content.Headers.ContentType.CharSet.Should().Be(encoding.WebName);
         }
 
         [Theory, JSendAutoData]

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
 using JSend.WebApi.Responses;
-using Newtonsoft.Json;
 
 namespace JSend.WebApi.Results
 {
@@ -21,13 +23,13 @@ namespace JSend.WebApi.Results
     {
         private readonly TResponse _response;
         private readonly HttpStatusCode _statusCode;
-        private readonly JsonResult<TResponse> _jsonResult;
+        private readonly FormattedContentResult<TResponse> _formattedContentResult;
 
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
         /// <param name="statusCode">The HTTP status code for the response message.</param>
         /// <param name="response">The JSend response to format in the entity body.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendResult(HttpStatusCode statusCode, TResponse response, JSendApiController controller)
+        public JSendResult(HttpStatusCode statusCode, TResponse response, ApiController controller)
             : this(statusCode, response, new ControllerDependencyProvider(controller))
         {
 
@@ -36,12 +38,11 @@ namespace JSend.WebApi.Results
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
         /// <param name="statusCode">The HTTP status code for the response message.</param>
         /// <param name="response">The JSend response to format in the entity body.</param>
-        /// <param name="serializerSettings">The serializer settings.</param>
-        /// <param name="encoding">The content encoding.</param>
+        /// <param name="formatter">The formatter to use to format the content.</param>
         /// <param name="request">The request message which led to this result.</param>
-        public JSendResult(HttpStatusCode statusCode, TResponse response, JsonSerializerSettings serializerSettings,
-            Encoding encoding, HttpRequestMessage request)
-            : this(statusCode, response, new DirectDependencyProvider(serializerSettings, encoding, request))
+        public JSendResult(HttpStatusCode statusCode, TResponse response, JsonMediaTypeFormatter formatter,
+            HttpRequestMessage request)
+            : this(statusCode, response, new DirectDependencyProvider(formatter, request))
         {
 
         }
@@ -52,11 +53,11 @@ namespace JSend.WebApi.Results
 
             _response = response;
             _statusCode = statusCode;
-            _jsonResult = new JsonResult<TResponse>(
-                response,
-                dependencies.JsonSerializerSettings,
-                dependencies.Encoding,
-                dependencies.RequestMessage);
+
+            var mediaTypeHeader = new MediaTypeHeaderValue("application/json");
+
+            _formattedContentResult = new FormattedContentResult<TResponse>(statusCode, response,
+                dependencies.Formatter, mediaTypeHeader, dependencies.RequestMessage);
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
@@ -74,42 +75,32 @@ namespace JSend.WebApi.Results
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
-        public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
+        public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            var message = await _jsonResult.ExecuteAsync(cancellationToken);
-            message.StatusCode = _statusCode;
-            return message;
+            return _formattedContentResult.ExecuteAsync(cancellationToken);
         }
 
-        private interface IDependencyProvider
+        internal interface IDependencyProvider
         {
-            JsonSerializerSettings JsonSerializerSettings { get; }
-            Encoding Encoding { get; }
+            JsonMediaTypeFormatter Formatter { get; }
+
             HttpRequestMessage RequestMessage { get; }
         }
 
-        private class DirectDependencyProvider : IDependencyProvider
+        internal sealed class DirectDependencyProvider : IDependencyProvider
         {
-            private readonly JsonSerializerSettings _serializerSettings;
-            private readonly Encoding _encoding;
+            private readonly JsonMediaTypeFormatter _formatter;
             private readonly HttpRequestMessage _requestMessage;
 
-            public DirectDependencyProvider(JsonSerializerSettings serializerSettings, Encoding encoding,
-                HttpRequestMessage requestMessage)
+            public DirectDependencyProvider(JsonMediaTypeFormatter formatter, HttpRequestMessage requestMessage)
             {
-                _serializerSettings = serializerSettings;
-                _encoding = encoding;
+                _formatter = formatter;
                 _requestMessage = requestMessage;
             }
 
-            public JsonSerializerSettings JsonSerializerSettings
+            public JsonMediaTypeFormatter Formatter
             {
-                get { return _serializerSettings; }
-            }
-
-            public Encoding Encoding
-            {
-                get { return _encoding; }
+                get { return _formatter; }
             }
 
             public HttpRequestMessage RequestMessage
@@ -118,30 +109,28 @@ namespace JSend.WebApi.Results
             }
         }
 
-        private class ControllerDependencyProvider : IDependencyProvider
+        internal sealed class ControllerDependencyProvider : IDependencyProvider
         {
-            private readonly JSendApiController _controller;
+            private readonly IDependencyProvider _dependencies;
 
-            public ControllerDependencyProvider(JSendApiController controller)
+            public ControllerDependencyProvider(ApiController controller)
             {
                 if (controller == null) throw new ArgumentNullException("controller");
 
-                _controller = controller;
+                var formatter = controller.Configuration.GetJsonMediaTypeFormatter();
+                var request = controller.Request;
+
+                _dependencies = new DirectDependencyProvider(formatter, request);
             }
 
-            public JsonSerializerSettings JsonSerializerSettings
+            public JsonMediaTypeFormatter Formatter
             {
-                get { return _controller.JsonSerializerSettings; }
-            }
-
-            public Encoding Encoding
-            {
-                get { return _controller.Encoding; }
+                get { return _dependencies.Formatter; }
             }
 
             public HttpRequestMessage RequestMessage
             {
-                get { return _controller.Request; }
+                get { return _dependencies.RequestMessage; }
             }
         }
     }

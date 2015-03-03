@@ -18,8 +18,6 @@ namespace JSend.WebApi.Tests.FixtureCustomizations
             fixture.Customize<TestableJSendApiController>(
                 c => c.OmitAutoProperties()
                     .With(x => x.Request)
-                    .With(x => x.JsonSerializerSettings)
-                    .With(x => x.Encoding)
                     .With(x => x.Url)
                     .With(x => x.Configuration));
 

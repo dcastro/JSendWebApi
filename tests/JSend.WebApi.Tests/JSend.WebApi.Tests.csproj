@@ -102,9 +102,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DelegatingActionDescriptorTests.cs" />
-    <Compile Include="FixtureCustomizations\EncodingCustomization.cs" />
+    <Compile Include="FixtureCustomizations\ApiControllerCustomization.cs" />
     <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
-    <Compile Include="FixtureCustomizations\JsonSerializerSettingsCustomization.cs" />
+    <Compile Include="FixtureCustomizations\JsonMediaTypeFormatterCustomization.cs" />
     <Compile Include="FixtureCustomizations\RandomHttpStatusCodeCustomization.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
     <Compile Include="FixtureCustomizations\UrlHelperCustomization.cs" />

@@ -18,21 +18,6 @@ namespace JSend.WebApi
     /// </summary>
     public class ValueActionFilter : IActionFilter
     {
-        private readonly JsonSerializerSettings _serializerSettings;
-        private readonly Encoding _encoding;
-
-        /// <summary>Initializes a new instance of <see cref="ValueActionFilter"/>.</summary>
-        /// <param name="serializerSettings">The serializer settings to pass into the action result converter.</param>
-        /// <param name="encoding">The encoding to pass into the action result converter.</param>
-        public ValueActionFilter(JsonSerializerSettings serializerSettings, Encoding encoding)
-        {
-            if (serializerSettings == null) throw new ArgumentNullException("serializerSettings");
-            if (encoding == null) throw new ArgumentNullException("encoding");
-
-            _serializerSettings = serializerSettings;
-            _encoding = encoding;
-        }
-
         /// <summary>
         /// Gets a value indicating whether more than one instance of the filter can be specified for a single program element.
         /// </summary>
@@ -66,7 +51,7 @@ namespace JSend.WebApi
                 Type valueConverterType = typeof (JSendValueResultConverter<>).MakeGenericType(returnType);
                 var valueConverter =
                     (IActionResultConverter)
-                        Activator.CreateInstance(valueConverterType, _serializerSettings, _encoding);
+                        Activator.CreateInstance(valueConverterType);
 
                 actionContext.ActionDescriptor = new DelegatingActionDescriptor(
                     descriptor: actionContext.ActionDescriptor,

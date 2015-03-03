@@ -17,21 +17,6 @@ namespace JSend.WebApi
     /// </summary>
     public class VoidActionFilter : IActionFilter
     {
-        private readonly JsonSerializerSettings _serializerSettings;
-        private readonly Encoding _encoding;
-
-        /// <summary>Initializes a new instance of <see cref="VoidActionFilter"/>.</summary>
-        /// <param name="serializerSettings">The serializer settings to pass into the action result converter.</param>
-        /// <param name="encoding">The encoding to pass into the action result converter.</param>
-        public VoidActionFilter(JsonSerializerSettings serializerSettings, Encoding encoding)
-        {
-            if (serializerSettings == null) throw new ArgumentNullException("serializerSettings");
-            if (encoding == null) throw new ArgumentNullException("encoding");
-
-            _serializerSettings = serializerSettings;
-            _encoding = encoding;
-        }
-
         /// <summary>
         /// Gets a value indicating whether more than one instance of the filter can be specified for a single program element.
         /// </summary>
@@ -61,7 +46,7 @@ namespace JSend.WebApi
             {
                 actionContext.ActionDescriptor = new DelegatingActionDescriptor(
                     descriptor: actionContext.ActionDescriptor,
-                    resultConverter: new JSendVoidResultConverter(_serializerSettings, _encoding));
+                    resultConverter: new JSendVoidResultConverter());
             }
 
             return continuation();

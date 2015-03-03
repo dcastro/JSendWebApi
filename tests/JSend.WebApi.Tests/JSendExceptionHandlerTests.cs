@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http.Controllers;
 using System.Web.Http.ExceptionHandling;
 using FluentAssertions;
 using JSend.WebApi.Results;
@@ -41,7 +43,8 @@ namespace JSend.WebApi.Tests
         public void SetsResultToJSendExceptionResult(IFixture fixture, JSendExceptionHandler handler)
         {
             // Fixture setup
-            fixture.Customize<ExceptionContext>(c => c.OmitAutoProperties().With(ctx => ctx.Request));
+            fixture.Customize<X509Certificate2>(c => c.OmitAutoProperties());
+
             var context = fixture.Create<ExceptionHandlerContext>();
             // Exercise system
             handler.Handle(context);

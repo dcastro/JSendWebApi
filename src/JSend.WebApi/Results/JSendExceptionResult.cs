@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,6 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Properties;
-using Newtonsoft.Json;
 
 namespace JSend.WebApi.Results
 {
@@ -39,8 +39,7 @@ namespace JSend.WebApi.Results
         /// the exception's details will be used instead.
         /// </param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
-            JSendApiController controller)
+        public JSendExceptionResult(Exception exception, string message, int? errorCode, object data, ApiController controller)
             : this(exception, message, errorCode, data, new ControllerDependencyProvider(controller))
         {
 
@@ -65,13 +64,12 @@ namespace JSend.WebApi.Results
         /// <see langword="true"/> if the response should include exception messages/stack traces
         /// when no <paramref name="message"/> or <paramref name="data"/> are provided; otherwise, <see langword="false"/>.
         /// </param>
-        /// <param name="serializerSettings">The serializer settings.</param>
-        /// <param name="encoding">The content encoding.</param>
+        /// <param name="formatter">The formatter to use to format the content.</param>
         /// <param name="request">The request message which led to this result.</param>
         public JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
-            bool includeErrorDetail, JsonSerializerSettings serializerSettings, Encoding encoding, HttpRequestMessage request)
+            bool includeErrorDetail, JsonMediaTypeFormatter formatter, HttpRequestMessage request)
             : this(exception, message, errorCode, data,
-                new DirectDependencyProvider(includeErrorDetail, serializerSettings, encoding, request))
+                new DirectDependencyProvider(includeErrorDetail, formatter, request))
         {
 
         }
@@ -85,7 +83,7 @@ namespace JSend.WebApi.Results
 
             _exception = exception;
             _result = new JSendResult<ErrorResponse>(HttpStatusCode.InternalServerError, response,
-                dependencies.JsonSerializerSettings, dependencies.Encoding, dependencies.RequestMessage);
+                dependencies.Formatter, dependencies.RequestMessage);
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
@@ -145,24 +143,22 @@ namespace JSend.WebApi.Results
         private interface IDependencyProvider
         {
             bool IncludeErrorDetail { get; }
-            JsonSerializerSettings JsonSerializerSettings { get; }
-            Encoding Encoding { get; }
+
+            JsonMediaTypeFormatter Formatter { get; }
+
             HttpRequestMessage RequestMessage { get; }
         }
 
-        private class DirectDependencyProvider : IDependencyProvider
+        private sealed class DirectDependencyProvider : IDependencyProvider
         {
             private readonly bool _includeErrorDetail;
-            private readonly JsonSerializerSettings _jsonSerializerSettings;
-            private readonly Encoding _encoding;
+            private readonly JsonMediaTypeFormatter _formatter;
             private readonly HttpRequestMessage _requestMessage;
-
-            public DirectDependencyProvider(bool includeErrorDetail, JsonSerializerSettings jsonSerializerSettings,
-                Encoding encoding, HttpRequestMessage requestMessage)
+            
+            public DirectDependencyProvider(bool includeErrorDetail, JsonMediaTypeFormatter formatter, HttpRequestMessage requestMessage)
             {
                 _includeErrorDetail = includeErrorDetail;
-                _jsonSerializerSettings = jsonSerializerSettings;
-                _encoding = encoding;
+                _formatter = formatter;
                 _requestMessage = requestMessage;
             }
 
@@ -171,14 +167,9 @@ namespace JSend.WebApi.Results
                 get { return _includeErrorDetail; }
             }
 
-            public JsonSerializerSettings JsonSerializerSettings
+            public JsonMediaTypeFormatter Formatter
             {
-                get { return _jsonSerializerSettings; }
-            }
-
-            public Encoding Encoding
-            {
-                get { return _encoding; }
+                get { return _formatter; }
             }
 
             public HttpRequestMessage RequestMessage
@@ -187,34 +178,35 @@ namespace JSend.WebApi.Results
             }
         }
 
-        private class ControllerDependencyProvider : IDependencyProvider
+        private sealed class ControllerDependencyProvider : IDependencyProvider
         {
-            private readonly JSendApiController _controller;
+            private readonly IDependencyProvider _dependencies;
 
-            public ControllerDependencyProvider(JSendApiController controller)
+            public ControllerDependencyProvider(ApiController controller)
             {
-                if (controller == null) throw new ArgumentNullException("controller");
-                _controller = controller;
+                if (controller == null)
+                    throw new ArgumentNullException("controller");
+
+                var includeErrorDetail = controller.Request.ShouldIncludeErrorDetail();
+                var formatter = controller.Configuration.GetJsonMediaTypeFormatter();
+                var request = controller.Request;
+
+                _dependencies = new DirectDependencyProvider(includeErrorDetail, formatter, request);
             }
 
             public bool IncludeErrorDetail
             {
-                get { return _controller.RequestContext.IncludeErrorDetail; }
+                get { return _dependencies.IncludeErrorDetail; }
             }
 
-            public JsonSerializerSettings JsonSerializerSettings
+            public JsonMediaTypeFormatter Formatter
             {
-                get { return _controller.JsonSerializerSettings; }
-            }
-
-            public Encoding Encoding
-            {
-                get { return _controller.Encoding; }
+                get { return _dependencies.Formatter; }
             }
 
             public HttpRequestMessage RequestMessage
             {
-                get { return _controller.Request; }
+                get { return _dependencies.RequestMessage; }
             }
         }
     }

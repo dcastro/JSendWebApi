@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,30 +23,28 @@ namespace JSend.WebApi.Results
         /// <summary>Initializes a new instance of <see cref="JSendOkResult{T}"/>.</summary>
         /// <param name="content">The content value to format in the entity body.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendOkResult(T content, JSendApiController controller)
+        public JSendOkResult(T content, ApiController controller)
+            : this(content, new JSendResult<SuccessResponse>.ControllerDependencyProvider(controller))
         {
-            if (controller == null) throw new ArgumentNullException("controller");
 
-            _result = InitializeResult(content, controller.JsonSerializerSettings, controller.Encoding, controller.Request);
         }
 
         /// <summary>Initializes a new instance of <see cref="JSendOkResult{T}"/>.</summary>
         /// <param name="content">The content value to format in the entity body.</param>
-        /// <param name="serializerSettings">The serializer settings.</param>
-        /// <param name="encoding">The content encoding.</param>
+        /// <param name="formatter">The formatter to use to format the content.</param>
         /// <param name="request">The request message which led to this result.</param>
-        public JSendOkResult(T content, JsonSerializerSettings serializerSettings, Encoding encoding,
-            HttpRequestMessage request)
+        public JSendOkResult(T content, JsonMediaTypeFormatter formatter, HttpRequestMessage request)
+            : this(content, new JSendResult<SuccessResponse>.DirectDependencyProvider(formatter, request))
         {
-            _result = InitializeResult(content, serializerSettings, encoding, request);
+
         }
 
-        private static JSendResult<SuccessResponse> InitializeResult(T content,
-            JsonSerializerSettings serializerSettings, Encoding encoding, HttpRequestMessage request)
+        private JSendOkResult(T content, JSendResult<SuccessResponse>.IDependencyProvider dependencies)
         {
             var response = new SuccessResponse(content);
 
-            return new JSendResult<SuccessResponse>(HttpStatusCode.OK, response, serializerSettings, encoding, request);
+            _result = new JSendResult<SuccessResponse>(HttpStatusCode.OK, response,
+                dependencies.Formatter, dependencies.RequestMessage);
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>

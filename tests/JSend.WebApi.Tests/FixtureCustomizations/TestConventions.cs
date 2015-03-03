@@ -13,8 +13,8 @@ namespace JSend.WebApi.Tests.FixtureCustomizations
         public TestConventions()
             : base(
                 new JSendApiControllerCustomization(),
-                new EncodingCustomization(),
-                new JsonSerializerSettingsCustomization(),
+                new ApiControllerCustomization(),
+                new JsonMediaTypeFormatterCustomization(),
                 new UrlHelperCustomization(),
                 new RandomHttpStatusCodeCustomization(),
                 new AutoConfiguredMoqCustomization())

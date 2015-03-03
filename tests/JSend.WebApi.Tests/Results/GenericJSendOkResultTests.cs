@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,24 +40,17 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenSerializerSettingsAreNull(Model model, Encoding encoding, HttpRequestMessage request)
+        public void ConstructorThrowsWhenFormatterIsNull(Model model, HttpRequestMessage request)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null, encoding, request));
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null, request));
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenEncodingIsNull(Model model, JsonSerializerSettings settings, HttpRequestMessage request)
+        public void ConstructorThrowsWhenRequestIsNull(Model model, JsonMediaTypeFormatter formatter)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, settings, null, request));
-        }
-
-        [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenRequestIsNull(Model model, JsonSerializerSettings settings, Encoding encoding)
-        {
-            // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, settings, encoding, null));
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, formatter, null));
         }
 
         [Theory, JSendAutoData]
@@ -105,20 +99,6 @@ namespace JSend.WebApi.Tests.Results
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
             message.StatusCode.Should().Be(result.StatusCode);
-        }
-
-        [Theory, JSendAutoData]
-        public async Task SetsCharSetHeader(IFixture fixture)
-        {
-            // Fixture setup
-            var encoding = Encoding.ASCII;
-            fixture.Inject(encoding);
-
-            var result = fixture.Create<JSendOkResult<Model>>();
-            // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
-            // Verify outcome
-            message.Content.Headers.ContentType.CharSet.Should().Be(encoding.WebName);
         }
 
         [Theory, JSendAutoData]

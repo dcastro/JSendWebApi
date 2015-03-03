@@ -34,64 +34,6 @@ namespace JSend.WebApi.Tests
             controller.Should().BeAssignableTo<ApiController>();
         }
 
-        [Fact]
-        public void EncodingIsUtf8ByDefault()
-        {
-            // Fixture setup
-            var controller = new TestableJSendApiController();
-            // Exercise system
-            var encoding = controller.Encoding;
-            // Verify outcome
-            encoding.Should().BeOfType<UTF8Encoding>();
-        }
-
-        [Fact]
-        public void JsonSerializerSettingsAreDefaultSettings()
-        {
-            // Fixture setup
-            var expectedSettings = new JsonSerializerSettings();
-            var controller = new TestableJSendApiController();
-            // Exercise system
-            var settings = controller.JsonSerializerSettings;
-            // Verify outcome
-            settings.ShouldBeEquivalentTo(expectedSettings);
-        }
-
-        [Theory, JSendAutoData]
-        public void EncodingCanBeSet(JSendApiController controller)
-        {
-            // Fixture setup
-            var expectedEncoding = Encoding.ASCII;
-            // Exercise system
-            controller.Encoding = expectedEncoding;
-            // Verify outcome
-            controller.Encoding.Should().BeSameAs(expectedEncoding);
-        }
-
-        [Theory, JSendAutoData]
-        public void EncodingCannotBeSetToNull(JSendApiController controller)
-        {
-            // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => controller.Encoding = null);
-        }
-
-        [Theory, JSendAutoData]
-        public void JsonSerializerSettingsCanBeSet(JsonSerializerSettings expectedSettings,
-            JSendApiController controller)
-        {
-            // Exercise system
-            controller.JsonSerializerSettings = expectedSettings;
-            // Verify outcome
-            controller.JsonSerializerSettings.Should().BeSameAs(expectedSettings);
-        }
-
-        [Theory, JSendAutoData]
-        public void JsonSerializerSettingsCannotBeSetToNull(JSendApiController controller)
-        {
-            // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => controller.JsonSerializerSettings = null);
-        }
-
         [Theory, JSendAutoData]
         public void ReplacesExceptionHandler(TestableJSendApiController controller)
         {

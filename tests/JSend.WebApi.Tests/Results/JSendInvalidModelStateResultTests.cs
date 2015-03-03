@@ -177,20 +177,6 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsCharSetHeader([InvalidModelState] IFixture fixture)
-        {
-            // Fixture setup
-            var encoding = Encoding.ASCII;
-            fixture.Inject(encoding);
-
-            var result = fixture.Create<JSendInvalidModelStateResult>();
-            // Exercise system
-            var message = await result.ExecuteAsync(new CancellationToken());
-            // Verify outcome
-            message.Content.Headers.ContentType.CharSet.Should().Be(encoding.WebName);
-        }
-
-        [Theory, JSendAutoData]
         public async Task SetsContentTypeHeader([InvalidModelState] JSendInvalidModelStateResult result)
         {
             // Exercise system
