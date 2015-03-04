@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -44,6 +45,23 @@ namespace JSend.WebApi.Tests.Results
             Assert.Throws<ArgumentNullException>(
                 () => new JSendExceptionResult(ex, message, code, data, includeErrorDetail, formatter, request));
             Assert.Throws<ArgumentNullException>(() => new JSendExceptionResult(ex, message, code, data, controller));
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenControllerHasNoJsonFormatter(Exception exception, string message, int? errorCode,
+            object data, ApiController controller)
+        {
+            // Fixture setup
+            var formatters = controller.Configuration.Formatters;
+            formatters.OfType<JsonMediaTypeFormatter>().ToList()
+                .ForEach(f => formatters.Remove(f));
+
+            var expectedMessage = string.Format("The controller's configuration must contain a formatter of type {0}.",
+                typeof (JsonMediaTypeFormatter).FullName);
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendExceptionResult(exception, message, errorCode, data, controller);
+            ctor.ShouldThrow<ArgumentException>()
+                .And.Message.Should().Contain(expectedMessage);
         }
 
         [Theory, JSendAutoData]

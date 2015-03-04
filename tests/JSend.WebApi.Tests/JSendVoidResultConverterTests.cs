@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using FluentAssertions;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Tests.FixtureCustomizations;
+using JSend.WebApi.Tests.TestTypes;
 using Newtonsoft.Json;
-using Ploeh.AutoFixture.Idioms;
 using Xunit;
 using Xunit.Extensions;
 
@@ -26,6 +28,23 @@ namespace JSend.WebApi.Tests
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => converter.Convert(null, null));
+        }
+
+        [Theory, JSendAutoData]
+        public void ThrowsWhenControllerHasNoJsonFormatter(HttpControllerContext context, Model value,
+            JSendVoidResultConverter converter)
+        {
+            // Fixture setup
+            var formatters = context.Configuration.Formatters;
+            formatters.OfType<JsonMediaTypeFormatter>().ToList()
+                .ForEach(f => formatters.Remove(f));
+
+            var expectedMessage = string.Format("The controller's configuration must contain a formatter of type {0}.",
+                typeof (JsonMediaTypeFormatter).FullName);
+            // Exercise system and verify outcome
+            Action convert = () => converter.Convert(context, value);
+            convert.ShouldThrow<ArgumentException>()
+                .And.Message.Should().Contain(expectedMessage);
         }
 
         [Theory, JSendAutoData]

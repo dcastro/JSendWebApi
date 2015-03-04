@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Net.Http.Formatting;
 using System.Web.Http;
+using JSend.WebApi.Properties;
 
 namespace JSend.WebApi
 {
@@ -19,9 +20,10 @@ namespace JSend.WebApi
             if (formatters.JsonFormatter == null)
                 throw new ArgumentException(
                     string.Format(
-                        CultureInfo.InvariantCulture,
-                        "The controller's configuration does not contain any formatter of type {0}.",
-                        typeof (JsonMediaTypeFormatter).FullName));
+                        CultureInfo.CurrentCulture,
+                        StringResources.ConfigurationMustContainFormatter,
+                        typeof (JsonMediaTypeFormatter).FullName),
+                    "configuration");
 
             return formatters.JsonFormatter;
         }

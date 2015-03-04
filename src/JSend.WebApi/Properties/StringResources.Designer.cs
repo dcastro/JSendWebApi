@@ -70,6 +70,15 @@ namespace JSend.WebApi.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The controller&apos;s configuration must contain a formatter of type {0}..
+        /// </summary>
+        internal static string ConfigurationMustContainFormatter {
+            get {
+                return ResourceManager.GetString("ConfigurationMustContainFormatter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error has occurred..
         /// </summary>
         internal static string DefaultErrorMessage {

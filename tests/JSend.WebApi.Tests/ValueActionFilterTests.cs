@@ -10,7 +10,6 @@ using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
 using Moq;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Idioms;
 using Xunit;
 using Xunit.Extensions;
 

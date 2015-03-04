@@ -120,6 +120,9 @@
   <data name="BadRequest_WhiteSpaceReason" xml:space="preserve">
     <value>Reason cannot be an empty string.</value>
   </data>
+  <data name="ConfigurationMustContainFormatter" xml:space="preserve">
+    <value>The controller's configuration must contain a formatter of type {0}.</value>
+  </data>
   <data name="DefaultErrorMessage" xml:space="preserve">
     <value>An error has occurred.</value>
   </data>

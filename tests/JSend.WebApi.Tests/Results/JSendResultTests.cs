@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Linq;
+using System.Net;
+using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -19,6 +22,23 @@ namespace JSend.WebApi.Tests.Results
         {
             // Exercise system and verify outcome
             assertion.Verify(typeof (JSendResult<SuccessResponse>).GetConstructors());
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenControllerHasNoJsonFormatter(HttpStatusCode status, IJSendResponse response,
+            ApiController controller)
+        {
+            // Fixture setup
+            var formatters = controller.Configuration.Formatters;
+            formatters.OfType<JsonMediaTypeFormatter>().ToList()
+                .ForEach(f => formatters.Remove(f));
+
+            var expectedMessage = string.Format("The controller's configuration must contain a formatter of type {0}.",
+                typeof (JsonMediaTypeFormatter).FullName);
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendResult<IJSendResponse>(status, response, controller);
+            ctor.ShouldThrow<ArgumentException>()
+                .And.Message.Should().Contain(expectedMessage);
         }
 
         [Theory, JSendAutoData]

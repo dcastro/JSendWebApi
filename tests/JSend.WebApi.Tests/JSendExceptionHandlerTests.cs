@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
+using System.Net.Http.Formatting;
 using System.Web.Http.ExceptionHandling;
 using FluentAssertions;
 using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
-using Ploeh.AutoFixture.Idioms;
 using Xunit;
 using Xunit.Extensions;
 
@@ -35,6 +36,24 @@ namespace JSend.WebApi.Tests
             Action handle = () => handler.Handle(handlerContext);
             handle.ShouldThrow<ArgumentException>()
                 .And.Message.Should().Contain("ExceptionHandlerContext.RequestContext must not be null.");
+        }
+
+
+        [Theory, JSendAutoData]
+        public void ThrowsWhenControllerHasNoJsonFormatter(ExceptionHandlerContext context,
+            JSendExceptionHandler handler)
+        {
+            // Fixture setup
+            var formatters = context.RequestContext.Configuration.Formatters;
+            formatters.OfType<JsonMediaTypeFormatter>().ToList()
+                .ForEach(f => formatters.Remove(f));
+
+            var expectedMessage = string.Format("The controller's configuration must contain a formatter of type {0}.",
+                typeof (JsonMediaTypeFormatter).FullName);
+            // Exercise system and verify outcome
+            Action handle = () => handler.Handle(context);
+            handle.ShouldThrow<ArgumentException>()
+                .And.Message.Should().Contain(expectedMessage);
         }
 
         [Theory, JSendAutoData]

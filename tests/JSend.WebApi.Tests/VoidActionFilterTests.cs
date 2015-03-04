@@ -9,7 +9,6 @@ using FluentAssertions;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Moq;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Idioms;
 using Xunit;
 using Xunit.Extensions;
 
