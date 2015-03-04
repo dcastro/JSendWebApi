@@ -113,5 +113,14 @@ namespace JSend.WebApi.Properties {
                 return ResourceManager.GetString("RequestNotAuthorized", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.{1} must not be null..
+        /// </summary>
+        internal static string TypePropertyMustNotBeNull {
+            get {
+                return ResourceManager.GetString("TypePropertyMustNotBeNull", resourceCulture);
+            }
+        }
     }
 }

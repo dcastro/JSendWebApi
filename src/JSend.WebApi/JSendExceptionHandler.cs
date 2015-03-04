@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Web.Http.ExceptionHandling;
+using JSend.WebApi.Properties;
 using JSend.WebApi.Results;
 
 namespace JSend.WebApi
@@ -18,7 +20,12 @@ namespace JSend.WebApi
                 throw new ArgumentNullException("context");
 
             if (context.RequestContext == null)
-                throw new ArgumentException("The exception handler context does not contain a request context",
+                throw new ArgumentException(
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        StringResources.TypePropertyMustNotBeNull,
+                        typeof (ExceptionHandlerContext).Name,
+                        "RequestContext"),
                     "context");
 
             var includeErrorDetail = context.Request.ShouldIncludeErrorDetail();

@@ -26,6 +26,18 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
+        public void ThrowsWhenRequestContextIsNull(ExceptionContext exceptionContext, JSendExceptionHandler handler)
+        {
+            // Fixture setup
+            exceptionContext.RequestContext = null;
+            var handlerContext = new ExceptionHandlerContext(exceptionContext);
+            // Exercise system and verify outcome
+            Action handle = () => handler.Handle(handlerContext);
+            handle.ShouldThrow<ArgumentException>()
+                .And.Message.Should().Contain("ExceptionHandlerContext.RequestContext must not be null.");
+        }
+
+        [Theory, JSendAutoData]
         public void SetsResultToJSendExceptionResult(ExceptionHandlerContext context, JSendExceptionHandler handler)
         {
             // Exercise system

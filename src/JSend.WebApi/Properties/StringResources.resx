@@ -135,4 +135,7 @@
   <data name="RequestNotAuthorized" xml:space="preserve">
     <value>Authorization has been denied for this request.</value>
   </data>
+  <data name="TypePropertyMustNotBeNull" xml:space="preserve">
+    <value>{0}.{1} must not be null.</value>
+  </data>
 </root>
