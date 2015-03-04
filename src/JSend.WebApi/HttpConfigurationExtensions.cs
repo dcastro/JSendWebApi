@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http.Formatting;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace JSend.WebApi

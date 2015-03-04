@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using JSend.WebApi.Responses;
 using JSend.WebApi.Properties;
+using JSend.WebApi.Responses;
 
 namespace JSend.WebApi.Results
 {

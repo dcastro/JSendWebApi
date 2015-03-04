@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -13,7 +11,6 @@ using JSend.WebApi.Responses;
 using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;

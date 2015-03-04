@@ -1,13 +1,10 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using JSend.WebApi.Responses;
-using Newtonsoft.Json;
 
 namespace JSend.WebApi.Results
 {

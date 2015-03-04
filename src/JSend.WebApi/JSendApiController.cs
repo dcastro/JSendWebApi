@@ -4,9 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.ExceptionHandling;
@@ -14,7 +11,6 @@ using System.Web.Http.ModelBinding;
 using System.Web.Http.Routing;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Results;
-using Newtonsoft.Json;
 
 namespace JSend.WebApi
 {
@@ -31,13 +27,13 @@ namespace JSend.WebApi
         {
             base.Initialize(controllerContext);
 
-            this.Configuration.Services.Replace(typeof (IExceptionHandler),
+            Configuration.Services.Replace(typeof (IExceptionHandler),
                 new JSendExceptionHandler());
 
-            this.Configuration.Filters.Add(
+            Configuration.Filters.Add(
                 new ValueActionFilter());
 
-            this.Configuration.Filters.Add(
+            Configuration.Filters.Add(
                 new VoidActionFilter());
         }
 

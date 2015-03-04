@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
+using JSend.WebApi.Properties;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
-using JSend.WebApi.Properties;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Extensions;

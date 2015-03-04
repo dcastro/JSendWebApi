@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using FluentAssertions;
@@ -12,9 +7,7 @@ using JSend.WebApi.Responses;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
 using Newtonsoft.Json;
-using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
-using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
 

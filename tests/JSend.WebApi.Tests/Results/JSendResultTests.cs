@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Http.Results;
 using FluentAssertions;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
-using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
-using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests.Results

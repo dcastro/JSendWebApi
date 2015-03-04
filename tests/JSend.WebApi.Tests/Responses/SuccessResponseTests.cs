@@ -1,9 +1,7 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;

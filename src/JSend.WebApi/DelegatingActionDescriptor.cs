@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
@@ -39,7 +37,7 @@ namespace JSend.WebApi
 
         /// <summary>
         /// Gets the converter for correctly transforming the result of calling
-        /// <see cref="ExecuteAsync(HttpControllerContext, IDictionary{string, object}, CancellationToken)"/> into an instance of
+        /// <see cref="ExecuteAsync(HttpControllerContext, IDictionary{string,object}, CancellationToken)"/> into an instance of
         /// <see cref="HttpResponseMessage"/>. 
         /// </summary>
         public override IActionResultConverter ResultConverter
