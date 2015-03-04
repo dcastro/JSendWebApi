@@ -23,13 +23,6 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
-        {
-            // Exercise system and verify outcome
-            assertion.Verify(typeof (JSendValueResultConverter<Model>).GetConstructors());
-        }
-
-        [Theory, JSendAutoData]
         public void ThrowsWhenControllerContextIsNull(Model value, JSendValueResultConverter<Model> converter)
         {
             // Exercise system and verify outcome
