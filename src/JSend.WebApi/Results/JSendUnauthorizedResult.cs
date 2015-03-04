@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,14 +24,32 @@ namespace JSend.WebApi.Results
         /// <param name="challenges">The WWW-Authenticate challenges.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         public JSendUnauthorizedResult(IEnumerable<AuthenticationHeaderValue> challenges, ApiController controller)
+            : this(challenges, new JSendResult<FailResponse>.ControllerDependencyProvider(controller))
+
+        {
+
+        }
+
+        /// <summary>Initializes a new instance of <see cref="JSendUnauthorizedResult"/>.</summary>
+        /// <param name="challenges">The WWW-Authenticate challenges.</param>
+        /// <param name="formatter">The formatter to use to format the content.</param>
+        /// <param name="request">The request message which led to this result.</param>
+        public JSendUnauthorizedResult(IEnumerable<AuthenticationHeaderValue> challenges,
+            JsonMediaTypeFormatter formatter, HttpRequestMessage request)
+            : this(challenges, new JSendResult<FailResponse>.DirectDependencyProvider(formatter, request))
+        {
+
+        }
+
+        private JSendUnauthorizedResult(IEnumerable<AuthenticationHeaderValue> challenges,
+            JSendResult<FailResponse>.IDependencyProvider dependencies)
         {
             if (challenges == null) throw new ArgumentNullException("challenges");
-            if (controller == null) throw new ArgumentNullException("controller");
-
             _challenges = challenges;
 
             var response = new FailResponse(StringResources.RequestNotAuthorized);
-            _result = new JSendResult<FailResponse>(HttpStatusCode.Unauthorized, response, controller);
+            _result = new JSendResult<FailResponse>(HttpStatusCode.Unauthorized, response,
+                dependencies.Formatter, dependencies.RequestMessage);
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
