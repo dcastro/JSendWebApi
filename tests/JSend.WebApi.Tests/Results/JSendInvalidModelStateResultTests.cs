@@ -53,7 +53,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ThrowsIfModelStateIsValid(ModelStateDictionary modelState, JSendApiController controller)
+        public void ThrowsIfModelStateIsValid(ModelStateDictionary modelState, ApiController controller)
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentException>(() => new JSendInvalidModelStateResult(modelState, controller));
@@ -118,7 +118,7 @@ namespace JSend.WebApi.Tests.Results
             fixture.Customize<ModelStateDictionary>(c =>
                 c.Do(dic => dic.AddModelError("age", new Exception("exceptionMessage1")))
                     .Do(dic => dic.AddModelError("age", new Exception("exceptionMessage2"))));
-            fixture.Freeze<JSendApiController>().RequestContext.IncludeErrorDetail = true;
+            fixture.Freeze<ApiController>().RequestContext.IncludeErrorDetail = true;
 
             var expectedValidationErrors = new Dictionary<string, IEnumerable<string>>
             {
@@ -134,7 +134,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void InsertsDefaultMessageInsteadOfExceptionMessage_If_ControllerIsConfiguredToNotIncludeErrorDetails(
-            IFixture fixture, [Frozen] JSendApiController controller)
+            IFixture fixture, [Frozen] ApiController controller)
         {
             // Fixture setup
             fixture.Customize<ModelStateDictionary>(c =>

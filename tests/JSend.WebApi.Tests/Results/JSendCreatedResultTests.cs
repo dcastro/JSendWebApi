@@ -31,7 +31,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenLocationIsNull(Model content, JSendApiController controller)
+        public void ConstructorThrowsWhenLocationIsNull(Model content, ApiController controller)
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => new JSendCreatedResult<Model>(null, content, controller));
@@ -39,7 +39,7 @@ namespace JSend.WebApi.Tests.Results
 
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(Uri location, Model content, JSendApiController controller)
+        public void ResponseIsCorrectlyInitialized(Uri location, Model content, ApiController controller)
         {
             // Fixture setup
             var expectedResponse = new SuccessResponse(content);
@@ -57,7 +57,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void LocationIsCorrectlyInitialized(Uri location, Model content, JSendApiController controller)
+        public void LocationIsCorrectlyInitialized(Uri location, Model content, ApiController controller)
         {
             // Exercise system
             var result = new JSendCreatedResult<Model>(location, content, controller);
@@ -66,7 +66,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ContentIsCorrectlyInitialized(Uri location, Model content, JSendApiController controller)
+        public void ContentIsCorrectlyInitialized(Uri location, Model content, ApiController controller)
         {
             // Exercise system
             var result = new JSendCreatedResult<Model>(location, content, controller);

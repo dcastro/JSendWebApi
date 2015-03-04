@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Http;
 using FluentAssertions;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Results;
@@ -22,7 +23,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseIsCorrectlyInitialized(HttpStatusCode code, IJSendResponse response,
-            JSendApiController controller)
+            ApiController controller)
         {
             // Exercise system
             var result = new JSendResult<IJSendResponse>(code, response, controller);
@@ -32,7 +33,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void StatusCodeIsCorrectlyInitialized(HttpStatusCode expectedStatusCode, IJSendResponse response,
-            JSendApiController controller)
+            ApiController controller)
         {
             // Exercise system
             var result = new JSendResult<IJSendResponse>(expectedStatusCode, response, controller);

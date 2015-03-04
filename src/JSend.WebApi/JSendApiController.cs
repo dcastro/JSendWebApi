@@ -15,7 +15,7 @@ using JSend.WebApi.Results;
 namespace JSend.WebApi
 {
     /// <summary>
-    /// Defines properties and methods to easily create JSend formatted responses.
+    /// Defines methods to easily create JSend formatted responses.
     /// </summary>
     public abstract class JSendApiController : ApiController
     {

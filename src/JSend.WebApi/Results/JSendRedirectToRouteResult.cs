@@ -24,9 +24,10 @@ namespace JSend.WebApi.Results
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="routeValues">The route data to use for generating the URL.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "2", Justification = "The parameter controller is validated by JSendResult<T>'s constructor.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "2",
+            Justification = "The parameter controller is validated by JSendResult<T>'s constructor.")]
         public JSendRedirectToRouteResult(string routeName, IDictionary<string, object> routeValues,
-            JSendApiController controller)
+            ApiController controller)
         {
             _result = new JSendResult<SuccessResponse>(HttpStatusCode.Redirect, new SuccessResponse(), controller);
 

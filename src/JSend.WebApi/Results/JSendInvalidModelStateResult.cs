@@ -24,7 +24,7 @@ namespace JSend.WebApi.Results
         /// <summary>Initializes a new instance of <see cref="JSendInvalidModelStateResult"/>.</summary>
         /// <param name="modelState">The invalid model state to include in the response's body as key-value pairs.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendInvalidModelStateResult(ModelStateDictionary modelState, JSendApiController controller)
+        public JSendInvalidModelStateResult(ModelStateDictionary modelState, ApiController controller)
         {
             if (controller == null) throw new ArgumentNullException("controller");
 

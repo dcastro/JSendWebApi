@@ -33,7 +33,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseIsCorrectlyInitialized(IEnumerable<AuthenticationHeaderValue> challenges,
-            JSendApiController controller)
+            ApiController controller)
         {
             // Fixture setup
             var expectedResponse = new FailResponse(StringResources.RequestNotAuthorized);
@@ -52,7 +52,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ChallengesAreCorrectlyInitialized(List<AuthenticationHeaderValue> challenges,
-            JSendApiController controller)
+            ApiController controller)
         {
             // Exercise system
             var result = new JSendUnauthorizedResult(challenges, controller);

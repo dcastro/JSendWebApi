@@ -30,7 +30,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(Uri location, JSendApiController controller)
+        public void ResponseIsCorrectlyInitialized(Uri location, ApiController controller)
         {
             // Fixture setup
             var expectedResponse = new SuccessResponse();
@@ -48,7 +48,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void LocationIsCorrectlyInitialized(Uri location, JSendApiController controller)
+        public void LocationIsCorrectlyInitialized(Uri location, ApiController controller)
         {
             // Exercise system
             var result = new JSendRedirectResult(location, controller);

@@ -29,7 +29,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(JSendApiController controller)
+        public void ResponseIsCorrectlyInitialized(ApiController controller)
         {
             // Fixture setup
             var expectedResponse = new SuccessResponse();

@@ -19,7 +19,7 @@ namespace JSend.WebApi.Results
         /// <summary>Initializes a new instance of <see cref="JSendRedirectResult"/>.</summary>
         /// <param name="location">The location to which to redirect.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendRedirectResult(Uri location, JSendApiController controller)
+        public JSendRedirectResult(Uri location, ApiController controller)
         {
             if (location == null) throw new ArgumentNullException("location");
 

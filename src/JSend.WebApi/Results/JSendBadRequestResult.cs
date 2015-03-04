@@ -19,7 +19,7 @@ namespace JSend.WebApi.Results
         /// <summary>Initializes a new instance of <see cref="JSendBadRequestResult"/>.</summary>
         /// <param name="reason">The reason why the request could not be processed.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendBadRequestResult(string reason, JSendApiController controller)
+        public JSendBadRequestResult(string reason, ApiController controller)
         {
             if (reason == null)
                 throw new ArgumentNullException("reason");

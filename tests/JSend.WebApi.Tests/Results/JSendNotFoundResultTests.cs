@@ -31,7 +31,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenReasonIsWhiteSpace(JSendApiController controller)
+        public void ConstructorThrowsWhenReasonIsWhiteSpace(ApiController controller)
         {
             // Exercise system and verify outcome
             Action ctor = () => new JSendNotFoundResult("  ", controller);
@@ -40,7 +40,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(string reason, JSendApiController controller)
+        public void ResponseIsCorrectlyInitialized(string reason, ApiController controller)
         {
             // Fixture setup
             var expectedResponse = new FailResponse(reason);
@@ -58,7 +58,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ReasonIsCorrectlyInitialized(string reason, JSendApiController controller)
+        public void ReasonIsCorrectlyInitialized(string reason, ApiController controller)
         {
             // Exercise system
             var result = new JSendNotFoundResult(reason, controller);
@@ -67,7 +67,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ReasonIsSetToDefaultMessage_When_ArgumentIsNull(JSendApiController controller)
+        public void ReasonIsSetToDefaultMessage_When_ArgumentIsNull(ApiController controller)
         {
             // Exercise system
             var result = new JSendNotFoundResult(null, controller);

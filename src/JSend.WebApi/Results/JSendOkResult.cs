@@ -17,7 +17,7 @@ namespace JSend.WebApi.Results
 
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendOkResult(JSendApiController controller)
+        public JSendOkResult(ApiController controller)
             : this(new JSendResult<SuccessResponse>.ControllerDependencyProvider(controller))
         {
 

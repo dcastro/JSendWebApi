@@ -28,7 +28,7 @@ namespace JSend.WebApi.Results
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "3", Justification = "The parameter controller is validated by JSendResult<T>'s constructor.")]
         public JSendCreatedAtRouteResult(string routeName, IDictionary<string, object> routeValues, T content,
-            JSendApiController controller)
+            ApiController controller)
         {
             _result = new JSendResult<SuccessResponse>(HttpStatusCode.Created, new SuccessResponse(content), controller);
 

@@ -20,7 +20,7 @@ namespace JSend.WebApi.Results
         /// <param name="errorCode">A numeric code corresponding to the error, if applicable.</param>
         /// <param name="data"> An optional generic container for any other information about the error.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendInternalServerErrorResult(string message, int? errorCode, object data, JSendApiController controller)
+        public JSendInternalServerErrorResult(string message, int? errorCode, object data, ApiController controller)
         {
             var response = new ErrorResponse(message, errorCode, data);
 

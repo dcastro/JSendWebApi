@@ -55,7 +55,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ExceptionIsCorrectlyInitialized(Exception ex, string message, int? code, object data,
-            JSendApiController controller)
+            ApiController controller)
         {
             // Exercise system
             var result = new JSendExceptionResult(ex, message, code, data, controller);
@@ -84,7 +84,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseMessageIsSetToMessage_When_MessageIsNotNull(
-            Exception ex, string message, int? code, object data, JSendApiController controller)
+            Exception ex, string message, int? code, object data, ApiController controller)
         {
             // Exercise system
             var result = new JSendExceptionResult(ex, message, code, data, controller);
@@ -94,7 +94,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseMessageIsSetToExceptionMessage_When_MessageIsNull_And_ControllerIsConfiguredToIncludeErrorDetails(
-            Exception ex, int? code, object data, JSendApiController controller)
+            Exception ex, int? code, object data, ApiController controller)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = true;
@@ -106,7 +106,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseMessageIsSetToDefaultMessage_When_MessageIsNull_And_ControllerIsConfiguredToNotIncludeErrorDetails(
-            Exception ex, int? code, object data, JSendApiController controller)
+            Exception ex, int? code, object data, ApiController controller)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = false;
@@ -118,7 +118,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseDataIsSetToData_When_DataIsNotNull(
-            Exception ex, string message, int? code, object data, JSendApiController controller)
+            Exception ex, string message, int? code, object data, ApiController controller)
         {
             // Exercise system 
             var result = new JSendExceptionResult(ex, message, code, data, controller);
@@ -128,7 +128,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseDataIsSetToStringifiedException_When_DataIsNull_And_ControllerIsConfiguredToIncludeErrorDetails(
-            Exception ex, string message, int? code, JSendApiController controller)
+            Exception ex, string message, int? code, ApiController controller)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = true;
@@ -140,7 +140,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void ResponseDataIsSetToNull_When_DataIsNull_And_ControllerIsConfiguredToNotIncludeErrorDetails(
-            Exception ex, string message, int? code, JSendApiController controller)
+            Exception ex, string message, int? code, ApiController controller)
         {
             // Fixture setup
             controller.RequestContext.IncludeErrorDetail = false;

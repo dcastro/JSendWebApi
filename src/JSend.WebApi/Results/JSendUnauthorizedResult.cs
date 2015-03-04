@@ -22,7 +22,7 @@ namespace JSend.WebApi.Results
         /// <summary>Initializes a new instance of <see cref="JSendUnauthorizedResult"/>.</summary>
         /// <param name="challenges">The WWW-Authenticate challenges.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendUnauthorizedResult(IEnumerable<AuthenticationHeaderValue> challenges, JSendApiController controller)
+        public JSendUnauthorizedResult(IEnumerable<AuthenticationHeaderValue> challenges, ApiController controller)
         {
             if (challenges == null) throw new ArgumentNullException("challenges");
             if (controller == null) throw new ArgumentNullException("controller");

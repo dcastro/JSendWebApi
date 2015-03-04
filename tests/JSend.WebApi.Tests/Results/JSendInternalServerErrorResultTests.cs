@@ -31,7 +31,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenMessageIsNull(int? errorCode, object data, JSendApiController controller)
+        public void ConstructorThrowsWhenMessageIsNull(int? errorCode, object data, ApiController controller)
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
@@ -39,7 +39,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenMessageIsWhiteSpace(int? errorCode, object data, JSendApiController controller)
+        public void ConstructorThrowsWhenMessageIsWhiteSpace(int? errorCode, object data, ApiController controller)
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentException>(
@@ -47,7 +47,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsCorrectlyInitialized(string message, int? errorCode, Exception data, JSendApiController controller)
+        public void ResponseIsCorrectlyInitialized(string message, int? errorCode, Exception data, ApiController controller)
         {
             // Fixture setup
             var expectedResponse = new ErrorResponse(message, errorCode, data);
@@ -66,7 +66,7 @@ namespace JSend.WebApi.Tests.Results
 
         [Theory, JSendAutoData]
         public void MessageIsCorrectlyInitialized(string message, int? errorCode, Exception data,
-            JSendApiController controller)
+            ApiController controller)
         {
             // Exercise system
             var result = new JSendInternalServerErrorResult(message, errorCode, data, controller);

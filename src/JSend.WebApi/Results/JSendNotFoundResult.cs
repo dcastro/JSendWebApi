@@ -21,7 +21,7 @@ namespace JSend.WebApi.Results
         /// The reason why the requested resource could not be found. If none is specified, a default message will be used instead.
         /// </param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendNotFoundResult(string reason, JSendApiController controller)
+        public JSendNotFoundResult(string reason, ApiController controller)
         {
             if (reason == null)
                 reason = StringResources.NotFound_DefaultMessage;

@@ -22,7 +22,7 @@ namespace JSend.WebApi.Results
         /// <param name="location">The location at which the content has been created.</param>
         /// <param name="content">The content value to negotiate and format in the entity body.</param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendCreatedResult(Uri location, T content, JSendApiController controller)
+        public JSendCreatedResult(Uri location, T content, ApiController controller)
         {
             if (location == null) throw new ArgumentNullException("location");
 
