@@ -104,6 +104,7 @@
     <Compile Include="DelegatingActionDescriptorTests.cs" />
     <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
+    <Compile Include="JSendAuthorizeAttributeResult.cs" />
     <Compile Include="JSendValueResultConverterTests.cs" />
     <Compile Include="Results\JSendRedirectToRouteResultTests.cs" />
     <Compile Include="Results\JSendUnauthorizedResultTests.cs" />
