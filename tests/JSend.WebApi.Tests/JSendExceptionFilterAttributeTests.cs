@@ -43,7 +43,7 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsResponseBodyWithErrorDetails(HttpRequestContext requestContext,
+        public async Task CreatesErrorResponseWithDetails(HttpRequestContext requestContext,
             HttpActionExecutedContext context, JSendExceptionFilterAttribute filter)
         {
             // Fixture setup
@@ -60,7 +60,7 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task SetsResponseBodyWithoutDetails(HttpRequestContext requestContext,
+        public async Task CreatesErrorResponseWithoutDetails(HttpRequestContext requestContext,
             HttpActionExecutedContext context, JSendExceptionFilterAttribute filter)
         {
             // Fixture setup
