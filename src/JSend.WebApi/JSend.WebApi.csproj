@@ -79,8 +79,8 @@
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Results\JSendUnauthorizedResult.cs" />
-    <Compile Include="ValueActionFilter.cs" />
-    <Compile Include="VoidActionFilter.cs" />
+    <Compile Include="ValueActionFilterAttribute.cs" />
+    <Compile Include="VoidActionFilterAttribute.cs" />
     <Compile Include="JSendApiController.cs" />
     <Compile Include="JSendExceptionFilterAttribute.cs" />
     <Compile Include="JSendVoidResultConverter.cs" />

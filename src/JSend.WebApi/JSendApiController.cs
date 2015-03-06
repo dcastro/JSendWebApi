@@ -17,23 +17,10 @@ namespace JSend.WebApi
     /// Defines methods to easily create JSend formatted responses.
     /// </summary>
     [JSendExceptionFilter]
+    [ValueActionFilter]
+    [VoidActionFilter]
     public abstract class JSendApiController : ApiController
     {
-        /// <summary>
-        /// Initializes the <see cref="JSendApiController"/> instance with the specified <paramref name="controllerContext"/>.
-        /// </summary>
-        /// <param name="controllerContext">The <see cref="HttpControllerContext"/> object that is used for the initialization.</param>
-        protected override void Initialize(HttpControllerContext controllerContext)
-        {
-            base.Initialize(controllerContext);
-
-            Configuration.Filters.Add(
-                new ValueActionFilter());
-
-            Configuration.Filters.Add(
-                new VoidActionFilter());
-        }
-
         /// <summary>Creates a <see cref="JSendOkResult"/> (200 OK).</summary>
         /// <returns>A <see cref="JSendOkResult"/>.</returns>
         protected internal virtual JSendOkResult JSendOk()

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Web.Http;
-using System.Web.Http.Controllers;
 using System.Web.Http.ModelBinding;
 using FluentAssertions;
 using JSend.WebApi.Responses;
@@ -24,32 +23,28 @@ namespace JSend.WebApi.Tests
             controller.Should().BeAssignableTo<ApiController>();
         }
 
-        [Theory, JSendAutoData]
-        public void HasJSendExceptionFilterAttribute(TestableJSendApiController controller)
+        [Fact]
+        public void HasJSendExceptionFilterAttribute()
         {
             // Exercise system and verify outcome
             typeof (JSendApiController).IsDefined(typeof (JSendExceptionFilterAttribute), false)
                 .Should().BeTrue();
         }
 
-        [Theory, JSendAutoData]
-        public void AddsValueActionFilter(HttpControllerContext context, TestableJSendApiController controller)
+        [Fact]
+        public void HasValueActionFilter()
         {
-            // Exercise system
-            controller.TestableInitialize(context);
-            // Verify outcome
-            controller.Configuration.Filters.Should().Contain(
-                filter => filter.Instance is ValueActionFilter);
+            // Exercise system and verify outcome
+            typeof (JSendApiController).IsDefined(typeof (ValueActionFilterAttribute), false)
+                .Should().BeTrue();
         }
 
-        [Theory, JSendAutoData]
-        public void AddsVoidActionFilter(HttpControllerContext context, TestableJSendApiController controller)
+        [Fact]
+        public void HasVoidActionFilter()
         {
-            // Exercise system
-            controller.TestableInitialize(context);
-            // Verify outcome
-            controller.Configuration.Filters.Should().Contain(
-                filter => filter.Instance is VoidActionFilter);
+            // Exercise system and verify outcome
+            typeof (JSendApiController).IsDefined(typeof (VoidActionFilterAttribute), false)
+                .Should().BeTrue();
         }
 
         [Theory, JSendAutoData]

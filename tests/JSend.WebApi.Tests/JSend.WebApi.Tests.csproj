@@ -108,8 +108,8 @@
     <Compile Include="JSendValueResultConverterTests.cs" />
     <Compile Include="Results\JSendRedirectToRouteResultTests.cs" />
     <Compile Include="Results\JSendUnauthorizedResultTests.cs" />
-    <Compile Include="ValueActionFilterTests.cs" />
-    <Compile Include="VoidActionFilterTests.cs" />
+    <Compile Include="ValueActionFilterAttributeTests.cs" />
+    <Compile Include="VoidActionFilterAttributeTests.cs" />
     <Compile Include="JSendExceptionFilterAttributeTests.cs" />
     <Compile Include="JSendVoidResultConverterTests.cs" />
     <Compile Include="Responses\ErrorResponseTests.cs" />

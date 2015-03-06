@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
@@ -15,34 +13,25 @@ using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests
 {
-    public class ValueActionFilterTests
+    public class ValueActionFilterAttributeTests
     {
         [Theory, JSendAutoData]
-        public void IsActionFilter(ValueActionFilter filter)
+        public void IsActionFilterAttribute(ValueActionFilterAttribute filter)
         {
             // Exercise system and verify outcome
-            filter.Should().BeAssignableTo<IActionFilter>();
+            filter.Should().BeAssignableTo<ActionFilterAttribute>();
         }
 
         [Theory, JSendAutoData]
-        public void ThrowsWhenActionContextIsNull(Func<Task<HttpResponseMessage>> continuation, ValueActionFilter filter)
+        public void ThrowsWhenActionContextIsNull(ValueActionFilterAttribute filter)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(
-                () => filter.ExecuteActionFilterAsync(null, CancellationToken.None, continuation));
+            Assert.Throws<ArgumentNullException>(() => filter.OnActionExecuting(null));
         }
 
         [Theory, JSendAutoData]
-        public void ThrowsWhenContinuationIsNull(HttpActionContext context, ValueActionFilter filter)
-        {
-            // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(
-                () => filter.ExecuteActionFilterAsync(context, CancellationToken.None, null));
-        }
-
-        [Theory, JSendAutoData]
-        public async Task WrapsActionDescriptor_WithDelegatingActionDescriptor_WhenActionReturnsValue(
-            IFixture fixture, Func<Task<HttpResponseMessage>> continuation, ValueActionFilter filter)
+        public void WrapsActionDescriptor_WithDelegatingActionDescriptor_WhenActionReturnsValue(
+            IFixture fixture, ValueActionFilterAttribute filter)
         {
             // FIxture  setup
             var initialDescriptorMock = fixture.Freeze<Mock<HttpActionDescriptor>>();
@@ -51,7 +40,7 @@ namespace JSend.WebApi.Tests
 
             var context = fixture.Create<HttpActionContext>();
             // Exercise system
-            await filter.ExecuteActionFilterAsync(context, CancellationToken.None, continuation);
+            filter.OnActionExecuting(context);
             // Verify outcome
             var descriptor = context.ActionDescriptor;
 
@@ -64,9 +53,8 @@ namespace JSend.WebApi.Tests
         [InlineJSendAutoData(typeof (string), typeof (JSendValueResultConverter<string>))]
         [InlineJSendAutoData(typeof (Model), typeof (JSendValueResultConverter<Model>))]
         [InlineJSendAutoData(typeof (object), typeof (JSendValueResultConverter<object>))]
-        public async Task ComposesActionDescriptor_WithValueResultConverter_WhenActionReturnsValue(
-            Type actionType, Type expectedConverterType, IFixture fixture, Func<Task<HttpResponseMessage>> continuation,
-            ValueActionFilter filter)
+        public void ComposesActionDescriptor_WithValueResultConverter_WhenActionReturnsValue(
+            Type actionType, Type expectedConverterType, IFixture fixture, ValueActionFilterAttribute filter)
         {
             // Fixture setup
             fixture.Freeze<Mock<HttpActionDescriptor>>()
@@ -75,7 +63,7 @@ namespace JSend.WebApi.Tests
 
             var context = fixture.Create<HttpActionContext>();
             // Exercise system
-            await filter.ExecuteActionFilterAsync(context, CancellationToken.None, continuation);
+            filter.OnActionExecuting(context);
             // Verify outcome
             context.ActionDescriptor.ResultConverter.Should().BeOfType(expectedConverterType);
         }
@@ -84,8 +72,8 @@ namespace JSend.WebApi.Tests
         [InlineJSendAutoData(null)]
         [InlineJSendAutoData(typeof (IHttpActionResult))]
         [InlineJSendAutoData(typeof (HttpResponseMessage))]
-        public async Task DoesNotChangeDescriptor_WhenActionDoesNotReturnValue(
-            Type actionType, IFixture fixture, Func<Task<HttpResponseMessage>> continuation, ValueActionFilter filter)
+        public void DoesNotChangeDescriptor_WhenActionDoesNotReturnValue(
+            Type actionType, IFixture fixture, ValueActionFilterAttribute filter)
         {
             // Fixture setup
             fixture.Freeze<Mock<HttpActionDescriptor>>()
@@ -95,21 +83,9 @@ namespace JSend.WebApi.Tests
             var context = fixture.Create<HttpActionContext>();
             var initialDescriptor = context.ActionDescriptor;
             // Exercise system
-            await filter.ExecuteActionFilterAsync(context, CancellationToken.None, continuation);
+            filter.OnActionExecuting(context);
             // Verify outcome
             context.ActionDescriptor.Should().BeSameAs(initialDescriptor);
-        }
-
-        [Theory, JSendAutoData]
-        public async Task ReturnsContinuationMessage(HttpActionContext context,
-            Func<Task<HttpResponseMessage>> continuation, ValueActionFilter filter)
-        {
-            // Fixture setup
-            var continuationMessage = await continuation();
-            // Exercise system
-            var actualMessage = await filter.ExecuteActionFilterAsync(context, CancellationToken.None, continuation);
-            // Verify outcome
-            actualMessage.Should().Be(continuationMessage);
         }
     }
 }
