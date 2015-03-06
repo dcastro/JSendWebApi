@@ -70,7 +70,7 @@ namespace JSend.WebApi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The controller&apos;s configuration must contain a formatter of type {0}..
+        ///   Looks up a localized string similar to The controller&apos;s configuration must contain a formatter that supports the media type application/json..
         /// </summary>
         internal static string ConfigurationMustContainFormatter {
             get {

@@ -59,12 +59,10 @@ namespace JSend.WebApi.Tests.Results
             formatters.OfType<JsonMediaTypeFormatter>().ToList()
                 .ForEach(f => formatters.Remove(f));
 
-            var expectedMessage = string.Format("The controller's configuration must contain a formatter of type {0}.",
-                typeof (JsonMediaTypeFormatter).FullName);
             // Exercise system and verify outcome
             Action ctor = () => new JSendResult<IJSendResponse>(status, response, controller);
             ctor.ShouldThrow<ArgumentException>()
-                .And.Message.Should().Contain(expectedMessage);
+                .And.Message.Should().StartWith(StringResources.ConfigurationMustContainFormatter);
         }
 
         [Theory, JSendAutoData]

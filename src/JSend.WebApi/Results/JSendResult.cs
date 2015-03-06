@@ -25,6 +25,8 @@ namespace JSend.WebApi.Results
         private readonly HttpStatusCode _statusCode;
         private readonly FormattedContentResult<TResponse> _formattedContentResult;
 
+        private static readonly MediaTypeHeaderValue MediaTypeHeader = new MediaTypeHeaderValue("application/json");
+
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
         /// <param name="statusCode">The HTTP status code for the response message.</param>
         /// <param name="response">The JSend response to format in the entity body.</param>
@@ -52,7 +54,7 @@ namespace JSend.WebApi.Results
             _response = response;
             _statusCode = statusCode;
 
-            var mediaTypeHeader = new MediaTypeHeaderValue("application/json");
+            var mediaTypeHeader = new MediaTypeHeaderValue(MediaTypeHeader.MediaType);
 
             _formattedContentResult = new FormattedContentResult<TResponse>(statusCode, response,
                 dependencies.Formatter, mediaTypeHeader, dependencies.RequestMessage);
@@ -109,13 +111,10 @@ namespace JSend.WebApi.Results
                 var formatters = configuration.Formatters;
                 Contract.Assert(formatters != null);
 
-                if (formatters.JsonFormatter == null)
-                    throw new ArgumentException(
-                        string.Format(
-                            CultureInfo.CurrentCulture,
-                            StringResources.ConfigurationMustContainFormatter,
-                            typeof (JsonMediaTypeFormatter).FullName),
-                        "requestMessage");
+                var formatter = formatters.FindWriter(typeof (TResponse), MediaTypeHeader);
+
+                if (formatter == null)
+                    throw new ArgumentException(StringResources.ConfigurationMustContainFormatter, "requestMessage");
 
                 _formatter = formatters.JsonFormatter;
                 _requestMessage = requestMessage;
