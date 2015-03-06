@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
-using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using FluentAssertions;
@@ -28,23 +26,6 @@ namespace JSend.WebApi.Tests
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => converter.Convert(null, value));
-        }
-
-        [Theory, JSendAutoData]
-        public void ThrowsWhenControllerHasNoJsonFormatter(HttpControllerContext context, Model value,
-            JSendValueResultConverter<Model> converter)
-        {
-            // Fixture setup
-            var formatters = context.Configuration.Formatters;
-            formatters.OfType<JsonMediaTypeFormatter>().ToList()
-                .ForEach(f => formatters.Remove(f));
-
-            var expectedMessage = string.Format("The controller's configuration must contain a formatter of type {0}.",
-                typeof (JsonMediaTypeFormatter).FullName);
-            // Exercise system and verify outcome
-            Action convert = () => converter.Convert(context, value);
-            convert.ShouldThrow<ArgumentException>()
-                .And.Message.Should().Contain(expectedMessage);
         }
 
         [Theory, JSendAutoData]

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -36,7 +35,8 @@ namespace JSend.WebApi.Results
         /// the exception's details will be used instead.
         /// </param>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public JSendExceptionResult(Exception exception, string message, int? errorCode, object data, ApiController controller)
+        public JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
+            ApiController controller)
             : this(exception, message, errorCode, data, new ControllerDependencyProvider(controller))
         {
 
@@ -61,12 +61,10 @@ namespace JSend.WebApi.Results
         /// <see langword="true"/> if the response should include exception messages/stack traces
         /// when no <paramref name="message"/> or <paramref name="data"/> are provided; otherwise, <see langword="false"/>.
         /// </param>
-        /// <param name="formatter">The formatter to use to format the content.</param>
         /// <param name="request">The request message which led to this result.</param>
         public JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
-            bool includeErrorDetail, JsonMediaTypeFormatter formatter, HttpRequestMessage request)
-            : this(exception, message, errorCode, data,
-                new DirectDependencyProvider(includeErrorDetail, formatter, request))
+            bool includeErrorDetail, HttpRequestMessage request)
+            : this(exception, message, errorCode, data, new DirectDependencyProvider(includeErrorDetail, request))
         {
 
         }
@@ -80,7 +78,7 @@ namespace JSend.WebApi.Results
 
             _exception = exception;
             _result = new JSendResult<ErrorResponse>(HttpStatusCode.InternalServerError, response,
-                dependencies.Formatter, dependencies.RequestMessage);
+                dependencies.RequestMessage);
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
@@ -141,32 +139,23 @@ namespace JSend.WebApi.Results
         {
             bool IncludeErrorDetail { get; }
 
-            JsonMediaTypeFormatter Formatter { get; }
-
             HttpRequestMessage RequestMessage { get; }
         }
 
         private sealed class DirectDependencyProvider : IDependencyProvider
         {
             private readonly bool _includeErrorDetail;
-            private readonly JsonMediaTypeFormatter _formatter;
             private readonly HttpRequestMessage _requestMessage;
-            
-            public DirectDependencyProvider(bool includeErrorDetail, JsonMediaTypeFormatter formatter, HttpRequestMessage requestMessage)
+
+            public DirectDependencyProvider(bool includeErrorDetail, HttpRequestMessage requestMessage)
             {
                 _includeErrorDetail = includeErrorDetail;
-                _formatter = formatter;
                 _requestMessage = requestMessage;
             }
 
             public bool IncludeErrorDetail
             {
                 get { return _includeErrorDetail; }
-            }
-
-            public JsonMediaTypeFormatter Formatter
-            {
-                get { return _formatter; }
             }
 
             public HttpRequestMessage RequestMessage
@@ -185,20 +174,14 @@ namespace JSend.WebApi.Results
                     throw new ArgumentNullException("controller");
 
                 var includeErrorDetail = controller.Request.ShouldIncludeErrorDetail();
-                var formatter = controller.Configuration.GetJsonMediaTypeFormatter();
                 var request = controller.Request;
 
-                _dependencies = new DirectDependencyProvider(includeErrorDetail, formatter, request);
+                _dependencies = new DirectDependencyProvider(includeErrorDetail, request);
             }
 
             public bool IncludeErrorDetail
             {
                 get { return _dependencies.IncludeErrorDetail; }
-            }
-
-            public JsonMediaTypeFormatter Formatter
-            {
-                get { return _dependencies.Formatter; }
             }
 
             public HttpRequestMessage RequestMessage

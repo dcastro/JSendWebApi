@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -24,10 +23,9 @@ namespace JSend.WebApi.Results
         }
 
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
-        /// <param name="formatter">The formatter to use to format the content.</param>
         /// <param name="request">The request message which led to this result.</param>
-        public JSendOkResult(JsonMediaTypeFormatter formatter, HttpRequestMessage request)
-            : this(new JSendResult<SuccessResponse>.DirectDependencyProvider(formatter, request))
+        public JSendOkResult(HttpRequestMessage request)
+            : this(new JSendResult<SuccessResponse>.RequestDependencyProvider(request))
         {
 
         }
@@ -36,8 +34,7 @@ namespace JSend.WebApi.Results
         {
             var response = new SuccessResponse();
 
-            _result = new JSendResult<SuccessResponse>(HttpStatusCode.OK, response,
-                dependencies.Formatter, dependencies.RequestMessage);
+            _result = new JSendResult<SuccessResponse>(HttpStatusCode.OK, response, dependencies.RequestMessage);
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>

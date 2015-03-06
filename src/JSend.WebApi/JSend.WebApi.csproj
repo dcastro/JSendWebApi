@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DelegatingActionDescriptor.cs" />
-    <Compile Include="HttpConfigurationExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="JSendAuthorizeAttribute.cs" />
     <Compile Include="JSendValueResultConverter.cs" />

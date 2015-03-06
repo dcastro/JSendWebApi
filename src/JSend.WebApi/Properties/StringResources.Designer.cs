@@ -115,6 +115,15 @@ namespace JSend.WebApi.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The request must have a request context..
+        /// </summary>
+        internal static string Request_RequestContextMustNotBeNull {
+            get {
+                return ResourceManager.GetString("Request_RequestContextMustNotBeNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authorization has been denied for this request..
         /// </summary>
         internal static string RequestNotAuthorized {

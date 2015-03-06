@@ -29,11 +29,8 @@ namespace JSend.WebApi
             if (actionContext == null) throw new ArgumentNullException("actionContext");
             Contract.Assert(actionContext.ControllerContext != null);
 
-            var formatter = actionContext.ControllerContext.Configuration.GetJsonMediaTypeFormatter();
-            var request = actionContext.Request;
-
             var result = new JSendUnauthorizedResult(
-                Enumerable.Empty<AuthenticationHeaderValue>(), formatter, request);
+                Enumerable.Empty<AuthenticationHeaderValue>(), actionContext.Request);
 
             actionContext.Response = result.ExecuteAsync(CancellationToken.None).Result;
         }

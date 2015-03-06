@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Web.Http.Controllers;
 using System.Web.Http.Routing;
@@ -16,13 +17,38 @@ namespace JSend.WebApi.Tests.FixtureCustomizations
         public TestConventions()
             : base(
                 new AutoConfiguredMoqCustomization(),
-                new JSendApiControllerCustomization(),
                 new HttpRequestContextCustomization(),
+                new HttpResquestMessageCustomization(),
+                new JSendApiControllerCustomization(),
                 new JsonMediaTypeFormatterCustomization(),
                 new UrlHelperCustomization(),
                 new RandomHttpStatusCodeCustomization())
         {
 
+        }
+    }
+
+    internal class HttpRequestContextCustomization : ICustomization
+    {
+        public void Customize(IFixture fixture)
+        {
+            //we freeze the HttpRequestContext so that the same context is injected into the controller and the request object
+            //otherwise, a conflict would happen and an InvalidOperationException would be thrown
+            var requestContext = fixture.Build<HttpRequestContext>()
+                .Without(x => x.ClientCertificate)
+                .Create();
+
+            fixture.Inject(requestContext);
+        }
+    }
+
+    internal class HttpResquestMessageCustomization : ICustomization
+    {
+        public void Customize(IFixture fixture)
+        {
+            fixture.Customize<HttpRequestMessage>(
+                c => c.Do(
+                    req => req.SetRequestContext(fixture.Create<HttpRequestContext>())));
         }
     }
 
@@ -43,15 +69,6 @@ namespace JSend.WebApi.Tests.FixtureCustomizations
         {
             fixture.Customize<JsonMediaTypeFormatter>(
                 c => c.OmitAutoProperties());
-        }
-    }
-
-    internal class HttpRequestContextCustomization : ICustomization
-    {
-        public void Customize(IFixture fixture)
-        {
-            fixture.Customize<HttpRequestContext>(
-                c => c.Without(x => x.ClientCertificate));
         }
     }
 
@@ -79,8 +96,8 @@ namespace JSend.WebApi.Tests.FixtureCustomizations
 
         private static HttpStatusCode Generate(Random rnd)
         {
-            var values = Enum.GetValues(typeof(HttpStatusCode));
-            return (HttpStatusCode)values.GetValue(rnd.Next(values.Length));
+            var values = Enum.GetValues(typeof (HttpStatusCode));
+            return (HttpStatusCode) values.GetValue(rnd.Next(values.Length));
         }
     }
 }

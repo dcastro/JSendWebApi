@@ -24,16 +24,13 @@ namespace JSend.WebApi
             if (actionExecutedContext == null) throw new ArgumentNullException("actionExecutedContext");
 
             Contract.Assert(actionExecutedContext.Exception != null);
-            Contract.Assert(actionExecutedContext.ActionContext != null);
 
             var exception = actionExecutedContext.Exception;
             var includeErrorDetail = actionExecutedContext.Request.ShouldIncludeErrorDetail();
-            var formatter =
-                actionExecutedContext.ActionContext.ControllerContext.Configuration.GetJsonMediaTypeFormatter();
             var request = actionExecutedContext.Request;
 
             var result = new JSendExceptionResult(exception, null, null, null,
-                includeErrorDetail, formatter, request);
+                includeErrorDetail, request);
 
             actionExecutedContext.Response = await result.ExecuteAsync(cancellationToken);
         }

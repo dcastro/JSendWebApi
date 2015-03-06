@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
@@ -31,23 +29,6 @@ namespace JSend.WebApi.Tests
             // Exercise system and verify outcome
             Func<Task> onException = () => filter.OnExceptionAsync(null, CancellationToken.None);
             onException.ShouldThrow<ArgumentNullException>();
-        }
-
-        [Theory, JSendAutoData]
-        public void ThrowsWhenControllerHasNoJsonFormatter(HttpActionExecutedContext context,
-            JSendExceptionFilterAttribute filter)
-        {
-            // Fixture setup
-            var formatters = context.ActionContext.ControllerContext.Configuration.Formatters;
-            formatters.OfType<JsonMediaTypeFormatter>().ToList()
-                .ForEach(f => formatters.Remove(f));
-
-            var expectedMessage = string.Format("The controller's configuration must contain a formatter of type {0}.",
-                typeof (JsonMediaTypeFormatter).FullName);
-            // Exercise system and verify outcome
-            Func<Task> onException = () => filter.OnExceptionAsync(context, CancellationToken.None);
-            onException.ShouldThrow<ArgumentException>()
-                .And.Message.Should().Contain(expectedMessage);
         }
 
         [Theory, JSendAutoData]

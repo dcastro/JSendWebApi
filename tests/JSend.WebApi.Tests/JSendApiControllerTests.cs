@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using System.Web.Http.ExceptionHandling;
 using System.Web.Http.ModelBinding;
 using FluentAssertions;
 using JSend.WebApi.Responses;

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Controllers;
 using FluentAssertions;
+using JSend.WebApi.Properties;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
@@ -22,6 +25,29 @@ namespace JSend.WebApi.Tests.Results
         {
             // Exercise system and verify outcome
             assertion.Verify(typeof (JSendResult<SuccessResponse>).GetConstructors());
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenRequestHasNoContext(HttpStatusCode status, IJSendResponse response)
+        {
+            // Fixture setup
+            var request = new HttpRequestMessage();
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendResult<IJSendResponse>(status, response, request);
+            ctor.ShouldThrow<ArgumentException>()
+                .And.Message.Should().StartWith(StringResources.Request_RequestContextMustNotBeNull);
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenRequestContextHasNoConfiguration(HttpRequestMessage request, HttpStatusCode status, IJSendResponse response)
+        {
+            // Fixture setup
+            var requestContext = new HttpRequestContext();
+            request.SetRequestContext(requestContext);
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendResult<IJSendResponse>(status, response, request);
+            ctor.ShouldThrow<ArgumentException>()
+                .And.Message.Should().StartWith("HttpRequestContext.Configuration must not be null.");
         }
 
         [Theory, JSendAutoData]

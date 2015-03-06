@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -6,7 +8,9 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Controllers;
 using System.Web.Http.Results;
+using JSend.WebApi.Properties;
 using JSend.WebApi.Responses;
 
 namespace JSend.WebApi.Results
@@ -34,11 +38,9 @@ namespace JSend.WebApi.Results
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
         /// <param name="statusCode">The HTTP status code for the response message.</param>
         /// <param name="response">The JSend response to format in the entity body.</param>
-        /// <param name="formatter">The formatter to use to format the content.</param>
         /// <param name="request">The request message which led to this result.</param>
-        public JSendResult(HttpStatusCode statusCode, TResponse response, JsonMediaTypeFormatter formatter,
-            HttpRequestMessage request)
-            : this(statusCode, response, new DirectDependencyProvider(formatter, request))
+        public JSendResult(HttpStatusCode statusCode, TResponse response, HttpRequestMessage request)
+            : this(statusCode, response, new RequestDependencyProvider(request))
         {
 
         }
@@ -83,14 +85,39 @@ namespace JSend.WebApi.Results
             HttpRequestMessage RequestMessage { get; }
         }
 
-        internal sealed class DirectDependencyProvider : IDependencyProvider
+        internal sealed class RequestDependencyProvider : IDependencyProvider
         {
             private readonly JsonMediaTypeFormatter _formatter;
             private readonly HttpRequestMessage _requestMessage;
 
-            public DirectDependencyProvider(JsonMediaTypeFormatter formatter, HttpRequestMessage requestMessage)
+            public RequestDependencyProvider(HttpRequestMessage requestMessage)
             {
-                _formatter = formatter;
+                var requestContext = requestMessage.GetRequestContext();
+                if (requestContext == null)
+                    throw new ArgumentException(StringResources.Request_RequestContextMustNotBeNull, "requestMessage");
+
+                var configuration = requestContext.Configuration;
+                if (configuration == null)
+                    throw new ArgumentException(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            StringResources.TypePropertyMustNotBeNull,
+                            typeof (HttpRequestContext).Name,
+                            "Configuration"),
+                        "requestMessage");
+
+                var formatters = configuration.Formatters;
+                Contract.Assert(formatters != null);
+
+                if (formatters.JsonFormatter == null)
+                    throw new ArgumentException(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            StringResources.ConfigurationMustContainFormatter,
+                            typeof (JsonMediaTypeFormatter).FullName),
+                        "requestMessage");
+
+                _formatter = formatters.JsonFormatter;
                 _requestMessage = requestMessage;
             }
 
@@ -113,10 +140,7 @@ namespace JSend.WebApi.Results
             {
                 if (controller == null) throw new ArgumentNullException("controller");
 
-                var formatter = controller.Configuration.GetJsonMediaTypeFormatter();
-                var request = controller.Request;
-
-                _dependencies = new DirectDependencyProvider(formatter, request);
+                _dependencies = new RequestDependencyProvider(controller.Request);
             }
 
             public JsonMediaTypeFormatter Formatter

@@ -26,11 +26,10 @@ namespace JSend.WebApi
             if (controllerContext == null)
                 throw new ArgumentNullException("controllerContext");
 
-            var formatter = controllerContext.Configuration.GetJsonMediaTypeFormatter();
             var request = controllerContext.Request;
 
             T value = (T) actionResult;
-            var result = new JSendOkResult<T>(value, formatter, request);
+            var result = new JSendOkResult<T>(value, request);
 
             return result.ExecuteAsync(CancellationToken.None).Result;
         }

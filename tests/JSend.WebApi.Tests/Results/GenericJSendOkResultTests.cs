@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -29,21 +28,14 @@ namespace JSend.WebApi.Tests.Results
         public void ConstructorThrowsWhenControllerIsNull(Model model)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null));
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null as ApiController));
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenFormatterIsNull(Model model, HttpRequestMessage request)
+        public void ConstructorThrowsWhenRequestIsNull(Model model)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null, request));
-        }
-
-        [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenRequestIsNull(Model model, JsonMediaTypeFormatter formatter)
-        {
-            // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, formatter, null));
+            Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null as HttpRequestMessage));
         }
 
         [Theory, JSendAutoData]
