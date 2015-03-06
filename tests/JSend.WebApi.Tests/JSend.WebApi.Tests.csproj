@@ -110,7 +110,7 @@
     <Compile Include="Results\JSendUnauthorizedResultTests.cs" />
     <Compile Include="ValueActionFilterTests.cs" />
     <Compile Include="VoidActionFilterTests.cs" />
-    <Compile Include="JSendExceptionHandlerTests.cs" />
+    <Compile Include="JSendExceptionFilterAttributeTests.cs" />
     <Compile Include="JSendVoidResultConverterTests.cs" />
     <Compile Include="Responses\ErrorResponseTests.cs" />
     <Compile Include="Responses\FailResponseTests.cs" />

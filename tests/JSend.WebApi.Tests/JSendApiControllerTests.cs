@@ -26,20 +26,11 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void ReplacesExceptionHandler(TestableJSendApiController controller)
+        public void HasJSendExceptionFilterAttribute(TestableJSendApiController controller)
         {
-            // Fixture setup
-            var context = new HttpControllerContext
-            {
-                Configuration = new HttpConfiguration()
-            };
-            var defaultHandler = context.Configuration.Services.GetService(typeof (IExceptionHandler));
-            // Exercise system
-            controller.TestableInitialize(context);
-            // Verify outcome
-            var handler = controller.Configuration.Services.GetService(typeof (IExceptionHandler));
-            handler.Should().NotBe(defaultHandler);
-            handler.Should().BeOfType<JSendExceptionHandler>();
+            // Exercise system and verify outcome
+            typeof (JSendApiController).IsDefined(typeof (JSendExceptionFilterAttribute), false)
+                .Should().BeTrue();
         }
 
         [Theory, JSendAutoData]

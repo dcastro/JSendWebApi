@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using System.Web.Http.ExceptionHandling;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.Routing;
 using JSend.WebApi.Responses;
@@ -17,6 +16,7 @@ namespace JSend.WebApi
     /// <summary>
     /// Defines methods to easily create JSend formatted responses.
     /// </summary>
+    [JSendExceptionFilter]
     public abstract class JSendApiController : ApiController
     {
         /// <summary>
@@ -26,9 +26,6 @@ namespace JSend.WebApi
         protected override void Initialize(HttpControllerContext controllerContext)
         {
             base.Initialize(controllerContext);
-
-            Configuration.Services.Replace(typeof (IExceptionHandler),
-                new JSendExceptionHandler());
 
             Configuration.Filters.Add(
                 new ValueActionFilter());
