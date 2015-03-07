@@ -6,6 +6,8 @@
         <title>JSend Web API</title>
         <authors>Diogo Castro</authors>
         <owners>Diogo Castro</owners>
+        <licenseUrl>https://github.com/dcastro/JSendWebApi/blob/master/LICENSE.txt</licenseUrl>
+        <projectUrl>https://github.com/dcastro/JSendWebApi</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>JSend.WebApi extends ASP.NET Web API 2's ApiController and provides several helper methods to easily build JSend formatted responses.</description>
         <language>en-US</language>
@@ -15,8 +17,8 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="..\build\JSend.WebApi.XML" target="lib\net45\JSend.WebApi.XML" />
-        <file src="..\build\JSend.WebApi.pdb" target="lib\net45\JSend.WebApi.pdb" />
         <file src="..\build\JSend.WebApi.dll" target="lib\net45\JSend.WebApi.dll" />
+        <file src="..\build\JSend.WebApi.pdb" target="lib\net45\JSend.WebApi.pdb" />
+        <file src="..\build\JSend.WebApi.xml" target="lib\net45\JSend.WebApi.XML" />
     </files>
 </package>
