@@ -2,17 +2,20 @@
 
 JSendWebApi extends [ASP.NET Web API 2][0]'s [`ApiController`][2] and enables easy generation of [JSend-formatted responses]
 [1].
+ 
+ * [Return types](#return-types)
+   * [Void actions](#void-actions)
+   * [`IHttpActionResult`](#ihttpactionresult)
+   * [Other return types](#other-return-types)
+ * [Exceptions](#exceptions)
+ * [Other stuff](#other-stuff)
+ * [Download](#download)
 
+## Return Types
 
 The return value of a `JSendApIController` action is converted to a HTTP response as follows:
 
- * [Void actions](#void-actions)
- * [`IHttpActionResult`](#ihttpactionresult)
- * [Other return types](#other-return-types)
- * [Exceptions](#exceptions)
- * [Other stuff](#other-stuff)
-
-## Void actions
+### Void actions
 
 Actions that don't return anything are converted to a 200 response with its status set to `success`.  
 
@@ -34,7 +37,7 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
-## `IHttpActionResult`
+### `IHttpActionResult`
 
 The `JSendApiController` provides several helper methods to easily build JSend-formatted responses.  
 [Here's a full list of these helpers methods and examples responses][3].
@@ -102,7 +105,7 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
-## Other return types
+### Other return types
 
 For all other return types (*), they'll be wrapped in a 200 response with its status set to `success` , 
 
