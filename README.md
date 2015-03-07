@@ -6,7 +6,13 @@ JSendWebApi extends [ASP.NET Web API 2][0]'s [`ApiController`][2] and enables ea
 
 The return value of a `JSendApIController` action is converted to a HTTP response as follows:
 
-## Void Actions
+ * [Void actions](#void-actions)
+ * [`IHttpActionResult`](#ihttpactionresult)
+ * [Other return types](#other-return-types)
+ * [Exceptions](#exceptions)
+ * [Other stuff](#other-stuff)
+
+## Void actions
 
 Actions that don't return anything are converted to a 200 response with its status set to `success`.  
 
