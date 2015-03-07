@@ -48,10 +48,13 @@ Target "RunTests" (fun _ ->
 )
 
 Target "CreateNuget" (fun _ ->
+    let index = version.LastIndexOf '.' - 1
+    let semanticVersion = version.[..index]
+
     nuspec
         |> NuGet (fun p ->
             {p with
-                Version = version
+                Version = semanticVersion
                 OutputPath = nugetDir
                 WorkingDir = buildDir})
 )
