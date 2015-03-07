@@ -169,6 +169,14 @@ The default behavior is to show exception details to local clients and hide them
 
 * The `JSendAuthorize` attribute is available and replaces the `Authorize` attribute
 
+## Download
+
+To install JSend Web API, run the following command in the Package Manager Console
+
+    PM> Install-Package JSend.WebApi
+
+Or download the binaries/source code from [here][5].
+
 
 
  [0]: http://www.asp.net/web-api/overview/getting-started-with-aspnet-web-api/tutorial-your-first-web-api
@@ -176,3 +184,4 @@ The default behavior is to show exception details to local clients and hide them
  [2]: https://msdn.microsoft.com/en-us/library/system.web.http.apicontroller%28v=vs.118%29.aspx
  [3]: https://github.com/dcastro/JSendWebApi/wiki#list-of-helper-methods
  [4]: https://msdn.microsoft.com/en-us/library/system.web.http.httpconfiguration.includeerrordetailpolicy%28v=vs.118%29.aspx
+ [5]: https://github.com/dcastro/JSendWebApi/releases
