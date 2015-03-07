@@ -96,6 +96,39 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
+## Other return types
+
+For all other return types (*), they'll be wrapped in a 200 response with its status set to `success` , 
+
+
+```csharp
+public class ArticlesController : JSendApiController
+{
+    public IEnumerable<Article> Get()
+    {
+        return GetAllArticlesFromDb();
+    }
+}
+```
+```
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{
+    "status": "success",
+    "data": [
+        {
+            "title": "Why Are So Many Of The Framework Classes Sealed?"
+        },     
+        {
+            "title": "C# Performance Benchmark Mistakes, Part One"
+        }
+    ]
+}
+```
+
+(*) Except `HttpResponseMessage`, which is converted directly to an HTTP response.
+
 ## Exceptions
 
 Depending on the current [`IncludeErrorDetailPolicy`][4] and on whether the client is local or remote, 
