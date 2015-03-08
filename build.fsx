@@ -9,7 +9,6 @@ RestorePackages()
 let buildDir = "./build/"
 let testResultsDir = "./testresults/"
 let nugetDir = buildDir @@ "nuget"
-let nuspec = "./src/JSend.WebApi.nuspec"
 let version = "0.1.0.0"
 
 // Targets
@@ -47,16 +46,19 @@ Target "RunTests" (fun _ ->
                 OutputDir = testResultsDir})
 )
 
-Target "CreateNuget" (fun _ ->
+Target "CreateNugets" (fun _ ->
     let index = version.LastIndexOf '.' - 1
     let semanticVersion = version.[..index]
-
-    nuspec
-        |> NuGet (fun p ->
-            {p with
-                Version = semanticVersion
-                OutputPath = nugetDir
-                WorkingDir = buildDir})
+    
+    let nuspecs = !! "./src/**/*.nuspec"
+    
+    for nuspec in nuspecs do
+        nuspec
+            |> NuGet (fun p ->
+                {p with
+                    Version = semanticVersion
+                    OutputPath = nugetDir
+                    WorkingDir = buildDir})
 )
 
 Target "All" DoNothing
@@ -67,7 +69,7 @@ Target "All" DoNothing
     ==> "Build"
     ==> "BuildTests"
     ==> "RunTests"
-    ==> "CreateNuget"
+    ==> "CreateNugets"
     ==> "All"
 
 // Start build
