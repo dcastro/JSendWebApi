@@ -13,6 +13,7 @@
         <language>en-US</language>
         <tags>JSend Client Api WebApi REST </tags>
         <dependencies>
+            <dependency id="Newtonsoft.Json" version="4.5.11" />
         </dependencies>
     </metadata>
     <files>
