@@ -1,7 +1,9 @@
 ﻿using System.Net.Http;
 using FluentAssertions;
+using JSend.Client.Tests.TestTypes;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoMoq;
+using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 
@@ -16,9 +18,15 @@ namespace JSend.Client.Tests
             {
 
             }
-
         }
-        
+
+        [Theory, ResponseAutoData]
+        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
+        {
+            // Exercise system and verify outcome
+            assertion.Verify(typeof (JSendResult<Model>).GetConstructors());
+        }
+
         [Theory, ResponseAutoData]
         public void SuccessJSendResponseIsCorrectlyInitialized(SuccessResponse<string> jsendResponse,
             HttpResponseMessage httpResponse)

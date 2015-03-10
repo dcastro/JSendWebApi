@@ -28,6 +28,9 @@ namespace JSend.Client
 
         private JSendResult(IJSendResponse jsendResponse, HttpResponseMessage responseMessage)
         {
+            if (jsendResponse == null) throw new ArgumentNullException("jsendResponse");
+            if (responseMessage == null) throw new ArgumentNullException("responseMessage");
+
             _responseMessage = responseMessage;
             _jsendResponse = jsendResponse;
         }
