@@ -97,6 +97,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="FailResponseTests.cs" />
     <Compile Include="JSendResultTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SuccessResponseTests.cs" />

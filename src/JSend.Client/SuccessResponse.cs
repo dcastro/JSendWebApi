@@ -15,7 +15,7 @@ namespace JSend.Client
             _data = data;
         }
 
-        /// <summary>Gets the status of this response, always set to "success".</summary>
+        /// <summary>Gets the status of this response, always set to <see cref="JSendStatus.Success"/>.</summary>
         [JsonProperty("status")]
         public JSendStatus Status
         {
@@ -28,7 +28,6 @@ namespace JSend.Client
         {
             get { return _data; }
         }
-
 
         /// <summary>Returns a string that represents the current response.</summary>
         /// <returns>A string that represents the current response.</returns>

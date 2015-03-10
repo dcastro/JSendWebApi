@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FailResponse.cs" />
     <Compile Include="IJSendResponse.cs" />
     <Compile Include="JSendStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

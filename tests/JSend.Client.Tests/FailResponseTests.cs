@@ -1,25 +1,33 @@
 ﻿using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 
 namespace JSend.Client.Tests
 {
-    public class SuccessResponseTests
+    public class FailResponseTests
     {
         [Theory, AutoData]
-        public void StatusIsSuccess(SuccessResponse<string> response)
+        public void StatusIsFail(FailResponse response)
         {
             // Exercise system and verify outcome
-            response.Status.Should().Be(JSendStatus.Success);
+            response.Status.Should().Be(JSendStatus.Fail);
+        }
+
+        [Theory, AutoData]
+        public void ConstructorsThrowsWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
+        {
+            // Exercise system and verify outcome
+            assertion.Verify(typeof (FailResponse).GetConstructors());
         }
 
         [Theory, AutoData]
         public void DataIsCorrectlyInitialized(string data)
         {
             // Exercise system
-            var response = new SuccessResponse<string>(data);
+            var response = new FailResponse(data);
             // Verify outcome
             response.Data.Should().Be(data);
         }
@@ -30,17 +38,17 @@ namespace JSend.Client.Tests
             // Fixture setup
             var serialized = new JObject
             {
-                {"status", "success"},
+                {"status", "fail"},
                 {"data", data}
             };
             // Exercise system
-            var deserialized = serialized.ToObject<SuccessResponse<string>>();
+            var deserialized = serialized.ToObject<FailResponse>();
             // Verify outcome
             deserialized.Data.Should().Be(data);
         }
 
         [Theory, AutoData]
-        public void ToStringReturnsSerializedResponse(SuccessResponse<string> response)
+        public void ToStringReturnsSerializedResponse(FailResponse response)
         {
             // Fixture setup
             var serialized = JsonConvert.SerializeObject(response,
