@@ -66,6 +66,7 @@
     <Compile Include="IJSendResponse.cs" />
     <Compile Include="JSendStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="JSendResult.cs" />
     <Compile Include="SuccessResponse.cs" />
   </ItemGroup>
   <ItemGroup>
