@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 
 namespace JSend.Client
 {
@@ -13,11 +14,24 @@ namespace JSend.Client
         /// <param name="jsendResponse">The JSend response retrieved from the entity body.</param>
         /// <param name="responseMessage">The HTTP response message.</param>
         public JSendResult(SuccessResponse<T> jsendResponse, HttpResponseMessage responseMessage)
+            : this(jsendResponse as IJSendResponse, responseMessage)
+        {
+        }
+
+        /// <summary>Initializes a new instance of <see cref="JSendResult{T}"/>.</summary>
+        /// <param name="jsendResponse">The JSend response retrieved from the entity body.</param>
+        /// <param name="responseMessage">The HTTP response message.</param>
+        public JSendResult(FailResponse jsendResponse, HttpResponseMessage responseMessage)
+            : this(jsendResponse as IJSendResponse, responseMessage)
+        {
+        }
+
+        private JSendResult(IJSendResponse jsendResponse, HttpResponseMessage responseMessage)
         {
             _responseMessage = responseMessage;
             _jsendResponse = jsendResponse;
         }
-        
+
         /// <summary>Gets the JSend response retrieved from the entity body.</summary>
         public IJSendResponse JsendResponse
         {

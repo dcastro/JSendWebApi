@@ -20,7 +20,17 @@ namespace JSend.Client.Tests
         }
         
         [Theory, ResponseAutoData]
-        public void JSendResponseIsCorrectlyInitialized(SuccessResponse<string> jsendResponse,
+        public void SuccessJSendResponseIsCorrectlyInitialized(SuccessResponse<string> jsendResponse,
+            HttpResponseMessage httpResponse)
+        {
+            // Exercise system
+            var result = new JSendResult<string>(jsendResponse, httpResponse);
+            // Verify outcome
+            result.JsendResponse.Should().Be(jsendResponse);
+        }
+
+        [Theory, ResponseAutoData]
+        public void FailJSendResponseIsCorrectlyInitialized(FailResponse jsendResponse,
             HttpResponseMessage httpResponse)
         {
             // Exercise system
