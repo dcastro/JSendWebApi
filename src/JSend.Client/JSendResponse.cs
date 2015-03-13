@@ -12,35 +12,35 @@ namespace JSend.Client
     {
         private readonly JSendStatus _status;
         private readonly JSendError _error;
-        private readonly HttpResponseMessage _responseMessage;
+        private readonly HttpResponseMessage _httpResponseMessage;
 
         /// <summary>
         /// Initializes a new instance of <see cref="JSendResponse"/> representing a successful response.
         /// </summary>
-        /// <param name="responseMessage">The HTTP response message.</param>
-        public JSendResponse(HttpResponseMessage responseMessage)
+        /// <param name="httpResponseMessage">The HTTP response message.</param>
+        public JSendResponse(HttpResponseMessage httpResponseMessage)
         {
-            if (responseMessage == null) throw new ArgumentNullException("responseMessage");
+            if (httpResponseMessage == null) throw new ArgumentNullException("httpResponseMessage");
 
             _status = JSendStatus.Success;
-            _responseMessage = responseMessage;
+            _httpResponseMessage = httpResponseMessage;
         }
 
         /// <summary>
         /// Initializes a new instance of <see cref="JSendResponse"/> representing a failure/error response.
         /// </summary>
         /// <param name="error">The error details.</param>
-        /// <param name="responseMessage">The HTTP response message.</param>
-        public JSendResponse(JSendError error, HttpResponseMessage responseMessage)
+        /// <param name="httpResponseMessage">The HTTP response message.</param>
+        public JSendResponse(JSendError error, HttpResponseMessage httpResponseMessage)
         {
             if (error == null) throw new ArgumentNullException("error");
-            if (responseMessage == null) throw new ArgumentNullException("responseMessage");
+            if (httpResponseMessage == null) throw new ArgumentNullException("httpResponseMessage");
 
             Contract.Assert(error.Status != JSendStatus.Success);
 
             _status = error.Status;
             _error = error;
-            _responseMessage = responseMessage;
+            _httpResponseMessage = httpResponseMessage;
         }
 
         /// <summary>Indicates whether the JSend response had a status of "success".</summary>
@@ -56,9 +56,9 @@ namespace JSend.Client
         }
 
         /// <summary>Gets the HTTP response message.</summary>
-        public HttpResponseMessage ResponseMessage
+        public HttpResponseMessage HttpResponseMessage
         {
-            get { return _responseMessage; }
+            get { return _httpResponseMessage; }
         }
 
         /// <summary>
@@ -73,7 +73,8 @@ namespace JSend.Client
         /// <summary>Throws an exception if <see cref="IsSuccess"/> is <see langword="false"/>.</summary>
         /// <returns>Returns itself if the call is successful.</returns>
         /// <exception cref="JSendResponseException">The request was not successful.</exception>
-        [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "We explicitly want the lower-case string here")]
+        [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase",
+            Justification = "We explicitly want the lower-case string here")]
         public JSendResponse EnsureSuccessStatus()
         {
             if (!IsSuccess)
@@ -114,7 +115,7 @@ namespace JSend.Client
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-                ResponseMessage.Dispose();
+                HttpResponseMessage.Dispose();
         }
     }
 }

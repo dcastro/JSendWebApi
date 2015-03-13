@@ -18,17 +18,17 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenErrorIsNull(HttpResponseMessage responseMessage)
+        public void ConstructorThrowsWhenErrorIsNull(HttpResponseMessage httpResponseMessage)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendResponse(null, responseMessage));
+            Assert.Throws<ArgumentNullException>(() => new JSendResponse(null, httpResponseMessage));
         }
 
         [Theory, JSendAutoData]
-        public void StatusIsSuccessWhenNoErrorIsProvided(HttpResponseMessage responseMessage)
+        public void StatusIsSuccessWhenNoErrorIsProvided(HttpResponseMessage httpResponseMessage)
         {
             // Exercise system
-            var response = new JSendResponse(responseMessage);
+            var response = new JSendResponse(httpResponseMessage);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Success);
         }
@@ -37,21 +37,21 @@ namespace JSend.Client.Tests
         [InlineJSendAutoData(JSendStatus.Fail)]
         [InlineJSendAutoData(JSendStatus.Error)]
         public void StatusMatchesErrorStatusWhenErrorIsProvided(JSendStatus jsendErrorStatus,
-            HttpResponseMessage responseMessage)
+            HttpResponseMessage httpResponseMessage)
         {
             // Fixture setup
             var error = new JSendError(jsendErrorStatus, null, null, null);
             // Exercise system
-            var response = new JSendResponse(error, responseMessage);
+            var response = new JSendResponse(error, httpResponseMessage);
             // Verify outcome
             response.Status.Should().Be(error.Status);
         }
 
         [Theory, JSendAutoData]
-        public void IsSuccessIsTrueWhenNoErrorIsProvided(HttpResponseMessage responseMessage)
+        public void IsSuccessIsTrueWhenNoErrorIsProvided(HttpResponseMessage httpResponseMessage)
         {
             // Exercise system
-            var response = new JSendResponse(responseMessage);
+            var response = new JSendResponse(httpResponseMessage);
             // Verify outcome
             response.IsSuccess.Should().BeTrue();
         }
@@ -60,41 +60,42 @@ namespace JSend.Client.Tests
         [InlineJSendAutoData(JSendStatus.Fail)]
         [InlineJSendAutoData(JSendStatus.Error)]
         public void IsSuccessIsFalseWhenErrorIsProvided(JSendStatus jsendErrorStatus,
-            HttpResponseMessage responseMessage)
+            HttpResponseMessage httpResponseMessage)
         {
             // Fixture setup
             var error = new JSendError(jsendErrorStatus, null, null, null);
             // Exercise system
-            var response = new JSendResponse(error, responseMessage);
+            var response = new JSendResponse(error, httpResponseMessage);
             // Verify outcome
             response.IsSuccess.Should().BeFalse();
         }
 
         [Theory, JSendAutoData]
-        public void ResponseMessageIsCorrectlyInitialized(HttpResponseMessage responseMessage)
+        public void HttpResponseMessageIsCorrectlyInitialized(HttpResponseMessage httpResponseMessage)
         {
             // Exercise system
-            var response = new JSendResponse(responseMessage);
+            var response = new JSendResponse(httpResponseMessage);
             // Verify outcome
-            response.ResponseMessage.Should().Be(responseMessage);
+            response.HttpResponseMessage.Should().Be(httpResponseMessage);
         }
 
         [Theory, JSendAutoData]
-        public void ErrorAndResponseMessageAreCorrectlyInitialized(JSendError error, HttpResponseMessage responseMessage)
+        public void ErrorAndHttpResponseMessageAreCorrectlyInitialized(JSendError error,
+            HttpResponseMessage httpResponseMessage)
         {
             // Exercise system
-            var response = new JSendResponse(error, responseMessage);
+            var response = new JSendResponse(error, httpResponseMessage);
             // Verify outcome
             response.Error.Should().Be(error);
-            response.ResponseMessage.Should().Be(responseMessage);
+            response.HttpResponseMessage.Should().Be(httpResponseMessage);
         }
 
         [Theory, JSendAutoData]
         public void EnsureSuccessStatus_Throws_WhenStatusIsNotSuccess(JSendError error,
-            HttpResponseMessage responseMessage)
+            HttpResponseMessage httpResponseMessage)
         {
             // Fixture setup
-            var nonSuccessResponse = new JSendResponse(error, responseMessage);
+            var nonSuccessResponse = new JSendResponse(error, httpResponseMessage);
             // Exercise system and verify outcome
             Action ensureSuccessStatus = () => nonSuccessResponse.EnsureSuccessStatus();
             ensureSuccessStatus.ShouldThrow<JSendResponseException>()
@@ -102,10 +103,10 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void EnsureSuccessStatus_ReturnsSelf_WhenStatusIsSuccess(HttpResponseMessage responseMessage)
+        public void EnsureSuccessStatus_ReturnsSelf_WhenStatusIsSuccess(HttpResponseMessage httpResponseMessage)
         {
             // Fixture setup
-            var successResponse = new JSendResponse(responseMessage);
+            var successResponse = new JSendResponse(httpResponseMessage);
             // Exercise system
             var response = successResponse.EnsureSuccessStatus();
             // Verify outcome
