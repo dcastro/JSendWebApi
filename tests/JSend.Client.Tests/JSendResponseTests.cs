@@ -91,10 +91,10 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void EnsureSuccessStatus_Throws_WhenStatusIsNotSuccess(JSendError error,
-            HttpResponseMessage httpResponseMessage)
+        public void EnsureSuccessStatus_Throws_WhenStatusIsNotSuccess(HttpResponseMessage httpResponseMessage)
         {
             // Fixture setup
+            var error = new JSendError(JSendStatus.Fail, null, null, null);
             var nonSuccessResponse = new JSendResponse(error, httpResponseMessage);
             // Exercise system and verify outcome
             Action ensureSuccessStatus = () => nonSuccessResponse.EnsureSuccessStatus();

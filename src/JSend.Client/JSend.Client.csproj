@@ -67,6 +67,7 @@
     <Compile Include="IJSendResponse.cs" />
     <Compile Include="JSendError.cs" />
     <Compile Include="JSendResponseException.cs" />
+    <Compile Include="JSendResponse`1.cs" />
     <Compile Include="JSendStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="JSendResponse.cs" />

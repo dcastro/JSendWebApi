@@ -70,6 +70,15 @@ namespace JSend.Client.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The JSend response was successful but did not contain any data..
+        /// </summary>
+        internal static string SuccessResponseWithoutData {
+            get {
+                return ResourceManager.GetString("SuccessResponseWithoutData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to JSend status does not indicate success: &quot;{0}&quot;..
         /// </summary>
         internal static string UnsuccessfulResponse {
