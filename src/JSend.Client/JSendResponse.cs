@@ -7,18 +7,18 @@ using JSend.Client.Properties;
 
 namespace JSend.Client
 {
-    /// <summary>Represents the result of a request to a JSend API.</summary>
-    public class JSendResult : IDisposable
+    /// <summary>Represents the response received from a JSend API.</summary>
+    public class JSendResponse : IDisposable
     {
         private readonly JSendStatus _status;
         private readonly JSendError _error;
         private readonly HttpResponseMessage _responseMessage;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="JSendResult"/> representing a successful response.
+        /// Initializes a new instance of <see cref="JSendResponse"/> representing a successful response.
         /// </summary>
         /// <param name="responseMessage">The HTTP response message.</param>
-        public JSendResult(HttpResponseMessage responseMessage)
+        public JSendResponse(HttpResponseMessage responseMessage)
         {
             if (responseMessage == null) throw new ArgumentNullException("responseMessage");
 
@@ -27,11 +27,11 @@ namespace JSend.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="JSendResult"/> representing a failure/error response.
+        /// Initializes a new instance of <see cref="JSendResponse"/> representing a failure/error response.
         /// </summary>
         /// <param name="error">The error details.</param>
         /// <param name="responseMessage">The HTTP response message.</param>
-        public JSendResult(JSendError error, HttpResponseMessage responseMessage)
+        public JSendResponse(JSendError error, HttpResponseMessage responseMessage)
         {
             if (error == null) throw new ArgumentNullException("error");
             if (responseMessage == null) throw new ArgumentNullException("responseMessage");
@@ -72,9 +72,9 @@ namespace JSend.Client
 
         /// <summary>Throws an exception if <see cref="IsSuccess"/> is <see langword="false"/>.</summary>
         /// <returns>Returns itself if the call is successful.</returns>
-        /// <exception cref="JSendRequestException">The request was not successful.</exception>
+        /// <exception cref="JSendResponseException">The request was not successful.</exception>
         [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "We explicitly want the lower-case string here")]
-        public JSendResult EnsureSuccessStatus()
+        public JSendResponse EnsureSuccessStatus()
         {
             if (!IsSuccess)
             {
@@ -84,7 +84,7 @@ namespace JSend.Client
                 // cleaning up its state.
                 Dispose();
 
-                throw new JSendRequestException(
+                throw new JSendResponseException(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         StringResources.UnsuccessfulResponse, Status.ToString().ToLowerInvariant()));

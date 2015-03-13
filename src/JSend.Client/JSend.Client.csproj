@@ -66,10 +66,10 @@
     <Compile Include="FailResponse.cs" />
     <Compile Include="IJSendResponse.cs" />
     <Compile Include="JSendError.cs" />
-    <Compile Include="JSendRequestException.cs" />
+    <Compile Include="JSendResponseException.cs" />
     <Compile Include="JSendStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="JSendResult.cs" />
+    <Compile Include="JSendResponse.cs" />
     <Compile Include="Properties\StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

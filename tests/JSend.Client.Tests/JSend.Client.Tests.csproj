@@ -102,7 +102,7 @@
     <Compile Include="FixtureCustomizations\JSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
     <Compile Include="JSendErrorTests.cs" />
-    <Compile Include="JSendResultTests.cs" />
+    <Compile Include="JSendResponseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SuccessResponseTests.cs" />
   </ItemGroup>

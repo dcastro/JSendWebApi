@@ -9,25 +9,25 @@ namespace JSend.Client
     /// </summary>
     [Serializable]
     [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors", Justification = "A message must be provided.")]
-    public class JSendRequestException : Exception
+    public class JSendResponseException : Exception
     {
-        /// <summary>Initializes a new instance of <see cref="JSendRequestException"/>.</summary>
+        /// <summary>Initializes a new instance of <see cref="JSendResponseException"/>.</summary>
         /// <param name="message">A message that describes the current exception.</param>
-        public JSendRequestException(string message)
+        public JSendResponseException(string message)
             : base(message)
         {
         }
 
-        /// <summary>Initializes a new instance of <see cref="JSendRequestException"/>.</summary>
+        /// <summary>Initializes a new instance of <see cref="JSendResponseException"/>.</summary>
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="innerException">The inner exception.</param>
-        public JSendRequestException(string message, Exception innerException)
+        public JSendResponseException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="JSendRequestException"/> with serialized data.
+        /// Initializes a new instance of the <see cref="JSendResponseException"/> with serialized data.
         /// </summary>
         /// <param name="serializationInfo">
         /// The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.
@@ -35,7 +35,7 @@ namespace JSend.Client
         /// <param name="streamingContext">
         /// The <see cref="StreamingContext"/> that contains contextual information about the source or destination.
         /// </param>
-        protected JSendRequestException(SerializationInfo serializationInfo, StreamingContext streamingContext)
+        protected JSendResponseException(SerializationInfo serializationInfo, StreamingContext streamingContext)
             : base(serializationInfo, streamingContext)
         {
 
