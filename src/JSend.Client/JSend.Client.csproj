@@ -63,8 +63,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FailResponse.cs" />
-    <Compile Include="IJSendResponse.cs" />
     <Compile Include="JSendError.cs" />
     <Compile Include="JSendResponseException.cs" />
     <Compile Include="JSendResponse`1.cs" />
@@ -76,7 +74,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SuccessResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
