@@ -1,60 +1,156 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using FluentAssertions;
-using JSend.Client.Tests.TestTypes;
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.AutoMoq;
-using Ploeh.AutoFixture.Idioms;
-using Ploeh.AutoFixture.Xunit;
+using JSend.Client.Tests.FixtureCustomizations;
+using Xunit;
 using Xunit.Extensions;
 
 namespace JSend.Client.Tests
 {
     public class JSendResultTests
     {
-        private class ResponseAutoDataAttribute : AutoDataAttribute
+        [Theory, JSendAutoData]
+        public void ConstructorsThrowsWhenHttpResponseMessageIsNull(JSendError error)
         {
-            public ResponseAutoDataAttribute()
-                : base(new Fixture().Customize(new AutoConfiguredMoqCustomization()))
-            {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => new JSendResult(error, null));
+            Assert.Throws<ArgumentNullException>(() => new JSendResult(null));
+        }
 
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenErrorIsNull(HttpResponseMessage responseMessage)
+        {
+            // Exercise system and verify outcome
+            Assert.Throws<ArgumentNullException>(() => new JSendResult(null, responseMessage));
+        }
+
+        [Theory, JSendAutoData]
+        public void StatusIsSuccessWhenNoErrorIsProvided(HttpResponseMessage responseMessage)
+        {
+            // Exercise system
+            var result = new JSendResult(responseMessage);
+            // Verify outcome
+            result.Status.Should().Be(JSendStatus.Success);
+        }
+
+        [Theory]
+        [InlineJSendAutoData(JSendStatus.Fail)]
+        [InlineJSendAutoData(JSendStatus.Error)]
+        public void StatusMatchesErrorStatusWhenErrorIsProvided(JSendStatus jsendErrorStatus,
+            HttpResponseMessage responseMessage)
+        {
+            // Fixture setup
+            var error = new JSendError(jsendErrorStatus, null, null, null);
+            // Exercise system
+            var result = new JSendResult(error, responseMessage);
+            // Verify outcome
+            result.Status.Should().Be(error.Status);
+        }
+
+        [Theory, JSendAutoData]
+        public void IsSuccessIsTrueWhenNoErrorIsProvided(HttpResponseMessage responseMessage)
+        {
+            // Exercise system
+            var result = new JSendResult(responseMessage);
+            // Verify outcome
+            result.IsSuccess.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineJSendAutoData(JSendStatus.Fail)]
+        [InlineJSendAutoData(JSendStatus.Error)]
+        public void IsSuccessIsFalseWhenErrorIsProvided(JSendStatus jsendErrorStatus,
+            HttpResponseMessage responseMessage)
+        {
+            // Fixture setup
+            var error = new JSendError(jsendErrorStatus, null, null, null);
+            // Exercise system
+            var result = new JSendResult(error, responseMessage);
+            // Verify outcome
+            result.IsSuccess.Should().BeFalse();
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseMessageIsCorrectlyInitialized(HttpResponseMessage responseMessage)
+        {
+            // Exercise system
+            var result = new JSendResult(responseMessage);
+            // Verify outcome
+            result.ResponseMessage.Should().Be(responseMessage);
+        }
+
+        [Theory, JSendAutoData]
+        public void ErrorAndResponseMessageAreCorrectlyInitialized(JSendError error, HttpResponseMessage responseMessage)
+        {
+            // Exercise system
+            var result = new JSendResult(error, responseMessage);
+            // Verify outcome
+            result.Error.Should().Be(error);
+            result.ResponseMessage.Should().Be(responseMessage);
+        }
+
+        [Theory, JSendAutoData]
+        public void EnsureSuccessStatus_Throws_WhenStatusIsNotSuccess(JSendError error,
+            HttpResponseMessage responseMessage)
+        {
+            // Fixture setup
+            var nonSuccessResult = new JSendResult(error, responseMessage);
+            // Exercise system and verify outcome
+            Action ensureSuccessStatus = () => nonSuccessResult.EnsureSuccessStatus();
+            ensureSuccessStatus.ShouldThrow<JSendRequestException>()
+                .And.Message.Should().Be("JSend status does not indicate success: \"fail\".");
+        }
+
+        [Theory, JSendAutoData]
+        public void EnsureSuccessStatus_ReturnsSelf_WhenStatusIsSuccess(HttpResponseMessage responseMessage)
+        {
+            // Fixture setup
+            var successResult = new JSendResult(responseMessage);
+            // Exercise system
+            var result = successResult.EnsureSuccessStatus();
+            // Verify outcome
+            result.Should().BeSameAs(successResult);
+        }
+
+        public class HttpResponseMessageSpy : HttpResponseMessage
+        {
+            public bool Disposed = false;
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+                Disposed = disposing;
             }
         }
 
-        [Theory, ResponseAutoData]
-        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
+        [Theory, JSendAutoData]
+        public void DisposingOfTheResult_DisposesOfTheHttpResponseMessage(HttpResponseMessageSpy spy)
         {
-            // Exercise system and verify outcome
-            assertion.Verify(typeof (JSendResult<Model>).GetConstructors());
+            // Fixture setup
+            var result = new JSendResult(spy);
+            // Exercise system
+            result.Dispose();
+            // Verify outcome
+            spy.Disposed.Should().BeTrue();
         }
 
-        [Theory, ResponseAutoData]
-        public void SuccessJSendResponseIsCorrectlyInitialized(SuccessResponse<string> jsendResponse,
-            HttpResponseMessage httpResponse)
+        [Theory, JSendAutoData]
+        public void EnsureSuccessStatus_DisposesOfHttpResponseMessage_WhenStatusIsNotSuccess(JSendError error,
+            HttpResponseMessageSpy spy)
         {
-            // Exercise system
-            var result = new JSendResult<string>(jsendResponse, httpResponse);
-            // Verify outcome
-            result.JsendResponse.Should().Be(jsendResponse);
-        }
+            // Fixture setup
+            var result = new JSendResult(error, spy);
 
-        [Theory, ResponseAutoData]
-        public void FailJSendResponseIsCorrectlyInitialized(FailResponse jsendResponse,
-            HttpResponseMessage httpResponse)
-        {
             // Exercise system
-            var result = new JSendResult<string>(jsendResponse, httpResponse);
+            try
+            {
+                result.EnsureSuccessStatus();
+            }
+            catch
+            {
+            }
             // Verify outcome
-            result.JsendResponse.Should().Be(jsendResponse);
-        }
-
-        [Theory, ResponseAutoData]
-        public void ResponseMessageIsCorrectlyInitialized(SuccessResponse<string> jsendResponse,
-            HttpResponseMessage httpResponse)
-        {
-            // Exercise system
-            var result = new JSendResult<string>(jsendResponse, httpResponse);
-            // Verify outcome
-            result.ResponseMessage.Should().Be(httpResponse);
+            spy.Disposed.Should().BeTrue();
         }
     }
 }
