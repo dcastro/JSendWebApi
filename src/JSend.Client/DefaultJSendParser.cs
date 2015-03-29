@@ -40,12 +40,14 @@ namespace JSend.Client
         /// <returns>A task representings the parsed <see cref="JSendResponse{T}"/>.</returns>
         /// <exception cref="JsonSchemaException">The HTTP response message body is not JSend formatted.</exception>
         /// <exception cref="JsonReaderException">The HTTP response body is not a JSON document.</exception>
-        /// <exception cref="JsonSerializationException">The JSend data cannot be converted to an instanceof type <typeparamref name="T"/>.</exception>
+        /// <exception cref="JsonSerializationException">The JSend data cannot be converted to an instance of type <typeparamref name="T"/>.</exception>
         public async Task<JSendResponse<T>> ParseAsync<T>(HttpResponseMessage httpResponseMessage)
         {
-            await httpResponseMessage.Content.ReadAsStringAsync();
+            if (httpResponseMessage == null)
+                throw new ArgumentNullException("httpResponseMessage");
 
-            var json = JToken.Parse(await httpResponseMessage.Content.ReadAsStringAsync());
+            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            var json = JToken.Parse(content);
             json.Validate(await BaseSchema.Value);
 
             var status = json.Value<string>("status");
@@ -66,17 +68,18 @@ namespace JSend.Client
         /// <param name="json">The <see cref="JToken"/> to parse.</param>
         /// <param name="responseMessage">The HTTP response message from where <paramref name="json"/> was extracted.</param>
         /// <returns>A task representing the successful <see cref="JSendResponse{T}"/>.</returns>
-        /// <exception cref="JsonSchemaException">The HTTP response message body is not JSend formatted.</exception>
-        /// <exception cref="JsonReaderException">The HTTP response body is not a JSON document.</exception>
-        /// <exception cref="JsonSerializationException">The JSend data cannot be converted to an instanceof type <typeparamref name="T"/>.</exception>
+        /// <exception cref="JsonSchemaException"><paramref name="json"/> is not JSend formatted.</exception>
+        /// <exception cref="JsonSerializationException">The JSend data cannot be converted to an instance of type <typeparamref name="T"/>.</exception>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
         public async Task<JSendResponse<T>> ParseSuccessMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
+            if (json == null) throw new ArgumentNullException("json");
+            if (responseMessage == null) throw new ArgumentNullException("responseMessage");
+
             json.Validate(await SuccessSchema.Value);
 
             var dataToken = json["data"];
-
             if (dataToken.Type == JTokenType.Null)
                 return new JSendResponse<T>(responseMessage);
 

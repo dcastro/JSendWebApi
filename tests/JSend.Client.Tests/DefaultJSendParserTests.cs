@@ -5,6 +5,7 @@ using FluentAssertions;
 using JSend.Client.Tests.FixtureCustomizations;
 using JSend.Client.Tests.TestTypes;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Xunit.Extensions;
 
@@ -12,6 +13,14 @@ namespace JSend.Client.Tests
 {
     public class DefaultJSendParserTests
     {
+        [Theory, JSendAutoData]
+        public void ThrowsWhenHttpResponseMessageIsNull(DefaultJSendParser parser)
+        {
+            // Exercise system and verify outcome
+            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(null);
+            parse.ShouldThrow<ArgumentNullException>();
+        }
+
         [Theory, JSendAutoData]
         public void ThrowsWhenResponse_IsNotValidJson(HttpResponseMessage message, DefaultJSendParser parser)
         {
@@ -94,7 +103,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task ParsesSuccessResponse_WithoutValueTypeData(HttpResponseMessage message, DefaultJSendParser parser)
+        public async Task ParsesSuccessResponse_WithoutValueTypeData(HttpResponseMessage message,
+            DefaultJSendParser parser)
         {
             // Fixture setup
             message.Content = new StringContent(@"
@@ -110,7 +120,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task ParsesSuccessResponse_WithData(Model model, HttpResponseMessage message, DefaultJSendParser parser)
+        public async Task ParsesSuccessResponse_WithData(Model model, HttpResponseMessage message,
+            DefaultJSendParser parser)
         {
             // Fixture setup
             message.Content = new StringContent(@"
@@ -153,6 +164,25 @@ namespace JSend.Client.Tests
             parse.ShouldThrow<JsonSerializationException>()
                 .And.Message.Should().Contain("string")
                 .And.Contain("Model");
+        }
+
+        [Theory, JSendAutoData]
+        public void ParseSuccessMessageAsync_ThrowsWhenJsonIsNull(HttpResponseMessage httpResponseMessage,
+            DefaultJSendParser parser)
+        {
+            // Exercise system and verify outcome
+            Func<Task<JSendResponse<Model>>> parseSuccess =
+                () => parser.ParseSuccessMessageAsync<Model>(null, httpResponseMessage);
+            parseSuccess.ShouldThrow<ArgumentNullException>();
+        }
+
+        [Theory, JSendAutoData]
+        public void ParseSuccessMessageAsync_ThrowsWhenHttpResponseMessageIsNull(JToken json, DefaultJSendParser parser)
+        {
+            // Exercise system and verify outcome
+            Func<Task<JSendResponse<Model>>> parseSuccess =
+                () => parser.ParseSuccessMessageAsync<Model>(json, null);
+            parseSuccess.ShouldThrow<ArgumentNullException>();
         }
     }
 }
