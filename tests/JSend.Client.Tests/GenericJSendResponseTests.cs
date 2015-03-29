@@ -263,6 +263,18 @@ namespace JSend.Client.Tests
             first.Equals(second).Should().BeFalse();
         }
 
+        [Theory]
+        [PropertyData("DistinctResponses")]
+        public void TwoResponses_AreNotEqual_WhenTheirFieldsDoNotMatch_AndRightOperandIsCastToBaseClass(
+            JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Note: If JSendResponse implemented IEquatable<T>, then this test would fail.
+            // See http://blog.mischel.com/2013/01/05/inheritance-and-iequatable-do-not-mix/
+
+            // Exercise system and verify outcome
+            first.Equals((JSendResponse) second).Should().BeFalse();
+        }
+
         [Theory, JSendAutoData]
         public void ResponseIsNotEqualToNull(JSendResponse<string> response)
         {

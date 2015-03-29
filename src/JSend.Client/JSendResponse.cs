@@ -8,7 +8,7 @@ using JSend.Client.Properties;
 namespace JSend.Client
 {
     /// <summary>Represents the response received from a JSend API.</summary>
-    public class JSendResponse : IDisposable, IEquatable<JSendResponse>
+    public class JSendResponse : IDisposable
     {
         private readonly JSendStatus _status;
         private readonly JSendError _error;
@@ -118,15 +118,8 @@ namespace JSend.Client
                 HttpResponseMessage.Dispose();
         }
 
-        /// <summary>Determines whether the specified <see cref="JSendResponse"/> is equal to the current <see cref="JSendResponse"/>.</summary>
-        /// <param name="other">The object to compare with the current object.</param>
-        /// <returns><see langword="true"/> if the specified error is equal to the current error; otherwise, <see langword="false"/>.</returns>
-        public bool Equals(JSendResponse other)
+        private bool Equals(JSendResponse other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            if (other.GetType() != this.GetType()) return false;
-
             return _status == other._status &&
                    Equals(_error, other._error) &&
                    _httpResponseMessage.Equals(other._httpResponseMessage);
@@ -161,6 +154,9 @@ namespace JSend.Client
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns><see langword="true"/> if both operands are equal; otherwise, <see langword="false"/>.</returns>
+        [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification =
+            "Non-sealed classes should not implemented IEquatable<T>. See http://blog.mischel.com/2013/01/05/inheritance-and-iequatable-do-not-mix/" +
+            "and http://stackoverflow.com/q/1868316/857807")]
         public static bool operator ==(JSendResponse left, JSendResponse right)
         {
             return Equals(left, right);
@@ -170,6 +166,9 @@ namespace JSend.Client
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns><see langword="true"/> if both operands are not equal; otherwise, <see langword="false"/>.</returns>
+        [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification =
+            "Non-sealed classes should not implemented IEquatable<T>. See http://blog.mischel.com/2013/01/05/inheritance-and-iequatable-do-not-mix/" +
+            "and http://stackoverflow.com/q/1868316/857807")]
         public static bool operator !=(JSendResponse left, JSendResponse right)
         {
             return !Equals(left, right);
