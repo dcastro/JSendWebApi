@@ -8,7 +8,7 @@ using JSend.Client.Properties;
 namespace JSend.Client
 {
     /// <summary>Represents the response received from a JSend API.</summary>
-    public class JSendResponse : IDisposable
+    public class JSendResponse : IDisposable, IEquatable<JSendResponse>
     {
         private readonly JSendStatus _status;
         private readonly JSendError _error;
@@ -116,6 +116,63 @@ namespace JSend.Client
         {
             if (disposing)
                 HttpResponseMessage.Dispose();
+        }
+
+        /// <summary>Determines whether the specified <see cref="JSendResponse"/> is equal to the current <see cref="JSendResponse"/>.</summary>
+        /// <param name="other">The object to compare with the current object.</param>
+        /// <returns><see langword="true"/> if the specified error is equal to the current error; otherwise, <see langword="false"/>.</returns>
+        public bool Equals(JSendResponse other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return _status == other._status &&
+                   Equals(_error, other._error) &&
+                   _httpResponseMessage.Equals(other._httpResponseMessage);
+        }
+
+        /// <summary>Determines whether the specified <see cref="Object"/> is equal to the current <see cref="JSendResponse"/>.</summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns><see langword="true"/> if the specified object is equal to the current object; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            if (obj.GetType() != this.GetType()) return false;
+
+            return Equals((JSendResponse) obj);
+        }
+
+        /// <summary>Serves as a hash function for this <see cref="JSendResponse"/>.</summary>
+        /// <returns>A hash code for this <see cref="JSendResponse"/>.</returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (int) _status;
+                hashCode = (hashCode*397) ^ (_error != null ? _error.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ _httpResponseMessage.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        /// <summary>Returns whether the two operands are equal.</summary>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns><see langword="true"/> if both operands are equal; otherwise, <see langword="false"/>.</returns>
+        public static bool operator ==(JSendResponse left, JSendResponse right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <summary>Returns whether the two operands are not equal.</summary>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns><see langword="true"/> if both operands are not equal; otherwise, <see langword="false"/>.</returns>
+        public static bool operator !=(JSendResponse left, JSendResponse right)
+        {
+            return !Equals(left, right);
         }
     }
 }

@@ -58,6 +58,8 @@ namespace JSend.Client.Tests
             error.Data.Should().BeSameAs(data);
         }
 
+        private static readonly JToken JTokenSingleton = new JObject();
+
         public static IEnumerable<object[]> EquivalentErrors
         {
             get
@@ -81,8 +83,8 @@ namespace JSend.Client.Tests
                     },
                     new object[]
                     {
-                        new JSendError(JSendStatus.Fail, null, null, Token),
-                        new JSendError(JSendStatus.Fail, null, null, Token)
+                        new JSendError(JSendStatus.Fail, null, null, JTokenSingleton),
+                        new JSendError(JSendStatus.Fail, null, null, JTokenSingleton)
                     },
                     new object[]
                     {
@@ -97,8 +99,6 @@ namespace JSend.Client.Tests
                 };
             }
         }
-
-        private static readonly JToken Token = new JObject();
 
         public static IEnumerable<object[]> DistinctErrors
         {
@@ -118,6 +118,10 @@ namespace JSend.Client.Tests
                     },
                     new object[]
                     {
+
+                        // Here, we're verifying that these two strings are treated as different.
+                        // This requires the usage of StringComparison.Ordinal.
+                        // StringComparison.InvariantCulture would treat both strings as equals, and that's not what we want.
                         new JSendError(JSendStatus.Error, "lasst", null, null),
                         new JSendError(JSendStatus.Error, "laßt", null, null)
                     },
