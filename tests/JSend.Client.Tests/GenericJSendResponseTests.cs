@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;
 using FluentAssertions;
@@ -7,6 +8,7 @@ using JSend.Client.Tests.FixtureCustomizations;
 using JSend.Client.Tests.TestTypes;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
+using Xunit;
 using Xunit.Extensions;
 
 namespace JSend.Client.Tests
@@ -163,6 +165,301 @@ namespace JSend.Client.Tests
             var response = successResponse.EnsureSuccessStatus();
             // Verify outcome
             response.Should().BeSameAs(successResponse);
+        }
+
+        private static readonly HttpResponseMessage HttpResponseMessageSingleton = new HttpResponseMessage();
+
+        public static IEnumerable<object[]> EquivalentResponses
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[]
+                    {
+                        new JSendResponse<string>(HttpResponseMessageSingleton),
+                        new JSendResponse<string>(HttpResponseMessageSingleton)
+                    },
+                    new object[]
+                    {
+                        new JSendResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
+                            HttpResponseMessageSingleton),
+                        new JSendResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
+                            HttpResponseMessageSingleton)
+                    },
+                    new object[]
+                    {
+                        new JSendResponse<string>("a", HttpResponseMessageSingleton),
+                        new JSendResponse<string>("a", HttpResponseMessageSingleton)
+                    }
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DistinctResponses
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[]
+                    {
+                        new JSendResponse<string>(new HttpResponseMessage()),
+                        new JSendResponse<string>(new HttpResponseMessage())
+                    },
+                    new object[]
+                    {
+                        new JSendResponse<string>(HttpResponseMessageSingleton),
+                        new JSendResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
+                            HttpResponseMessageSingleton)
+                    },
+                    new object[]
+                    {
+                        new JSendResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
+                            HttpResponseMessageSingleton),
+                        new JSendResponse<string>(new JSendError(JSendStatus.Error, null, null, null),
+                            HttpResponseMessageSingleton)
+                    },
+                    new object[]
+                    {
+                        new JSendResponse<string>(HttpResponseMessageSingleton),
+                        new JSendResponse<string>("a", HttpResponseMessageSingleton)
+                    },
+
+                    new object[]
+                    {
+                        new JSendResponse<string>(HttpResponseMessageSingleton),
+                        new JSendResponse<string>(default(string), HttpResponseMessageSingleton)
+                    },
+                    new object[]
+                    {
+                        new JSendResponse<string>("a", HttpResponseMessageSingleton),
+                        new JSendResponse<string>("b", HttpResponseMessageSingleton)
+                    },
+                    new object[]
+                    {
+                        new JSendResponse<string>("a", HttpResponseMessageSingleton),
+                        new JSendResponse<string>(new JSendError(JSendStatus.Error, null, null, null),
+                            HttpResponseMessageSingleton)
+                    }
+                };
+            }
+        }
+
+        [Theory]
+        [PropertyData("EquivalentResponses")]
+        public void TwoResponses_AreEqual_WhenTheirFieldsMatch(JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Exercise system and verify outcome
+            first.Equals(second).Should().BeTrue();
+        }
+
+        [Theory]
+        [PropertyData("DistinctResponses")]
+        public void TwoResponses_AreNotEqual_WhenTheirFieldsDoNotMatch(JSendResponse<string> first,
+            JSendResponse<string> second)
+        {
+            // Exercise system and verify outcome
+            first.Equals(second).Should().BeFalse();
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseIsNotEqualToNull(JSendResponse<string> response)
+        {
+            // Exercise system and verify outcome
+            response.Equals(null).Should().BeFalse();
+        }
+
+        [Theory, JSendAutoData]
+        public void ResponseIsNotEqualToInstanceOfAnotherType(JSendResponse<string> response, string other)
+        {
+            // Exercise system and verify outcome
+            response.Equals(other).Should().BeFalse();
+        }
+
+        [Fact]
+        public void ResponseIsNotEqualToNonGenericResponse()
+        {
+            // Fixture setup
+            var generic = new JSendResponse<string>(HttpResponseMessageSingleton);
+            var nonGeneric = new JSendResponse(HttpResponseMessageSingleton);
+            // Exercise system and verify outcome
+            generic.Equals(nonGeneric).Should().BeFalse();
+        }
+
+        [Theory, JSendAutoData]
+        public void Equals_IsReflexive(JSendResponse<string> response)
+        {
+            // Exercise system and verify outcome
+            response.Equals(response).Should().BeTrue();
+        }
+
+        [Theory]
+        [PropertyData("EquivalentResponses")]
+        [PropertyData("DistinctResponses")]
+        public void Equals_IsSymmetric(JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Exercise system
+            var firstEqualsSecond = first.Equals(second);
+            var secondEqualsFirst = second.Equals(first);
+            // Verify outcome
+            firstEqualsSecond.Should().Be(secondEqualsFirst);
+        }
+
+        [Theory]
+        [PropertyData("EquivalentResponses")]
+        public void EqualityOperator_ReturnsTrue_WhenFieldsMatch(JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Exercise system
+            var areEqual = first == second;
+            // Verify outcome
+            areEqual.Should().BeTrue();
+        }
+
+        [Fact]
+        public void EqualityOperator_ReturnsTrue_WhenBothResponsesAreNull()
+        {
+#pragma warning disable 1718
+            // Fixture setup
+            JSendResponse<string> response = null;
+            // Exercise system
+            var areEqual = response == response;
+            // Verify outcome
+            areEqual.Should().BeTrue();
+#pragma warning restore 1718
+        }
+
+        [Theory]
+        [PropertyData("DistinctResponses")]
+        public void EqualityOperator_ReturnsFalse_WhenFieldsDoNotMatch(JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Exercise system
+            var areEqual = first == second;
+            // Verify outcome
+            areEqual.Should().BeFalse();
+        }
+
+        [Theory, JSendAutoData]
+        public void EqualityOperator_ReturnsFalse_WhenLeftOperandsIsNull(JSendResponse<string> response)
+        {
+            // Exercise system
+            var areEqual = null == response;
+            // Verify outcome
+            areEqual.Should().BeFalse();
+        }
+
+        [Theory, JSendAutoData]
+        public void EqualityOperator_ReturnsFalse_WhenRightOperandsIsNull(JSendResponse<string> response)
+        {
+            // Exercise system
+            var areEqual = response == null;
+            // Verify outcome
+            areEqual.Should().BeFalse();
+        }
+
+        [Theory, JSendAutoData]
+        public void EqualityOperator_IsReflexive(JSendResponse<string> response)
+        {
+#pragma warning disable 1718
+            // Exercise system
+            var areEqual = response == response;
+            // Verify outcome
+            areEqual.Should().BeTrue();
+#pragma warning restore 1718
+        }
+
+        [Theory, JSendAutoData]
+        [PropertyData("EquivalentResponses")]
+        [PropertyData("DistinctResponses")]
+        public void EqualityOperator_IsSymmetric(JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Exercise system
+            var firstEqualsSecond = first == second;
+            var secondEqualsFirst = second == first;
+            // Verify outcome
+            firstEqualsSecond.Should().Be(secondEqualsFirst);
+        }
+
+        [Theory]
+        [PropertyData("EquivalentResponses")]
+        public void InequalityOperator_ReturnsFalse_WhenFieldsMatch(JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Exercise system
+            var areNotEqual = first != second;
+            // Verify outcome
+            areNotEqual.Should().BeFalse();
+        }
+
+        [Fact]
+        public void InequalityOperator_ReturnsFalse_WhenBothResponsesAreNull()
+        {
+#pragma warning disable 1718
+            // Fixture setup
+            JSendResponse<string> response = null;
+            // Exercise system
+            var areNotEqual = response != response;
+            // Verify outcome
+            areNotEqual.Should().BeFalse();
+#pragma warning restore 1718
+        }
+
+        [Theory]
+        [PropertyData("DistinctResponses")]
+        public void InequalityOperator_ReturnsTrue_WhenFieldsDoNotMatch(JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Exercise system
+            var areNotEqual = first != second;
+            // Verify outcome
+            areNotEqual.Should().BeTrue();
+        }
+
+        [Theory, JSendAutoData]
+        public void InequalityOperator_ReturnsTrue_WhenLeftOperandsIsNull(JSendResponse<string> response)
+        {
+            // Exercise system
+            var areNotEqual = null != response;
+            // Verify outcome
+            areNotEqual.Should().BeTrue();
+        }
+
+        [Theory, JSendAutoData]
+        public void InequalityOperator_ReturnsTrue_WhenRightOperandsIsNull(JSendResponse<string> response)
+        {
+            // Exercise system
+            var areNotEqual = response != null;
+            // Verify outcome
+            areNotEqual.Should().BeTrue();
+        }
+
+        [Theory, JSendAutoData]
+        public void InequalityOperator_IsReflexive(JSendResponse<string> response)
+        {
+#pragma warning disable 1718
+            // Exercise system
+            var areNotEqual = response != response;
+            // Verify outcome
+            areNotEqual.Should().BeFalse();
+#pragma warning restore 1718
+        }
+
+        [Theory, JSendAutoData]
+        [PropertyData("EquivalentResponses")]
+        [PropertyData("DistinctResponses")]
+        public void InequalityOperator_IsSymmetric(JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Exercise system
+            var firstEqualsSecond = first != second;
+            var secondEqualsFirst = second != first;
+            // Verify outcome
+            firstEqualsSecond.Should().Be(secondEqualsFirst);
+        }
+
+        [Theory]
+        [PropertyData("EquivalentResponses")]
+        public void EqualResponsesHaveTheSameHashCode(JSendResponse<string> first, JSendResponse<string> second)
+        {
+            // Exercise system and verify outcome
+            first.GetHashCode().Should().Be(second.GetHashCode());
         }
     }
 }

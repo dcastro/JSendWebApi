@@ -125,7 +125,6 @@ namespace JSend.Client
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-
             if (other.GetType() != this.GetType()) return false;
 
             return _status == other._status &&
@@ -140,7 +139,6 @@ namespace JSend.Client
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-
             if (obj.GetType() != this.GetType()) return false;
 
             return Equals((JSendResponse) obj);

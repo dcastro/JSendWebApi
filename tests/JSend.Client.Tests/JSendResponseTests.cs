@@ -207,7 +207,7 @@ namespace JSend.Client.Tests
                     {
                         new JSendResponse(HttpResponseMessageSingleton),
                         new JSendResponse<string>(HttpResponseMessageSingleton)
-                    },
+                    }
                 };
             }
         }
