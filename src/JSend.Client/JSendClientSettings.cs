@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+
+namespace JSend.Client
+{
+    /// <summary>
+    /// Specifies the settings of a <see cref="JSendClient"/>.
+    /// </summary>
+    public class JSendClientSettings
+    {
+        /// <summary>Gets or sets the parser to process JSend-formatted responses.</summary>
+        public IJSendParser JSendParser { get; set; }
+
+        /// <summary>Gets or sets the encoding to use to format a request's content.</summary>
+        public Encoding Encoding { get; set; }
+
+        /// <summary>Gets or sets the settings used to serialize the content of a request.</summary>
+        public JsonSerializerSettings SerializerSettings { get; set; }
+    }
+}

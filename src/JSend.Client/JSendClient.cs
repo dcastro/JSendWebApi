@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -13,32 +14,38 @@ namespace JSend.Client
     public class JSendClient : IJSendClient
     {
         private readonly IJSendParser _parser;
+        private readonly Encoding _encoding;
+        private readonly JsonSerializerSettings _serializerSettings;
+        
         private readonly Func<HttpClient> _clientFactory;
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
         public JSendClient()
-            : this(new DefaultJSendParser())
+            : this(new JSendClientSettings())
         {
 
         }
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
-        /// <param name="parser">A parser to process JSend-formatted responses.</param>
-        public JSendClient(IJSendParser parser)
-            : this(parser, () => new HttpClient())
+        /// <param name="settings">The settings to configure this client.</param>
+        public JSendClient(JSendClientSettings settings)
+            : this(settings, () => new HttpClient())
         {
 
         }
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
-        /// <param name="parser">A parser to process JSend-formatted responses.</param>
+        /// <param name="settings">The settings to configure this client.</param>
         /// <param name="clientFactory">A factory that creates instances of <see cref="HttpClient"/>.</param>
-        public JSendClient(IJSendParser parser, Func<HttpClient> clientFactory)
+        public JSendClient(JSendClientSettings settings, Func<HttpClient> clientFactory)
         {
-            if (parser == null) throw new ArgumentNullException("parser");
+            if (settings == null) throw new ArgumentNullException("settings");
             if (clientFactory == null) throw new ArgumentNullException("clientFactory");
 
-            _parser = parser;
+            _parser = settings.JSendParser ?? new DefaultJSendParser();
+            _encoding = settings.Encoding;
+            _serializerSettings = settings.SerializerSettings;
+
             _clientFactory = clientFactory;
         }
 
@@ -104,11 +111,11 @@ namespace JSend.Client
         public Task<JSendResponse<TResponse>> PostAsync<TResponse>(Uri requestUri, object content,
             CancellationToken cancellationToken)
         {
-            var serialized = JsonConvert.SerializeObject(content, new JsonSerializerSettings());
+            var serialized = JsonConvert.SerializeObject(content, _serializerSettings);
 
             var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
             {
-                Content = new StringContent(serialized, null, "application/json")
+                Content = new StringContent(serialized, _encoding, "application/json")
             };
 
             return SendAsync<TResponse>(request, cancellationToken);

@@ -183,6 +183,21 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
+        public async Task PostAsync_SetsCharSet(
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen] JSendClientSettings settings,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            var expectedCharSet = settings.Encoding.WebName;
+            // Exercise system
+            await client.PostAsync<object>(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Content.Headers.ContentType.CharSet.Should().Be(expectedCharSet);
+        }
+
+        [Theory, JSendAutoData]
         public async Task SendAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
