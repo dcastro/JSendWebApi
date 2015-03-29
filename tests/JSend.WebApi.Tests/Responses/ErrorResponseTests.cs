@@ -132,8 +132,7 @@ namespace JSend.WebApi.Tests.Responses
             // Exercise system
             var serializedResponse = JObject.FromObject(response);
             // Verify outcome
-            JToken.DeepEquals(expectedSerializedResponse, serializedResponse)
-                .Should().BeTrue();
+            Assert.Equal(expectedSerializedResponse, serializedResponse, JToken.EqualityComparer);
         }
 
         [Theory, JSendAutoData]

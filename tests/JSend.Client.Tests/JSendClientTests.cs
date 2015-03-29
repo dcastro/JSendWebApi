@@ -9,7 +9,6 @@ using JSend.Client.Tests.TestTypes;
 using Moq;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Kernel;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;

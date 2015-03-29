@@ -8,6 +8,7 @@ using FluentAssertions;
 using JSend.WebApi.FunctionalTests.FixtureCustomizations;
 using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture;
+using Xunit;
 using Xunit.Extensions;
 
 namespace JSend.WebApi.FunctionalTests
@@ -285,7 +286,7 @@ namespace JSend.WebApi.FunctionalTests
 
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+                Assert.Equal(expectedContent, content, JToken.EqualityComparer);
             }
         }
     }
