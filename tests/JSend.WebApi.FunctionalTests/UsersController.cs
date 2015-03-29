@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Web.Http;
+using JSend.WebApi.Responses;
 
 namespace JSend.WebApi.FunctionalTests
 {
@@ -139,6 +141,32 @@ namespace JSend.WebApi.FunctionalTests
         public IHttpActionResult InternalServerErrorWithExceptionAction()
         {
             return JSendInternalServerError(Exception);
+        }
+
+        [Route("jsend"), HttpGet]
+        public IHttpActionResult JSendAction()
+        {
+            var response = new SuccessResponse();
+
+            return JSend(HttpStatusCode.Gone, response);
+        }
+
+        [Route("jsend-success"), HttpGet]
+        public IHttpActionResult JSendSuccessAction()
+        {
+            return JSendSuccess(HttpStatusCode.Gone, TestUser);
+        }
+
+        [Route("jsend-fail"), HttpGet]
+        public IHttpActionResult JSendFailAction()
+        {
+            return JSendFail(HttpStatusCode.Gone, ErrorMessage);
+        }
+
+        [Route("jsend-error"), HttpGet]
+        public IHttpActionResult JSendErrorAction()
+        {
+            return JSendError(HttpStatusCode.Gone, ErrorMessage, ErrorCode, ErrorData);
         }
     }
 }

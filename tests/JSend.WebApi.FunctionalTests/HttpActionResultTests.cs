@@ -33,6 +33,10 @@ namespace JSend.WebApi.FunctionalTests
         [InlineJSendAutoData("notfound-with-reason", HttpStatusCode.NotFound)]
         [InlineJSendAutoData("internal-server-error", HttpStatusCode.InternalServerError)]
         [InlineJSendAutoData("internal-server-error-with-exception", HttpStatusCode.InternalServerError)]
+        [InlineJSendAutoData("jsend", HttpStatusCode.Gone)]
+        [InlineJSendAutoData("jsend-success", HttpStatusCode.Gone)]
+        [InlineJSendAutoData("jsend-fail", HttpStatusCode.Gone)]
+        [InlineJSendAutoData("jsend-error", HttpStatusCode.Gone)]
         public async Task ActionsReturnExpectedStatusCode(
             string route, HttpStatusCode expectedCode,
             HttpServer server, HttpClient client)
@@ -66,6 +70,10 @@ namespace JSend.WebApi.FunctionalTests
         [InlineJSendAutoData("notfound-with-reason")]
         [InlineJSendAutoData("internal-server-error")]
         [InlineJSendAutoData("internal-server-error-with-exception")]
+        [InlineJSendAutoData("jsend")]
+        [InlineJSendAutoData("jsend-success")]
+        [InlineJSendAutoData("jsend-fail")]
+        [InlineJSendAutoData("jsend-error")]
         public async Task ActionsSetContentTypeHeader(string route, HttpServer server, HttpClient client)
         {
             using (server)
@@ -265,6 +273,40 @@ namespace JSend.WebApi.FunctionalTests
                             {"status", "error"},
                             {"message", UsersController.Exception.Message},
                             {"data", UsersController.Exception.ToString()}
+                        }
+                    },
+                    new object[]
+                    {
+                        "jsend", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", null}
+                        }
+                    },
+                    new object[]
+                    {
+                        "jsend-success", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", JToken.FromObject(UsersController.TestUser)}
+                        }
+                    },
+                    new object[]
+                    {
+                        "jsend-fail", new JObject
+                        {
+                            {"status", "fail"},
+                            {"data", UsersController.ErrorMessage}
+                        }
+                    },
+                    new object[]
+                    {
+                        "jsend-error", new JObject
+                        {
+                            {"status", "error"},
+                            {"message", UsersController.ErrorMessage},
+                            {"code", UsersController.ErrorCode},
+                            {"data", JToken.FromObject(UsersController.ErrorData)}
                         }
                     }
                 };
