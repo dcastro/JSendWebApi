@@ -20,7 +20,9 @@ namespace JSend.WebApi.FunctionalTests.FixtureCustomizations
             public void Customize(IFixture fixture)
             {
                 fixture.Customize<HttpConfiguration>(
-                    c => c.OmitAutoProperties()
+                    c => c
+                        .OmitAutoProperties()
+                        .With(config => config.IncludeErrorDetailPolicy, IncludeErrorDetailPolicy.Always)
                         .Do(config => config.MapHttpAttributeRoutes()));
             }
         }

@@ -394,5 +394,56 @@ namespace JSend.WebApi.FunctionalTests
                 response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             }
         }
+
+        [Theory, JSendAutoData]
+        public async Task InternalServerError_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "error"},
+                {"message", UsersController.ErrorMessage},
+                {"code", UsersController.ErrorCode},
+                {"data", JToken.FromObject(UsersController.ErrorData)}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/internal-server-error");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
+                response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task InternalServerErrorWithException_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "error"},
+                {"message", UsersController.Exception.Message},
+                {"data", UsersController.Exception.ToString()}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/internal-server-error-with-exception");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
+                response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

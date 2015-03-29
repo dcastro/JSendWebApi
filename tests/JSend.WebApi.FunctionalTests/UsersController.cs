@@ -10,9 +10,16 @@ namespace JSend.WebApi.FunctionalTests
     {
         public static readonly User TestUser = new User {Username = "DCastro"};
         public static readonly string CreatedLocation = "http://localhost/users/dummy-location/5";
+
         public static readonly string ErrorMessage = "dummy error message";
+        public static readonly int ErrorCode = 80;
+        public static readonly object ErrorData = DateTime.UtcNow;
+
+        public static readonly Exception Exception = new InvalidOperationException("dummy exception message");
+
         public static readonly string ModelErrorKey = "Username";
         public static readonly string ModelErrorValue = "Invalid Username";
+
         public static readonly string AuthenticationHeader = "dummy-authentication-header";
 
         /// <summary>
@@ -120,6 +127,18 @@ namespace JSend.WebApi.FunctionalTests
         public IHttpActionResult NotFoundWithReasonAction()
         {
             return JSendNotFound(ErrorMessage);
+        }
+
+        [Route("internal-server-error"), HttpGet]
+        public IHttpActionResult InternalServerErrorAction()
+        {
+            return JSendInternalServerError(ErrorMessage, ErrorCode, ErrorData);
+        }
+
+        [Route("internal-server-error-with-exception"), HttpGet]
+        public IHttpActionResult InternalServerErrorWithExceptionAction()
+        {
+            return JSendInternalServerError(Exception);
         }
     }
 }
