@@ -17,7 +17,7 @@ namespace JSend.WebApi.FunctionalTests
         public static readonly int ErrorCode = 80;
         public static readonly object ErrorData = DateTime.UtcNow;
 
-        public static readonly Exception Exception = new InvalidOperationException("dummy exception message");
+        public static readonly Exception TestException = new InvalidOperationException("dummy exception message");
 
         public static readonly string ModelErrorKey = "Username";
         public static readonly string ModelErrorValue = "Invalid Username";
@@ -140,7 +140,7 @@ namespace JSend.WebApi.FunctionalTests
         [Route("internal-server-error-with-exception"), HttpGet]
         public IHttpActionResult InternalServerErrorWithExceptionAction()
         {
-            return JSendInternalServerError(Exception);
+            return JSendInternalServerError(TestException);
         }
 
         [Route("jsend"), HttpGet]
@@ -179,6 +179,19 @@ namespace JSend.WebApi.FunctionalTests
         public User ValueAction()
         {
             return TestUser;
+        }
+
+        [Route("exception"), HttpGet]
+        public void ExceptionAction()
+        {
+            throw TestException;
+        }
+
+        [Route("exception-without-details"), HttpGet]
+        public void ExceptionWithoutDetailsAction()
+        {
+            Configuration.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Never;
+            throw TestException;
         }
     }
 }

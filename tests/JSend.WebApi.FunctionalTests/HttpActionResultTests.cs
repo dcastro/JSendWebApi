@@ -271,8 +271,8 @@ namespace JSend.WebApi.FunctionalTests
                         "internal-server-error-with-exception", new JObject
                         {
                             {"status", "error"},
-                            {"message", UsersController.Exception.Message},
-                            {"data", UsersController.Exception.ToString()}
+                            {"message", UsersController.TestException.Message},
+                            {"data", UsersController.TestException.ToString()}
                         }
                     },
                     new object[]
