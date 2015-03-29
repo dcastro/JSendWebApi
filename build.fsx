@@ -38,7 +38,7 @@ Target "BuildTests" (fun _ ->
 )
 
 Target "RunTests" (fun _ ->
-    !! "./tests/**/bin/debug/*.Tests.dll" 
+    !! "./tests/**/bin/debug/*Tests.dll" 
         |> xUnit (fun p ->
             {p with 
                 ShadowCopy = false;
