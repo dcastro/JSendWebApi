@@ -10,6 +10,14 @@ namespace JSend.WebApi.FunctionalTests
         public static readonly User TestUser = new User {Username = "DCastro"};
         public static readonly string CreatedLocation = "http://localhost/users/dummy-location/5";
 
+        /// <summary>
+        /// Dummy action to redirect to.
+        /// </summary>
+        [Route("dummy-location/{id:int}", Name = "DummyLocation"), HttpGet]
+        public void DummyLocation(int id)
+        {
+        }
+
         [Route("ok"), HttpGet]
         public IHttpActionResult OkAction()
         {
@@ -50,9 +58,32 @@ namespace JSend.WebApi.FunctionalTests
             return JSendCreatedAtRoute("DummyLocation", routeValues, TestUser);
         }
 
-        [Route("dummy-location/{id:int}", Name = "DummyLocation"), HttpGet]
-        public void DummyLocation(int id)
+        [Route("redirect-with-string"), HttpGet]
+        public IHttpActionResult RedirectWithStringAction()
         {
+            return JSendRedirect(CreatedLocation);
+        }
+
+        [Route("redirect-with-uri"), HttpGet]
+        public IHttpActionResult RedirectWithUriAction()
+        {
+            return JSendRedirect(new Uri(CreatedLocation));
+        }
+
+        [Route("redirect-to-route-with-object"), HttpGet]
+        public IHttpActionResult RedirectToRouteWithObjectAction()
+        {
+            return JSendRedirectToRoute("DummyLocation", new {id = 5});
+        }
+
+        [Route("redirect-to-route-with-dictionary"), HttpGet]
+        public IHttpActionResult RedirectToRouteWithDictionaryAction()
+        {
+            var routeValues = new Dictionary<string, object>
+            {
+                {"id", 5}
+            };
+            return JSendRedirectToRoute("DummyLocation", routeValues);
         }
     }
 }

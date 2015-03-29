@@ -145,5 +145,97 @@ namespace JSend.WebApi.FunctionalTests
                 response.Headers.Location.Should().Be(UsersController.CreatedLocation);
             }
         }
+
+        [Theory, JSendAutoData]
+        public async Task RedirectWithString_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "success"},
+                {"data", null}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/redirect-with-string");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task RedirectWithUri_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "success"},
+                {"data", null}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/redirect-with-uri");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task RedirectToRouteWithObject_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "success"},
+                {"data", null}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/redirect-to-route-with-object");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task RedirectToRouteWithDictionary_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "success"},
+                {"data", null}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/redirect-to-route-with-dictionary");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+            }
+        }
     }
 }
