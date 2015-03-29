@@ -173,6 +173,32 @@ namespace JSend.Client
             return await PostAsync<object>(requestUri, content, cancellationToken);
         }
 
+        /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public Task<JSendResponse> DeleteAsync(string requestUri)
+        {
+            return DeleteAsync(new Uri(requestUri));
+        }
+
+        /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public Task<JSendResponse> DeleteAsync(Uri requestUri)
+        {
+            return DeleteAsync(requestUri, CancellationToken.None);
+        }
+
+        /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public async Task<JSendResponse> DeleteAsync(Uri requestUri, CancellationToken cancellationToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
+            return await SendAsync<object>(request, cancellationToken);
+        }
+
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
         /// <typeparam name="T">The type of the expected data.</typeparam>
         /// <param name="request">The HTTP request message to send.</param>

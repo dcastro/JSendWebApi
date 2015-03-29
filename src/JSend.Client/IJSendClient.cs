@@ -82,6 +82,22 @@ namespace JSend.Client
         Task<JSendResponse> PostAsync(Uri requestUri, object content,
             CancellationToken cancellationToken);
 
+        /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        Task<JSendResponse> DeleteAsync(string requestUri);
+
+        /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        Task<JSendResponse> DeleteAsync(Uri requestUri);
+
+        /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        Task<JSendResponse> DeleteAsync(Uri requestUri, CancellationToken cancellationToken);
+
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
         /// <typeparam name="T">The type of the expected data.</typeparam>
         /// <param name="request">The HTTP request message to send.</param>

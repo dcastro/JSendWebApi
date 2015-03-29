@@ -334,6 +334,48 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
+        public async Task DeleteAsync_ReturnsParsedResponse(
+            HttpResponseMessage httpResponseMessage, JSendResponse<object> parsedResponse,
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
+            Uri uri, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            handlerStub.ReturnOnSend = httpResponseMessage;
+
+            Mock.Get(client.Parser)
+                .Setup(p => p.ParseAsync<object>(httpResponseMessage))
+                .ReturnsAsync(parsedResponse);
+            // Exercise system
+            var response = await client.DeleteAsync(uri);
+            // Verify outcome
+            response.Should().BeSameAs(parsedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task DeleteAsync_SendsPostRequest(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.DeleteAsync(uri);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Method.Should().Be(HttpMethod.Delete);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task DeleteAsync_SetsUri(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.DeleteAsync(uri);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.RequestUri.Should().Be(uri);
+        }
+
+        [Theory, JSendAutoData]
         public async Task SendAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
