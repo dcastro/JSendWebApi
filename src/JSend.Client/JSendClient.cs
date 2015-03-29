@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace JSend.Client
 {
@@ -72,6 +73,45 @@ namespace JSend.Client
         {
             var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
             return SendAsync<T>(request, cancellationToken);
+        }
+
+        /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public Task<JSendResponse<TResponse>> PostAsync<TResponse>(string requestUri, object content)
+        {
+            return PostAsync<TResponse>(new Uri(requestUri), content);
+        }
+
+        /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>        
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public Task<JSendResponse<TResponse>> PostAsync<TResponse>(Uri requestUri, object content)
+        {
+            return PostAsync<TResponse>(requestUri, content, CancellationToken.None);
+        }
+
+        /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>        
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public Task<JSendResponse<TResponse>> PostAsync<TResponse>(Uri requestUri, object content,
+            CancellationToken cancellationToken)
+        {
+            var serialized = JsonConvert.SerializeObject(content, new JsonSerializerSettings());
+
+            var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
+            {
+                Content = new StringContent(serialized, null, "application/json")
+            };
+
+            return SendAsync<TResponse>(request, cancellationToken);
         }
 
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
