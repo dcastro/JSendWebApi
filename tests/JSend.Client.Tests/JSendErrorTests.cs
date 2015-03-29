@@ -83,6 +83,16 @@ namespace JSend.Client.Tests
                     {
                         new JSendError(JSendStatus.Fail, null, null, Token),
                         new JSendError(JSendStatus.Fail, null, null, Token)
+                    },
+                    new object[]
+                    {
+                        new JSendError(JSendStatus.Fail, null, null, new JObject()),
+                        new JSendError(JSendStatus.Fail, null, null, new JObject())
+                    },
+                    new object[]
+                    {
+                        new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "a"}}),
+                        new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "a"}})
                     }
                 };
             }
@@ -118,8 +128,8 @@ namespace JSend.Client.Tests
                     },
                     new object[]
                     {
-                        new JSendError(JSendStatus.Fail, null, null, new JObject()),
-                        new JSendError(JSendStatus.Fail, null, null, new JObject())
+                        new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "a"}}),
+                        new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "b"}})
                     }
                 };
             }

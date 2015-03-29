@@ -65,7 +65,7 @@ namespace JSend.Client
                    _status == other._status &&
                    _code == other._code &&
                    string.Equals(_message, other._message, StringComparison.Ordinal) &&
-                   Equals(_data, other._data);
+                   JToken.EqualityComparer.Equals(_data, other._data);
         }
 
         /// <summary>Determines whether the specified <see cref="Object"/> is equal to the current <see cref="JSendError"/>.</summary>
@@ -90,7 +90,7 @@ namespace JSend.Client
                 var hashCode = (int) _status;
                 hashCode = (hashCode*397) ^ (_message != null ? StringComparer.Ordinal.GetHashCode(_message) : 0);
                 hashCode = (hashCode*397) ^ _code.GetHashCode();
-                hashCode = (hashCode*397) ^ (_data != null ? _data.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ JToken.EqualityComparer.GetHashCode(_data);
                 return hashCode;
             }
         }
