@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -23,6 +24,9 @@ namespace JSend.Client
 
         private static readonly Lazy<Task<JsonSchema>> FailSchema = new Lazy<Task<JsonSchema>>(
             () => LoadSchema("JSend.Client.Schemas.FailResponseSchema.json"));
+
+        private static readonly Lazy<Task<JsonSchema>> ErrorSchema = new Lazy<Task<JsonSchema>>(
+            () => LoadSchema("JSend.Client.Schemas.ErrorResponseSchema.json"));
 
         private static async Task<JsonSchema> LoadSchema(string name)
         {
@@ -60,9 +64,12 @@ namespace JSend.Client
                     return await ParseSuccessMessageAsync<T>(json, httpResponseMessage);
                 case "fail":
                     return await ParseFailMessageAsync<T>(json, httpResponseMessage);
-                default:
-                    return null;
+                case "error":
+                    return await ParseErrorMessageAsync<T>(json, httpResponseMessage);
             }
+
+            Contract.Assert(false);
+            return null;
         }
 
         /// <summary>
@@ -112,6 +119,36 @@ namespace JSend.Client
 
             var dataToken = json["data"];
             var error = new JSendError(JSendStatus.Fail, null, null, dataToken);
+            return new JSendResponse<T>(error, responseMessage);
+        }
+
+        /// <summary>
+        /// Parses the content of a <see cref="JToken"/> and returns a <see cref="JSendResponse{T}"/>
+        /// representing an error response.
+        /// </summary>
+        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <param name="json">The <see cref="JToken"/> to parse.</param>
+        /// <param name="responseMessage">The HTTP response message from where <paramref name="json"/> was extracted.</param>
+        /// <returns>A task representing the error <see cref="JSendResponse{T}"/>.</returns>
+        /// <exception cref="JsonSchemaException"><paramref name="json"/> is not JSend formatted.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        public async Task<JSendResponse<T>> ParseErrorMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
+        {
+            if (json == null) throw new ArgumentNullException("json");
+            if (responseMessage == null) throw new ArgumentNullException("responseMessage");
+
+            json.Validate(await ErrorSchema.Value);
+
+            var message = json.Value<string>("message");
+            var code = json.Value<int?>("code");
+            var dataToken = json["data"];
+
+            // check if the "data" key exists, but has a null value
+            if (dataToken != null && dataToken.Type == JTokenType.Null)
+                dataToken = null;
+
+            var error = new JSendError(JSendStatus.Error, message, code, dataToken);
             return new JSendResponse<T>(error, responseMessage);
         }
     }

@@ -213,6 +213,155 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
+        public async Task ParsesErrorResponse_WithAllFields(string message, int code, DateTime data,
+            HttpResponseMessage responseMessage, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            responseMessage.Content = new StringContent(@"
+            {
+                ""status"": ""error"",
+                ""message"": """ + message + @""",
+                ""code"": " + code + @",
+                ""data"": """ + data + @"""
+            }");
+
+            var expectedError = new JSendError(JSendStatus.Error, message, code, JToken.FromObject(data));
+            // Exercise system
+            var response = await parser.ParseAsync<Model>(responseMessage);
+            // Verify outcome
+            response.Status.Should().Be(JSendStatus.Error);
+            response.Error.ShouldBeEquivalentTo(expectedError);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ParsesErrorResponse_WithoutCodeKey(string message, DateTime data,
+            HttpResponseMessage responseMessage, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            responseMessage.Content = new StringContent(@"
+            {
+                ""status"": ""error"",
+                ""message"": """ + message + @""",
+                ""data"": """ + data + @"""
+            }");
+
+            var expectedError = new JSendError(JSendStatus.Error, message, null, JToken.FromObject(data));
+            // Exercise system
+            var response = await parser.ParseAsync<Model>(responseMessage);
+            // Verify outcome
+            response.Status.Should().Be(JSendStatus.Error);
+            response.Error.ShouldBeEquivalentTo(expectedError);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ParsesErrorResponse_WithNullCode(string message, DateTime data,
+            HttpResponseMessage responseMessage, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            responseMessage.Content = new StringContent(@"
+            {
+                ""status"": ""error"",
+                ""message"": """ + message + @""",
+                ""code"": null,
+                ""data"": """ + data + @"""
+            }");
+
+            var expectedError = new JSendError(JSendStatus.Error, message, null, JToken.FromObject(data));
+            // Exercise system
+            var response = await parser.ParseAsync<Model>(responseMessage);
+            // Verify outcome
+            response.Status.Should().Be(JSendStatus.Error);
+            response.Error.ShouldBeEquivalentTo(expectedError);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ParsesErrorResponse_WithoutDataKey(string message, int code,
+            HttpResponseMessage responseMessage, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            responseMessage.Content = new StringContent(@"
+            {
+                ""status"": ""error"",
+                ""message"": """ + message + @""",
+                ""code"": " + code + @"
+            }");
+
+            var expectedError = new JSendError(JSendStatus.Error, message, code, null);
+            // Exercise system
+            var response = await parser.ParseAsync<Model>(responseMessage);
+            // Verify outcome
+            response.Status.Should().Be(JSendStatus.Error);
+            response.Error.ShouldBeEquivalentTo(expectedError);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ParsesErrorResponse_WithNullData(string message, int code,
+            HttpResponseMessage responseMessage, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            responseMessage.Content = new StringContent(@"
+            {
+                ""status"": ""error"",
+                ""message"": """ + message + @""",
+                ""code"": " + code + @",
+                ""data"": null
+            }");
+
+            var expectedError = new JSendError(JSendStatus.Error, message, code, null);
+            // Exercise system
+            var response = await parser.ParseAsync<Model>(responseMessage);
+            // Verify outcome
+            response.Status.Should().Be(JSendStatus.Error);
+            response.Error.ShouldBeEquivalentTo(expectedError);
+        }
+
+        [Theory, JSendAutoData]
+        public void ThrowsWhenErrorResponse_DoesNotHaveMessageKey(HttpResponseMessage message, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent(@"
+            {
+                ""status"": ""error""
+            }");
+            // Exercise system and verify outcome
+            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
+            parse.ShouldThrow<JsonSchemaException>()
+                .And.Message.Should().Contain("message");
+        }
+
+        [Theory, JSendAutoData]
+        public void ThrowsWhenErrorResponse_HasNullMessage(HttpResponseMessage message, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent(@"
+            {
+                ""status"": ""error"",
+                ""message"": null
+            }");
+            // Exercise system and verify outcome
+            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
+            parse.ShouldThrow<JsonSchemaException>()
+                .And.Message.Should().Contain("Null");
+        }
+
+        [Theory, JSendAutoData]
+        public void ThrowsWhenErrorResponse_HasMessageOfAWrongType(HttpResponseMessage message,
+            DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent(@"
+            {
+                ""status"": ""error"",
+                ""message"": { }
+            }");
+            // Exercise system and verify outcome
+            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
+            parse.ShouldThrow<JsonSchemaException>()
+                .And.Message.Should().Contain("String")
+                .And.Contain("Object");
+        }
+
+        [Theory, JSendAutoData]
         public void ParseSuccessMessageAsync_ThrowsWhenJsonIsNull(HttpResponseMessage httpResponseMessage,
             DefaultJSendParser parser)
         {
@@ -248,6 +397,25 @@ namespace JSend.Client.Tests
             Func<Task<JSendResponse<Model>>> parseFail =
                 () => parser.ParseFailMessageAsync<Model>(json, null);
             parseFail.ShouldThrow<ArgumentNullException>();
+        }
+
+        [Theory, JSendAutoData]
+        public void ParseErrorMessageAsync_ThrowsWhenJsonIsNull(HttpResponseMessage httpResponseMessage,
+            DefaultJSendParser parser)
+        {
+            // Exercise system and verify outcome
+            Func<Task<JSendResponse<Model>>> parseError =
+                () => parser.ParseErrorMessageAsync<Model>(null, httpResponseMessage);
+            parseError.ShouldThrow<ArgumentNullException>();
+        }
+
+        [Theory, JSendAutoData]
+        public void ParseErrorlMessageAsync_ThrowsWhenHttpResponseMessageIsNull(JToken json, DefaultJSendParser parser)
+        {
+            // Exercise system and verify outcome
+            Func<Task<JSendResponse<Model>>> parseError =
+                () => parser.ParseErrorMessageAsync<Model>(json, null);
+            parseError.ShouldThrow<ArgumentNullException>();
         }
     }
 }

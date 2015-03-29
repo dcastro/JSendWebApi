@@ -76,6 +76,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Schemas\ErrorResponseSchema.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Schemas\JSendResponseSchema.json" />

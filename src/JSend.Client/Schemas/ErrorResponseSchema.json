@@ -1,0 +1,23 @@
+﻿{
+    "$schema": "http://json-schema.org/draft-03/schema#",
+    "description": "Schema for validating a JSend response with error status",
+    "type": "object",
+    "properties": {
+        "status": {
+            "type": "string",
+            "required": true,
+            "enum": [ "error" ]
+        },
+        "message": {
+            "type": "string",
+            "required": true
+        },
+        "code": {
+            "type": [ "integer", "null" ],
+            "required": false
+        },
+        "data": {
+            "required": false
+        }
+    }
+}
