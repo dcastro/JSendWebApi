@@ -79,5 +79,25 @@ namespace JSend.Client.Tests
             // Verify outcome
             response.Should().BeSameAs(parsedResponse);
         }
+
+        [Theory, JSendAutoData]
+        public async Task SendAsync_ReturnsParsedResponse(
+            HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
+            [Frozen] HttpMessageHandlerStub handlerStub, [Frozen] IJSendParser parser,
+            HttpRequestMessage request, [WithFakeClient] JSendClient client)
+        {
+            // Fixture setup
+            Mock.Get(handlerStub)
+                .Setup(h => h.Send())
+                .Returns(httpResponseMessage);
+
+            Mock.Get(parser)
+                .Setup(p => p.ParseAsync<Model>(httpResponseMessage))
+                .ReturnsAsync(parsedResponse);
+            // Exercise system
+            var response = await client.SendAsync<Model>(request);
+            // Verify outcome
+            response.Should().BeSameAs(parsedResponse);
+        }
     }
 }

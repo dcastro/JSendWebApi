@@ -64,13 +64,36 @@ namespace JSend.Client
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
         /// <typeparam name="T">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         public async Task<JSendResponse<T>> GetAsync<T>(Uri requestUri, CancellationToken cancellationToken)
         {
             using (var client = _clientFactory())
             {
                 var responseMessage = await client.GetAsync(requestUri, cancellationToken);
+                return await _parser.ParseAsync<T>(responseMessage);
+            }
+        }
+
+        /// <summary>Send an HTTP request as an asynchronous operation.</summary>
+        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <param name="request">The HTTP request message to send.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public Task<JSendResponse<T>> SendAsync<T>(HttpRequestMessage request)
+        {
+            return SendAsync<T>(request, CancellationToken.None);
+        }
+
+        /// <summary>Send an HTTP request as an asynchronous operation.</summary>
+        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <param name="request">The HTTP request message to send.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public async Task<JSendResponse<T>> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            using (var client = _clientFactory())
+            {
+                var responseMessage = await client.SendAsync(request, cancellationToken);
                 return await _parser.ParseAsync<T>(responseMessage);
             }
         }
