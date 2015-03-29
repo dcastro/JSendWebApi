@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Web.Http;
 
 namespace JSend.WebApi.FunctionalTests
@@ -12,6 +13,7 @@ namespace JSend.WebApi.FunctionalTests
         public static readonly string ErrorMessage = "dummy error message";
         public static readonly string ModelErrorKey = "Username";
         public static readonly string ModelErrorValue = "Invalid Username";
+        public static readonly string AuthenticationHeader = "dummy-authentication-header";
 
         /// <summary>
         /// Dummy action to redirect to.
@@ -100,6 +102,12 @@ namespace JSend.WebApi.FunctionalTests
         {
             ModelState.AddModelError(ModelErrorKey, ModelErrorValue);
             return JSendBadRequest(ModelState);
+        }
+
+        [Route("unauthorized"), HttpGet]
+        public IHttpActionResult UnauthorizedAction()
+        {
+            return JSendUnauthorized(new AuthenticationHeaderValue(AuthenticationHeader));
         }
     }
 }

@@ -319,5 +319,32 @@ namespace JSend.WebApi.FunctionalTests
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             }
         }
+
+        [Theory, JSendAutoData]
+        public async Task Unauthorized_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "fail"},
+                {"data", "Authorization has been denied for this request."}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/unauthorized");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
+                response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+                response.Headers.WwwAuthenticate
+                    .Should().ContainSingle(UsersController.AuthenticationHeader);
+            }
+        }
     }
 }
