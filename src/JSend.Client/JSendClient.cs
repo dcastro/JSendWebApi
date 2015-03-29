@@ -11,13 +11,13 @@ namespace JSend.Client
     /// <summary>
     /// Sends HTTP requests and parses JSend-formatted HTTP responses.
     /// </summary>
-    public class JSendClient : IJSendClient
+    public class JSendClient : IJSendClient, IDisposable
     {
         private readonly IJSendParser _parser;
         private readonly Encoding _encoding;
         private readonly JsonSerializerSettings _serializerSettings;
 
-        private readonly Func<HttpClient> _clientFactory;
+        private readonly HttpClient _client;
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
         public JSendClient()
@@ -28,18 +28,20 @@ namespace JSend.Client
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
         /// <param name="settings">The settings to configure this client.</param>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+            Justification = "The HttpClient is disposed of as part of this class.")]
         public JSendClient(JSendClientSettings settings)
-            : this(settings, () => new HttpClient())
+            : this(settings, new HttpClient())
         {
 
         }
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
         /// <param name="settings">The settings to configure this client.</param>
-        /// <param name="clientFactory">A factory that creates instances of <see cref="HttpClient"/>.</param>
-        public JSendClient(JSendClientSettings settings, Func<HttpClient> clientFactory)
+        /// <param name="client">A client to send HTTP requests and receive HTTP responses.</param>
+        public JSendClient(JSendClientSettings settings, HttpClient client)
         {
-            if (clientFactory == null) throw new ArgumentNullException("clientFactory");
+            if (client == null) throw new ArgumentNullException("client");
 
             if (settings == null)
                 settings = new JSendClientSettings();
@@ -48,7 +50,7 @@ namespace JSend.Client
             _encoding = settings.Encoding;
             _serializerSettings = settings.SerializerSettings;
 
-            _clientFactory = clientFactory;
+            _client = client;
         }
 
         /// <summary>Gets the parser used to process JSend-formatted responses.</summary>
@@ -283,19 +285,41 @@ namespace JSend.Client
         /// <param name="request">The HTTP request message to send.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken)
+        public async Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
-            using (var client = _clientFactory())
-            {
-                var responseMessage = await client.SendAsync(request, cancellationToken);
-                return await _parser.ParseAsync<TResponse>(responseMessage);
-            }
+            var responseMessage = await _client.SendAsync(request, cancellationToken);
+            return await _parser.ParseAsync<TResponse>(responseMessage);
         }
 
         private HttpContent Serialize(object content)
         {
             var serialized = JsonConvert.SerializeObject(content, _serializerSettings);
             return new StringContent(serialized, _encoding, "application/json");
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+
+            // In case a derived class has a custom finalizer
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources that are used by the object and, optionally, releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <see langword="true"/> to release both managed and unmanaged resources;
+        /// <see langword="false"/> to release only unmanaged resources.
+        /// </param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                _client.Dispose();
         }
     }
 }

@@ -66,7 +66,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenClientFactoryIsNull(JSendClientSettings settings)
+        public void ConstructorThrowsWhenClientIsNull(JSendClientSettings settings)
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => new JSendClient(settings, null));
@@ -260,7 +260,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task PostAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<object> parsedResponse,
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
             Uri uri, Model content, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -277,7 +277,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SendsPostRequest(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -289,7 +289,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SetsUri(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -301,7 +301,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SerializesContent(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, Model content, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -315,7 +315,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SetsContentTypeHeader(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -327,7 +327,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SetsCharSet(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -342,7 +342,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task DeleteAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<object> parsedResponse,
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
             Uri uri, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -359,7 +359,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task DeleteAsync_SendsPostRequest(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -371,7 +371,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task DeleteAsync_SetsUri(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -384,7 +384,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
             Uri uri, Model content, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -401,7 +401,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SendsPutRequest(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -413,7 +413,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SetsUri(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -425,7 +425,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SerializesContent(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, Model content, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -439,7 +439,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SetsContentTypeHeader(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -451,7 +451,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SetsCharSet(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -466,7 +466,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task PutAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<object> parsedResponse,
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
             Uri uri, Model content, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -483,7 +483,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SendsPutRequest(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -495,7 +495,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SetsUri(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -507,7 +507,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SerializesContent(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, Model content, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -521,7 +521,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SetsContentTypeHeader(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Exercise system
@@ -533,7 +533,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SetsCharSet(
-            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Fixture setup
@@ -561,6 +561,28 @@ namespace JSend.Client.Tests
             var response = await client.SendAsync<Model>(request);
             // Verify outcome
             response.Should().BeSameAs(parsedResponse);
+        }
+
+        public class HttpClientSpy : HttpClient
+        {
+            public bool Disposed = false;
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+                Disposed = disposing;
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public void DisposingOfTheJSendClient_DisposesOfTheHttpClient(HttpClientSpy spy)
+        {
+            // Fixture setup
+            var client = new JSendClient(null, spy);
+            // Exercise system
+            client.Dispose();
+            // Verify outcome
+            spy.Disposed.Should().BeTrue();
         }
     }
 }
