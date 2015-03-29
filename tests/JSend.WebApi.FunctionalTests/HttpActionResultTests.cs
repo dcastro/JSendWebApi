@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using FluentAssertions;
@@ -29,6 +30,8 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
             }
         }
 
@@ -51,6 +54,8 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
             }
         }
 
@@ -73,7 +78,10 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
                 response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+
+                response.StatusCode.Should().Be(HttpStatusCode.Created);
             }
         }
 
@@ -96,7 +104,10 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
                 response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+
+                response.StatusCode.Should().Be(HttpStatusCode.Created);
             }
         }
 
@@ -119,7 +130,10 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
                 response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+
+                response.StatusCode.Should().Be(HttpStatusCode.Created);
             }
         }
 
@@ -142,7 +156,10 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
                 response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+
+                response.StatusCode.Should().Be(HttpStatusCode.Created);
             }
         }
 
@@ -165,7 +182,10 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
                 response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+
+                response.StatusCode.Should().Be(HttpStatusCode.Redirect);
             }
         }
 
@@ -188,7 +208,10 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
                 response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+
+                response.StatusCode.Should().Be(HttpStatusCode.Redirect);
             }
         }
 
@@ -211,7 +234,10 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
                 response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+
+                response.StatusCode.Should().Be(HttpStatusCode.Redirect);
             }
         }
 
@@ -234,7 +260,10 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
                 response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+
+                response.StatusCode.Should().Be(HttpStatusCode.Redirect);
             }
         }
     }
