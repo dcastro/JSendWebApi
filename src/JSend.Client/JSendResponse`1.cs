@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Net.Http;
 using JSend.Client.Properties;
 
@@ -134,6 +135,19 @@ namespace JSend.Client
                 hashCode = (hashCode*397) ^ _hasData.GetHashCode();
                 return hashCode;
             }
+        }
+
+        /// <summary>Returns a string that represents the <see cref="JSendResponse{T}"/>.</summary>
+        /// <returns>A string that represents the <see cref="JSendResponse{T}"/>.</returns>
+        public override string ToString()
+        {
+            if (!HasData)
+                return base.ToString();
+
+            return string.Format(
+                CultureInfo.CurrentCulture,
+                "Data: {0}, {1}",
+                Data, base.ToString());
         }
     }
 }

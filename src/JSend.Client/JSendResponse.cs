@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Net.Http;
+using System.Text;
 using JSend.Client.Properties;
 
 namespace JSend.Client
@@ -172,6 +173,22 @@ namespace JSend.Client
         public static bool operator !=(JSendResponse left, JSendResponse right)
         {
             return !Equals(left, right);
+        }
+
+        /// <summary>Returns a string that represents the <see cref="JSendResponse"/>.</summary>
+        /// <returns>A string that represents the <see cref="JSendResponse"/>.</returns>
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendFormat("Status: {0}", Status);
+
+            if (Error != null)
+                sb.AppendFormat(", Error: {{{0}}}", Error);
+
+            sb.AppendFormat(", HttpResponseMessage: {{{0}}}", HttpResponseMessage);
+
+            return sb.ToString();
         }
     }
 }
