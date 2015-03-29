@@ -143,13 +143,6 @@ namespace JSend.Client.Tests
             first.Equals(second).Should().BeTrue();
         }
 
-        [Theory, JSendAutoData]
-        public void ErrorIsEqualToItself(JSendError error)
-        {
-            // Exercise system and verify outcome
-            error.Equals(error).Should().BeTrue();
-        }
-
         [Theory]
         [PropertyData("DistinctErrors")]
         public void TwoErrors_AreNotEqual_WhenTheirFieldsDoNotMatch(JSendError first, JSendError second)
@@ -172,6 +165,25 @@ namespace JSend.Client.Tests
             error.Equals(other).Should().BeFalse();
         }
 
+        [Theory, JSendAutoData]
+        public void Equals_IsReflexive(JSendError error)
+        {
+            // Exercise system and verify outcome
+            error.Equals(error).Should().BeTrue();
+        }
+
+        [Theory]
+        [PropertyData("EquivalentErrors")]
+        [PropertyData("DistinctErrors")]
+        public void Equals_IsSymmetric(JSendError first, JSendError second)
+        {
+            // Exercise system
+            var firstEqualsSecond = first.Equals(second);
+            var secondEqualsFirst = second.Equals(first);
+            // Verify outcome
+            firstEqualsSecond.Should().Be(secondEqualsFirst);
+        }
+
         [Theory]
         [PropertyData("EquivalentErrors")]
         public void EqualityOperator_ReturnsTrue_WhenFieldsMatch(JSendError first, JSendError second)
@@ -188,17 +200,6 @@ namespace JSend.Client.Tests
 #pragma warning disable 1718
             // Fixture setup
             JSendError error = null;
-            // Exercise system
-            var areEqual = error == error;
-            // Verify outcome
-            areEqual.Should().BeTrue();
-#pragma warning restore 1718
-        }
-
-        [Theory, JSendAutoData]
-        public void EqualityOperator_ReturnsTrue_WhenBothErrorsAreTheSameInstance(JSendError error)
-        {
-#pragma warning disable 1718
             // Exercise system
             var areEqual = error == error;
             // Verify outcome
@@ -234,6 +235,29 @@ namespace JSend.Client.Tests
             areEqual.Should().BeFalse();
         }
 
+        [Theory, JSendAutoData]
+        public void EqualityOperator_IsReflexive(JSendError error)
+        {
+#pragma warning disable 1718
+            // Exercise system
+            var areEqual = error == error;
+            // Verify outcome
+            areEqual.Should().BeTrue();
+#pragma warning restore 1718
+        }
+
+        [Theory, JSendAutoData]
+        [PropertyData("EquivalentErrors")]
+        [PropertyData("DistinctErrors")]
+        public void EqualityOperator_IsSymmetric(JSendError first, JSendError second)
+        {
+            // Exercise system
+            var firstEqualsSecond = first == second;
+            var secondEqualsFirst = second == first;
+            // Verify outcome
+            firstEqualsSecond.Should().Be(secondEqualsFirst);
+        }
+
         [Theory]
         [PropertyData("EquivalentErrors")]
         public void InequalityOperator_ReturnsFalse_WhenFieldsMatch(JSendError first, JSendError second)
@@ -250,17 +274,6 @@ namespace JSend.Client.Tests
 #pragma warning disable 1718
             // Fixture setup
             JSendError error = null;
-            // Exercise system
-            var areNotEqual = error != error;
-            // Verify outcome
-            areNotEqual.Should().BeFalse();
-#pragma warning restore 1718
-        }
-
-        [Theory, JSendAutoData]
-        public void InequalityOperator_ReturnsFalse_WhenBothErrorsAreTheSameInstance(JSendError error)
-        {
-#pragma warning disable 1718
             // Exercise system
             var areNotEqual = error != error;
             // Verify outcome
@@ -294,6 +307,29 @@ namespace JSend.Client.Tests
             var areNotEqual = error != null;
             // Verify outcome
             areNotEqual.Should().BeTrue();
+        }
+
+        [Theory, JSendAutoData]
+        public void InequalityOperator_IsReflexive(JSendError error)
+        {
+#pragma warning disable 1718
+            // Exercise system
+            var areNotEqual = error != error;
+            // Verify outcome
+            areNotEqual.Should().BeFalse();
+#pragma warning restore 1718
+        }
+
+        [Theory, JSendAutoData]
+        [PropertyData("EquivalentErrors")]
+        [PropertyData("DistinctErrors")]
+        public void InequalityOperator_IsSymmetric(JSendError first, JSendError second)
+        {
+            // Exercise system
+            var firstEqualsSecond = first != second;
+            var secondEqualsFirst = second != first;
+            // Verify outcome
+            firstEqualsSecond.Should().Be(secondEqualsFirst);
         }
 
         [Theory]
