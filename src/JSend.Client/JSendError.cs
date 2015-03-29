@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 namespace JSend.Client
 {
     /// <summary>Represents an error returned by a JSend API.</summary>
-    public class JSendError
+    public sealed class JSendError : IEquatable<JSendError>
     {
         private readonly JSendStatus _status;
         private readonly string _message;
@@ -54,6 +54,63 @@ namespace JSend.Client
         public JToken Data
         {
             get { return _data; }
+        }
+
+        /// <summary>Determines whether the specified <see cref="JSendError"/> is equal to the current <see cref="JSendError"/>.</summary>
+        /// <param name="other">The object to compare with the current object.</param>
+        /// <returns><see langword="true"/> if the specified error is equal to the current error; otherwise, <see langword="false"/>.</returns>
+        public bool Equals(JSendError other)
+        {
+            return other != null &&
+                   _status == other._status &&
+                   _code == other._code &&
+                   string.Equals(_message, other._message, StringComparison.Ordinal) &&
+                   Equals(_data, other._data);
+        }
+
+        /// <summary>Determines whether the specified <see cref="Object"/> is equal to the current <see cref="JSendError"/>.</summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns><see langword="true"/> if the specified object is equal to the current object; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            var other = obj as JSendError;
+            if (other == null) return false;
+            return Equals(other);
+        }
+
+        /// <summary>Serves as a hash function for this <see cref="JSendError"/>.</summary>
+        /// <returns>A hash code for this <see cref="JSendError"/>.</returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (int) _status;
+                hashCode = (hashCode*397) ^ (_message != null ? StringComparer.Ordinal.GetHashCode(_message) : 0);
+                hashCode = (hashCode*397) ^ _code.GetHashCode();
+                hashCode = (hashCode*397) ^ (_data != null ? _data.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
+        /// <summary>Returns whether the two operands are equal.</summary>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns><see langword="true"/> if both operands are equal; otherwise, <see langword="false"/>.</returns>
+        public static bool operator ==(JSendError left, JSendError right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <summary>Returns whether the two operands are not equal.</summary>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns><see langword="true"/> if both operands are not equal; otherwise, <see langword="false"/>.</returns>
+        public static bool operator !=(JSendError left, JSendError right)
+        {
+            return !Equals(left, right);
         }
     }
 }
