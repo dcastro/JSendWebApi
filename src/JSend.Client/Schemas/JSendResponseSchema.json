@@ -1,0 +1,12 @@
+﻿{
+    "$schema": "http://json-schema.org/draft-03/schema#",
+    "description": "Schema for validating a basic JSend response, which must at least contain a status key",
+    "type": "object",
+    "properties": {
+        "status": {
+            "type": "string",
+            "required": true,
+            "enum": [ "success", "error", "fail" ]
+        }
+    }
+}
