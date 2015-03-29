@@ -27,8 +27,8 @@ namespace JSend.WebApi.Tests
         public void ThrowsWhenContextIsNull(JSendExceptionFilterAttribute filter)
         {
             // Exercise system and verify outcome
-            Func<Task> onException = () => filter.OnExceptionAsync(null, CancellationToken.None);
-            onException.ShouldThrow<ArgumentNullException>();
+            filter.Awaiting(f => f.OnExceptionAsync(null, CancellationToken.None))
+                .ShouldThrow<ArgumentNullException>();
         }
 
         [Theory, JSendAutoData]

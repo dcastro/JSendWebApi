@@ -17,8 +17,8 @@ namespace JSend.Client.Tests
         public void ThrowsWhenHttpResponseMessageIsNull(DefaultJSendParser parser)
         {
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(null);
-            parse.ShouldThrow<ArgumentNullException>();
+            parser.Awaiting(p => p.ParseAsync<Model>(null))
+                .ShouldThrow<ArgumentNullException>();
         }
 
         [Theory, JSendAutoData]
@@ -27,8 +27,8 @@ namespace JSend.Client.Tests
             // Fixture setup
             message.Content = new StringContent("1,2,3");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonReaderException>();
         }
 
@@ -38,8 +38,8 @@ namespace JSend.Client.Tests
             // Fixture setup
             message.Content = new StringContent("[1,2,3]");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*Array*");
         }
@@ -53,8 +53,8 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*status*");
         }
@@ -69,8 +69,8 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*invalid*");
         }
@@ -85,8 +85,8 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*String*");
         }
@@ -150,8 +150,8 @@ namespace JSend.Client.Tests
                 ""status"": ""success""
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*data*");
         }
@@ -166,8 +166,8 @@ namespace JSend.Client.Tests
                 ""data"": ""string""
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSerializationException>()
                 .WithInnerMessage("*string*Model*");
         }
@@ -198,8 +198,8 @@ namespace JSend.Client.Tests
                 ""status"": ""fail""
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*data*");
         }
@@ -214,8 +214,8 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*Null*");
         }
@@ -332,8 +332,8 @@ namespace JSend.Client.Tests
                 ""status"": ""error""
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*message*");
         }
@@ -348,8 +348,8 @@ namespace JSend.Client.Tests
                 ""message"": null
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*Null*");
         }
@@ -365,8 +365,8 @@ namespace JSend.Client.Tests
                 ""message"": { }
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*String*Object*");
         }
@@ -383,8 +383,8 @@ namespace JSend.Client.Tests
                 ""code"": ""invalid""
             }");
             // Exercise system and verify outcome
-            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JSendParseException>()
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("*Invalid type*");
         }
