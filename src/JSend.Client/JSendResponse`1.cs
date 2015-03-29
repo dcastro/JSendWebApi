@@ -49,6 +49,7 @@ namespace JSend.Client
         /// If none was returned or if the response was not successful,
         /// a <see cref="JSendResponseException"/> will be thrown.
         /// </summary>
+        /// <exception cref="JSendResponseException">The request was not successful or did not return any data.</exception>        
         [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations",
             Justification = "This is the same pattern used by Nullable<T>.")]
         public T Data
