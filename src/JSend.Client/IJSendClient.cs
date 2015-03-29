@@ -62,6 +62,26 @@ namespace JSend.Client
         Task<JSendResponse<TResponse>> PostAsync<TResponse>(Uri requestUri, object content,
             CancellationToken cancellationToken);
 
+        /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        Task<JSendResponse> PostAsync(string requestUri, object content);
+
+        /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>        
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        Task<JSendResponse> PostAsync(Uri requestUri, object content);
+
+        /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>        
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        Task<JSendResponse> PostAsync(Uri requestUri, object content,
+            CancellationToken cancellationToken);
+
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
         /// <typeparam name="T">The type of the expected data.</typeparam>
         /// <param name="request">The HTTP request message to send.</param>

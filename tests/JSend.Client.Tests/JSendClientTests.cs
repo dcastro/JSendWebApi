@@ -170,7 +170,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task PostAsync_ReturnsParsedResponse(
+        public async Task GenericPostAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
             Uri uri, Model content, [WithHandler] JSendClient client)
@@ -188,7 +188,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task PostAsync_SendsPostRequest(
+        public async Task GenericPostAsync_SendsPostRequest(
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
@@ -200,7 +200,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task PostAsync_SetsUri(
+        public async Task GenericPostAsync_SetsUri(
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
@@ -212,7 +212,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task PostAsync_SerializesContent(
+        public async Task GenericPostAsync_SerializesContent(
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, Model content, [WithHandler] JSendClient client)
         {
@@ -226,7 +226,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task PostAsync_SetsContentTypeHeader(
+        public async Task GenericPostAsync_SetsContentTypeHeader(
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
@@ -238,7 +238,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public async Task PostAsync_SetsCharSet(
+        public async Task GenericPostAsync_SetsCharSet(
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
@@ -246,6 +246,88 @@ namespace JSend.Client.Tests
             var expectedCharSet = client.Encoding.WebName;
             // Exercise system
             await client.PostAsync<object>(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Content.Headers.ContentType.CharSet.Should().Be(expectedCharSet);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PostAsync_ReturnsParsedResponse(
+            HttpResponseMessage httpResponseMessage, JSendResponse<object> parsedResponse,
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
+            Uri uri, Model content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            handlerStub.ReturnOnSend = httpResponseMessage;
+
+            Mock.Get(client.Parser)
+                .Setup(p => p.ParseAsync<object>(httpResponseMessage))
+                .ReturnsAsync(parsedResponse);
+            // Exercise system
+            var response = await client.PostAsync(uri, content);
+            // Verify outcome
+            response.Should().BeSameAs(parsedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PostAsync_SendsPostRequest(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.PostAsync(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Method.Should().Be(HttpMethod.Post);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PostAsync_SetsUri(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.PostAsync(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.RequestUri.Should().Be(uri);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PostAsync_SerializesContent(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, Model content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            var expectedContent = JsonConvert.SerializeObject(content);
+            // Exercise system
+            await client.PostAsync(uri, content);
+            // Verify outcome
+            var actualContent = handlerSpy.Content;
+            actualContent.Should().Be(expectedContent);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PostAsync_SetsContentTypeHeader(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.PostAsync(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Content.Headers.ContentType.MediaType.Should().Be("application/json");
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PostAsync_SetsCharSet(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            var expectedCharSet = client.Encoding.WebName;
+            // Exercise system
+            await client.PostAsync(uri, content);
             // Verify outcome
             var request = handlerSpy.Request;
             request.Content.Headers.ContentType.CharSet.Should().Be(expectedCharSet);
