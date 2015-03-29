@@ -11,7 +11,7 @@ namespace JSend.WebApi.FunctionalTests
     public class HttpActionResultTests
     {
         [Theory, JSendAutoData]
-        public async Task Ok_Returns_SuccessResponseWithoutData(HttpServer server, HttpClient client)
+        public async Task Ok_Returns_ExpectedResponse(HttpServer server, HttpClient client)
         {
             // Fixture setup
             var expectedContent = new JObject
@@ -33,7 +33,7 @@ namespace JSend.WebApi.FunctionalTests
         }
 
         [Theory, JSendAutoData]
-        public async Task Ok_Returns_SuccessResponseWithData(HttpServer server, HttpClient client)
+        public async Task OkWithData_Returns_ExpectedResponse(HttpServer server, HttpClient client)
         {
             // Fixture setup
             var expectedContent = new JObject
@@ -51,6 +51,98 @@ namespace JSend.WebApi.FunctionalTests
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task CreatedWithString_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "success"},
+                {"data", JObject.FromObject(UsersController.TestUser)}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/created-with-string");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task CreatedWithUri_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "success"},
+                {"data", JObject.FromObject(UsersController.TestUser)}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/created-with-uri");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task CreatedAtRouteWithObject_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "success"},
+                {"data", JObject.FromObject(UsersController.TestUser)}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/created-at-route-with-object");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task CreatedAtRouteWithDictionary_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "success"},
+                {"data", JObject.FromObject(UsersController.TestUser)}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/created-at-route-with-dictionary");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
             }
         }
     }
