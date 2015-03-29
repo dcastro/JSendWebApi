@@ -360,5 +360,22 @@ namespace JSend.Client.Tests
                 .And.Message.Should().Contain("String")
                 .And.Contain("Object");
         }
+
+        [Theory, JSendAutoData]
+        public void ThrowsWhenErrorResponse_HasErrorOfAWrongType(HttpResponseMessage message,
+            DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent(@"
+            {
+                ""status"": ""error"",
+                ""message"": ""msg"",
+                ""code"": ""invalid""
+            }");
+            // Exercise system and verify outcome
+            Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
+            parse.ShouldThrow<JsonSchemaException>()
+                .And.Message.Should().Contain("Invalid type");
+        }
     }
 }
