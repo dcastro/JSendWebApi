@@ -12,6 +12,7 @@ using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Kernel;
 using Ploeh.AutoFixture.Xunit;
+using Xunit;
 using Xunit.Extensions;
 
 namespace JSend.Client.Tests
@@ -73,15 +74,69 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
+        public void JSendParser_IsCorrectlyInitialized(JSendClientSettings settings)
+        {
+            // Exercise system
+            var client = new JSendClient(settings);
+            // Verify outcome
+            client.Parser.Should().BeSameAs(settings.Parser);
+        }
+
+        [Fact]
+        public void JSendParser_IsDefaultJSendParser_ByDefault()
+        {
+            // Exercise system
+            var client = new JSendClient();
+            // Verify outcome
+            client.Parser.Should().BeOfType<DefaultJSendParser>();
+        }
+
+        [Theory, JSendAutoData]
+        public void Encoding_IsCorrectlyInitialized(JSendClientSettings settings)
+        {
+            // Exercise system
+            var client = new JSendClient(settings);
+            // Verify outcome
+            client.Encoding.Should().BeSameAs(settings.Encoding);
+        }
+
+        [Fact]
+        public void Encoding_IsNull_ByDefault()
+        {
+            // Exercise system
+            var client = new JSendClient();
+            // Verify outcome
+            client.Encoding.Should().BeNull();
+        }
+
+        [Theory, JSendAutoData]
+        public void SerializerSettings_IsCorrectlyInitialized(JSendClientSettings settings)
+        {
+            // Exercise system
+            var client = new JSendClient(settings);
+            // Verify outcome
+            client.SerializerSettings.Should().BeSameAs(settings.SerializerSettings);
+        }
+
+        [Fact]
+        public void SerializerSettings_IsNull_ByDefault()
+        {
+            // Exercise system
+            var client = new JSendClient();
+            // Verify outcome
+            client.SerializerSettings.Should().BeNull();
+        }
+
+        [Theory, JSendAutoData]
         public async Task GetAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
-            [Frozen] IJSendParser parser, Uri uri, [WithHandler] JSendClient client)
+            Uri uri, [WithHandler] JSendClient client)
         {
             // Fixture setup
             handlerStub.ReturnOnSend = httpResponseMessage;
 
-            Mock.Get(parser)
+            Mock.Get(client.Parser)
                 .Setup(p => p.ParseAsync<Model>(httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
@@ -118,12 +173,12 @@ namespace JSend.Client.Tests
         public async Task PostAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
-            [Frozen] IJSendParser parser, Uri uri, Model content, [WithHandler] JSendClient client)
+            Uri uri, Model content, [WithHandler] JSendClient client)
         {
             // Fixture setup
             handlerStub.ReturnOnSend = httpResponseMessage;
 
-            Mock.Get(parser)
+            Mock.Get(client.Parser)
                 .Setup(p => p.ParseAsync<Model>(httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
@@ -185,11 +240,10 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task PostAsync_SetsCharSet(
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
-            [Frozen] JSendClientSettings settings,
             Uri uri, object content, [WithHandler] JSendClient client)
         {
             // Fixture setup
-            var expectedCharSet = settings.Encoding.WebName;
+            var expectedCharSet = client.Encoding.WebName;
             // Exercise system
             await client.PostAsync<object>(uri, content);
             // Verify outcome
@@ -201,12 +255,12 @@ namespace JSend.Client.Tests
         public async Task SendAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
-            [Frozen] IJSendParser parser, HttpRequestMessage request, [WithHandler] JSendClient client)
+            HttpRequestMessage request, [WithHandler] JSendClient client)
         {
             // Fixture setup
             handlerStub.ReturnOnSend = httpResponseMessage;
 
-            Mock.Get(parser)
+            Mock.Get(client.Parser)
                 .Setup(p => p.ParseAsync<Model>(httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system

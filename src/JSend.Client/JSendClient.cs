@@ -16,7 +16,7 @@ namespace JSend.Client
         private readonly IJSendParser _parser;
         private readonly Encoding _encoding;
         private readonly JsonSerializerSettings _serializerSettings;
-        
+
         private readonly Func<HttpClient> _clientFactory;
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
@@ -47,6 +47,24 @@ namespace JSend.Client
             _serializerSettings = settings.SerializerSettings;
 
             _clientFactory = clientFactory;
+        }
+
+        /// <summary>Gets the parser used to process JSend-formatted responses.</summary>
+        public IJSendParser Parser
+        {
+            get { return _parser; }
+        }
+
+        /// <summary>Gets the encoding used to format a request's content.</summary>
+        public Encoding Encoding
+        {
+            get { return _encoding; }
+        }
+
+        /// <summary>Gets the settings used to serialize the content of a request.</summary>
+        public JsonSerializerSettings SerializerSettings
+        {
+            get { return _serializerSettings; }
         }
 
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
