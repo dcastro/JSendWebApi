@@ -174,5 +174,11 @@ namespace JSend.WebApi.FunctionalTests
         {
             
         }
+
+        [Route("value"), HttpGet]
+        public User ValueAction()
+        {
+            return TestUser;
+        }
     }
 }
