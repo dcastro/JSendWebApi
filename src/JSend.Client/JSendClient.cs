@@ -133,11 +133,9 @@ namespace JSend.Client
         public Task<JSendResponse<TResponse>> PostAsync<TResponse>(Uri requestUri, object content,
             CancellationToken cancellationToken)
         {
-            var serialized = JsonConvert.SerializeObject(content, _serializerSettings);
-
             var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
             {
-                Content = new StringContent(serialized, _encoding, "application/json")
+                Content = Serialize(content)
             };
 
             return SendAsync<TResponse>(request, cancellationToken);
@@ -199,6 +197,76 @@ namespace JSend.Client
             return await SendAsync<object>(request, cancellationToken);
         }
 
+        /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1057:StringUriOverloadsCallSystemUriOverloads",
+            Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
+        public Task<JSendResponse<TResponse>> PutAsync<TResponse>(string requestUri, object content)
+        {
+            return PutAsync<TResponse>(new Uri(requestUri), content);
+        }
+
+        /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>        
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public Task<JSendResponse<TResponse>> PutAsync<TResponse>(Uri requestUri, object content)
+        {
+            return PutAsync<TResponse>(requestUri, content, CancellationToken.None);
+        }
+
+        /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>        
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+            Justification = "The HttpClient will dispose of the request object.")]
+        public Task<JSendResponse<TResponse>> PutAsync<TResponse>(Uri requestUri, object content,
+            CancellationToken cancellationToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Put, requestUri)
+            {
+                Content = Serialize(content)
+            };
+            return SendAsync<TResponse>(request, cancellationToken);
+        }
+
+        /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1057:StringUriOverloadsCallSystemUriOverloads",
+            Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
+        public Task<JSendResponse> PutAsync(string requestUri, object content)
+        {
+            return PutAsync(new Uri(requestUri), content);
+        }
+
+        /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>        
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public Task<JSendResponse> PutAsync(Uri requestUri, object content)
+        {
+            return PutAsync(requestUri, content, CancellationToken.None);
+        }
+
+        /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
+        /// <param name="requestUri">The Uri the request is sent to.</param>
+        /// <param name="content">The data to post.</param>        
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public async Task<JSendResponse> PutAsync(Uri requestUri, object content, CancellationToken cancellationToken)
+        {
+            return await PutAsync<object>(requestUri, content, cancellationToken);
+        }
+
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
         /// <typeparam name="T">The type of the expected data.</typeparam>
         /// <param name="request">The HTTP request message to send.</param>
@@ -220,6 +288,12 @@ namespace JSend.Client
                 var responseMessage = await client.SendAsync(request, cancellationToken);
                 return await _parser.ParseAsync<T>(responseMessage);
             }
+        }
+
+        private HttpContent Serialize(object content)
+        {
+            var serialized = JsonConvert.SerializeObject(content, _serializerSettings);
+            return new StringContent(serialized, _encoding, "application/json");
         }
     }
 }

@@ -376,6 +376,170 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
+        public async Task GenericPutAsync_ReturnsParsedResponse(
+            HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
+            Uri uri, Model content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            handlerStub.ReturnOnSend = httpResponseMessage;
+
+            Mock.Get(client.Parser)
+                .Setup(p => p.ParseAsync<Model>(httpResponseMessage))
+                .ReturnsAsync(parsedResponse);
+            // Exercise system
+            var response = await client.PutAsync<Model>(uri, content);
+            // Verify outcome
+            response.Should().BeSameAs(parsedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task GenericPutAsync_SendsPutRequest(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.PutAsync<object>(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Method.Should().Be(HttpMethod.Put);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task GenericPutAsync_SetsUri(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.PutAsync<object>(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.RequestUri.Should().Be(uri);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task GenericPutAsync_SerializesContent(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, Model content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            var expectedContent = JsonConvert.SerializeObject(content);
+            // Exercise system
+            await client.PutAsync<object>(uri, content);
+            // Verify outcome
+            var actualContent = handlerSpy.Content;
+            actualContent.Should().Be(expectedContent);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task GenericPutAsync_SetsContentTypeHeader(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.PutAsync<object>(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Content.Headers.ContentType.MediaType.Should().Be("application/json");
+        }
+
+        [Theory, JSendAutoData]
+        public async Task GenericPutAsync_SetsCharSet(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            var expectedCharSet = client.Encoding.WebName;
+            // Exercise system
+            await client.PutAsync<object>(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Content.Headers.ContentType.CharSet.Should().Be(expectedCharSet);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PutAsync_ReturnsParsedResponse(
+            HttpResponseMessage httpResponseMessage, JSendResponse<object> parsedResponse,
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
+            Uri uri, Model content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            handlerStub.ReturnOnSend = httpResponseMessage;
+
+            Mock.Get(client.Parser)
+                .Setup(p => p.ParseAsync<object>(httpResponseMessage))
+                .ReturnsAsync(parsedResponse);
+            // Exercise system
+            var response = await client.PutAsync(uri, content);
+            // Verify outcome
+            response.Should().BeSameAs(parsedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PutAsync_SendsPutRequest(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.PutAsync(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Method.Should().Be(HttpMethod.Put);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PutAsync_SetsUri(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.PutAsync(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.RequestUri.Should().Be(uri);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PutAsync_SerializesContent(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, Model content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            var expectedContent = JsonConvert.SerializeObject(content);
+            // Exercise system
+            await client.PutAsync(uri, content);
+            // Verify outcome
+            var actualContent = handlerSpy.Content;
+            actualContent.Should().Be(expectedContent);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PutAsync_SetsContentTypeHeader(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Exercise system
+            await client.PutAsync(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Content.Headers.ContentType.MediaType.Should().Be("application/json");
+        }
+
+        [Theory, JSendAutoData]
+        public async Task PutAsync_SetsCharSet(
+            [Frozen(As = typeof(HttpMessageHandler))] HttpMessageHandlerSpy handlerSpy,
+            Uri uri, object content, [WithHandler] JSendClient client)
+        {
+            // Fixture setup
+            var expectedCharSet = client.Encoding.WebName;
+            // Exercise system
+            await client.PutAsync(uri, content);
+            // Verify outcome
+            var request = handlerSpy.Request;
+            request.Content.Headers.ContentType.CharSet.Should().Be(expectedCharSet);
+        }
+
+        [Theory, JSendAutoData]
         public async Task SendAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
