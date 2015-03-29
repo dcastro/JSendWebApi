@@ -1,335 +1,109 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using FluentAssertions;
 using JSend.WebApi.FunctionalTests.FixtureCustomizations;
 using Newtonsoft.Json.Linq;
+using Ploeh.AutoFixture;
 using Xunit.Extensions;
 
 namespace JSend.WebApi.FunctionalTests
 {
     public class HttpActionResultTests
     {
-        [Theory, JSendAutoData]
-        public async Task Ok_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        [Theory]
+        [InlineJSendAutoData("ok", HttpStatusCode.OK)]
+        [InlineJSendAutoData("ok-with-user", HttpStatusCode.OK)]
+        [InlineJSendAutoData("created-with-string", HttpStatusCode.Created)]
+        [InlineJSendAutoData("created-with-uri", HttpStatusCode.Created)]
+        [InlineJSendAutoData("created-at-route-with-object", HttpStatusCode.Created)]
+        [InlineJSendAutoData("created-at-route-with-dictionary", HttpStatusCode.Created)]
+        [InlineJSendAutoData("redirect-with-string", HttpStatusCode.Redirect)]
+        [InlineJSendAutoData("redirect-with-uri", HttpStatusCode.Redirect)]
+        [InlineJSendAutoData("redirect-to-route-with-object", HttpStatusCode.Redirect)]
+        [InlineJSendAutoData("redirect-to-route-with-dictionary", HttpStatusCode.Redirect)]
+        [InlineJSendAutoData("badrequest-with-reason", HttpStatusCode.BadRequest)]
+        [InlineJSendAutoData("badrequest-with-modelstate", HttpStatusCode.BadRequest)]
+        [InlineJSendAutoData("unauthorized", HttpStatusCode.Unauthorized)]
+        [InlineJSendAutoData("notfound", HttpStatusCode.NotFound)]
+        [InlineJSendAutoData("notfound-with-reason", HttpStatusCode.NotFound)]
+        [InlineJSendAutoData("internal-server-error", HttpStatusCode.InternalServerError)]
+        [InlineJSendAutoData("internal-server-error-with-exception", HttpStatusCode.InternalServerError)]
+        public async Task ActionsReturnExpectedStatusCode(
+            string route, HttpStatusCode expectedCode,
+            HttpServer server, HttpClient client)
         {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", null}
-            };
-
             using (server)
             using (client)
             {
                 // Exercise system
-                var response = await client.GetAsync("http://localhost/users/ok");
+                var response = await client.GetAsync("http://localhost/users/" + route);
 
                 // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                response.StatusCode.Should().Be(expectedCode);
             }
         }
 
-        [Theory, JSendAutoData]
-        public async Task OkWithData_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        [Theory]
+        [InlineJSendAutoData("ok")]
+        [InlineJSendAutoData("ok-with-user")]
+        [InlineJSendAutoData("created-with-string")]
+        [InlineJSendAutoData("created-with-uri")]
+        [InlineJSendAutoData("created-at-route-with-object")]
+        [InlineJSendAutoData("created-at-route-with-dictionary")]
+        [InlineJSendAutoData("redirect-with-string")]
+        [InlineJSendAutoData("redirect-with-uri")]
+        [InlineJSendAutoData("redirect-to-route-with-object")]
+        [InlineJSendAutoData("redirect-to-route-with-dictionary")]
+        [InlineJSendAutoData("badrequest-with-reason")]
+        [InlineJSendAutoData("badrequest-with-modelstate")]
+        [InlineJSendAutoData("unauthorized")]
+        [InlineJSendAutoData("notfound")]
+        [InlineJSendAutoData("notfound-with-reason")]
+        [InlineJSendAutoData("internal-server-error")]
+        [InlineJSendAutoData("internal-server-error-with-exception")]
+        public async Task ActionsSetContentTypeHeader(string route, HttpServer server, HttpClient client)
         {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", JObject.FromObject(UsersController.TestUser)}
-            };
-
             using (server)
             using (client)
             {
                 // Exercise system
-                var response = await client.GetAsync("http://localhost/users/ok-with-user");
+                var response = await client.GetAsync("http://localhost/users/" + route);
 
                 // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                response.Content.Headers.ContentType.MediaType.Should().Be("application/json");
+                response.Content.Headers.ContentType.CharSet.Should().Be(Encoding.UTF8.WebName);
             }
         }
 
-        [Theory, JSendAutoData]
-        public async Task CreatedWithString_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        [Theory]
+        [InlineJSendAutoData("created-with-string")]
+        [InlineJSendAutoData("created-with-uri")]
+        [InlineJSendAutoData("created-at-route-with-object")]
+        [InlineJSendAutoData("created-at-route-with-dictionary")]
+        [InlineJSendAutoData("redirect-with-string")]
+        [InlineJSendAutoData("redirect-with-uri")]
+        [InlineJSendAutoData("redirect-to-route-with-object")]
+        [InlineJSendAutoData("redirect-to-route-with-dictionary")]
+        public async Task ActionsSetLocationHeader(string route, HttpServer server, HttpClient client)
         {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", JObject.FromObject(UsersController.TestUser)}
-            };
-
             using (server)
             using (client)
             {
                 // Exercise system
-                var response = await client.GetAsync("http://localhost/users/created-with-string");
+                var response = await client.GetAsync("http://localhost/users/" + route);
 
                 // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
-
-                response.StatusCode.Should().Be(HttpStatusCode.Created);
+                response.Headers.Location.Should().Be(UsersController.TestLocation);
             }
         }
 
         [Theory, JSendAutoData]
-        public async Task CreatedWithUri_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        public async Task UnauthorizedAction_SetsAuthenticationHeader(HttpServer server, HttpClient client)
         {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", JObject.FromObject(UsersController.TestUser)}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/created-with-uri");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
-
-                response.StatusCode.Should().Be(HttpStatusCode.Created);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task CreatedAtRouteWithObject_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", JObject.FromObject(UsersController.TestUser)}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/created-at-route-with-object");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
-
-                response.StatusCode.Should().Be(HttpStatusCode.Created);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task CreatedAtRouteWithDictionary_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", JObject.FromObject(UsersController.TestUser)}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/created-at-route-with-dictionary");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
-
-                response.StatusCode.Should().Be(HttpStatusCode.Created);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task RedirectWithString_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", null}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/redirect-with-string");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
-
-                response.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task RedirectWithUri_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", null}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/redirect-with-uri");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
-
-                response.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task RedirectToRouteWithObject_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", null}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/redirect-to-route-with-object");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
-
-                response.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task RedirectToRouteWithDictionary_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "success"},
-                {"data", null}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/redirect-to-route-with-dictionary");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.Headers.Location.Should().Be(UsersController.CreatedLocation);
-
-                response.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task BadRequestWithReason_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "fail"},
-                {"data", UsersController.ErrorMessage}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/badrequest-with-reason");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task BadRequestWithModelState_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "fail"},
-                {
-                    "data", new JObject
-                    {
-                        {UsersController.ModelErrorKey, new JArray(UsersController.ModelErrorValue)}
-                    }
-                }
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/badrequest-with-modelstate");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task Unauthorized_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "fail"},
-                {"data", "Authorization has been denied for this request."}
-            };
-
             using (server)
             using (client)
             {
@@ -337,112 +111,181 @@ namespace JSend.WebApi.FunctionalTests
                 var response = await client.GetAsync("http://localhost/users/unauthorized");
 
                 // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-
                 response.Headers.WwwAuthenticate
                     .Should().ContainSingle(UsersController.AuthenticationHeader);
             }
         }
 
-        [Theory, JSendAutoData]
-        public async Task NotFound_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        public static IEnumerable<object[]> RoutesAndExpectedContent
         {
-            // Fixture setup
-            var expectedContent = new JObject
+            get
             {
-                {"status", "fail"},
-                {"data", "The requested resource could not be found."}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/notfound");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+                return new[]
+                {
+                    new object[]
+                    {
+                        "ok", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", null}
+                        }
+                    },
+                    new object[]
+                    {
+                        "ok-with-user", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", JObject.FromObject(UsersController.TestUser)}
+                        }
+                    },
+                    new object[]
+                    {
+                        "created-with-string", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", JObject.FromObject(UsersController.TestUser)}
+                        }
+                    },
+                    new object[]
+                    {
+                        "created-with-uri", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", JObject.FromObject(UsersController.TestUser)}
+                        }
+                    },
+                    new object[]
+                    {
+                        "created-at-route-with-object", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", JObject.FromObject(UsersController.TestUser)}
+                        }
+                    },
+                    new object[]
+                    {
+                        "created-at-route-with-dictionary", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", JObject.FromObject(UsersController.TestUser)}
+                        }
+                    },
+                    new object[]
+                    {
+                        "redirect-with-string", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", null}
+                        }
+                    },
+                    new object[]
+                    {
+                        "redirect-with-uri", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", null}
+                        }
+                    },
+                    new object[]
+                    {
+                        "redirect-to-route-with-object", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", null}
+                        }
+                    },
+                    new object[]
+                    {
+                        "redirect-to-route-with-dictionary", new JObject
+                        {
+                            {"status", "success"},
+                            {"data", null}
+                        }
+                    },
+                    new object[]
+                    {
+                        "badrequest-with-reason", new JObject
+                        {
+                            {"status", "fail"},
+                            {"data", UsersController.ErrorMessage}
+                        }
+                    },
+                    new object[]
+                    {
+                        "badrequest-with-modelstate", new JObject
+                        {
+                            {"status", "fail"},
+                            {
+                                "data", new JObject
+                                {
+                                    {UsersController.ModelErrorKey, new JArray(UsersController.ModelErrorValue)}
+                                }
+                            }
+                        }
+                    },
+                    new object[]
+                    {
+                        "unauthorized", new JObject
+                        {
+                            {"status", "fail"},
+                            {"data", "Authorization has been denied for this request."}
+                        }
+                    },
+                    new object[]
+                    {
+                        "notfound", new JObject
+                        {
+                            {"status", "fail"},
+                            {"data", "The requested resource could not be found."}
+                        }
+                    },
+                    new object[]
+                    {
+                        "notfound-with-reason", new JObject
+                        {
+                            {"status", "fail"},
+                            {"data", UsersController.ErrorMessage}
+                        }
+                    },
+                    new object[]
+                    {
+                        "internal-server-error", new JObject
+                        {
+                            {"status", "error"},
+                            {"message", UsersController.ErrorMessage},
+                            {"code", UsersController.ErrorCode},
+                            {"data", JToken.FromObject(UsersController.ErrorData)}
+                        }
+                    },
+                    new object[]
+                    {
+                        "internal-server-error-with-exception", new JObject
+                        {
+                            {"status", "error"},
+                            {"message", UsersController.Exception.Message},
+                            {"data", UsersController.Exception.ToString()}
+                        }
+                    }
+                };
             }
         }
 
-        [Theory, JSendAutoData]
-        public async Task NotFoundWithReason_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        [Theory]
+        [PropertyData("RoutesAndExpectedContent")]
+        public async Task ActionsReturnExpectedContent(string route, JObject expectedContent)
         {
             // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "fail"},
-                {"data", UsersController.ErrorMessage}
-            };
+            var fixture = new Fixture().Customize(new TestConventions());
 
-            using (server)
-            using (client)
+            using (var server = fixture.Create<HttpServer>())
+            using (var client = new HttpClient(server))
             {
                 // Exercise system
-                var response = await client.GetAsync("http://localhost/users/notfound-with-reason");
+                var response = await client.GetAsync("http://localhost/users/" + route);
 
                 // Verify outcome
                 var content = JToken.Parse(await response.Content.ReadAsStringAsync());
                 JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task InternalServerError_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "error"},
-                {"message", UsersController.ErrorMessage},
-                {"code", UsersController.ErrorCode},
-                {"data", JToken.FromObject(UsersController.ErrorData)}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/internal-server-error");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-            }
-        }
-
-        [Theory, JSendAutoData]
-        public async Task InternalServerErrorWithException_Returns_ExpectedResponse(HttpServer server, HttpClient client)
-        {
-            // Fixture setup
-            var expectedContent = new JObject
-            {
-                {"status", "error"},
-                {"message", UsersController.Exception.Message},
-                {"data", UsersController.Exception.ToString()}
-            };
-
-            using (server)
-            using (client)
-            {
-                // Exercise system
-                var response = await client.GetAsync("http://localhost/users/internal-server-error-with-exception");
-
-                // Verify outcome
-                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
-                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
-
-                response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
             }
         }
     }

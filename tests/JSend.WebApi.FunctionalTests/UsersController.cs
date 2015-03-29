@@ -9,7 +9,7 @@ namespace JSend.WebApi.FunctionalTests
     public class UsersController : JSendApiController
     {
         public static readonly User TestUser = new User {Username = "DCastro"};
-        public static readonly string CreatedLocation = "http://localhost/users/dummy-location/5";
+        public static readonly string TestLocation = "http://localhost/users/dummy-location/5";
 
         public static readonly string ErrorMessage = "dummy error message";
         public static readonly int ErrorCode = 80;
@@ -45,13 +45,13 @@ namespace JSend.WebApi.FunctionalTests
         [Route("created-with-string"), HttpGet]
         public IHttpActionResult CreatedWithStringAction()
         {
-            return JSendCreated(CreatedLocation, TestUser);
+            return JSendCreated(TestLocation, TestUser);
         }
 
         [Route("created-with-uri"), HttpGet]
         public IHttpActionResult CreatedWithUriAction()
         {
-            return JSendCreated(new Uri(CreatedLocation), TestUser);
+            return JSendCreated(new Uri(TestLocation), TestUser);
         }
 
         [Route("created-at-route-with-object"), HttpGet]
@@ -73,13 +73,13 @@ namespace JSend.WebApi.FunctionalTests
         [Route("redirect-with-string"), HttpGet]
         public IHttpActionResult RedirectWithStringAction()
         {
-            return JSendRedirect(CreatedLocation);
+            return JSendRedirect(TestLocation);
         }
 
         [Route("redirect-with-uri"), HttpGet]
         public IHttpActionResult RedirectWithUriAction()
         {
-            return JSendRedirect(new Uri(CreatedLocation));
+            return JSendRedirect(new Uri(TestLocation));
         }
 
         [Route("redirect-to-route-with-object"), HttpGet]
