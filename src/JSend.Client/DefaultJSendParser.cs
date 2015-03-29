@@ -86,9 +86,6 @@ namespace JSend.Client
             Justification = "We need to return a response asynchronously.")]
         public async Task<JSendResponse<T>> ParseSuccessMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
-            if (json == null) throw new ArgumentNullException("json");
-            if (responseMessage == null) throw new ArgumentNullException("responseMessage");
-
             json.Validate(await SuccessSchema.Value);
 
             var dataToken = json["data"];
@@ -112,9 +109,6 @@ namespace JSend.Client
             Justification = "We need to return a response asynchronously.")]
         public async Task<JSendResponse<T>> ParseFailMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
-            if (json == null) throw new ArgumentNullException("json");
-            if (responseMessage == null) throw new ArgumentNullException("responseMessage");
-
             json.Validate(await FailSchema.Value);
 
             var dataToken = json["data"];
@@ -135,9 +129,6 @@ namespace JSend.Client
             Justification = "We need to return a response asynchronously.")]
         public async Task<JSendResponse<T>> ParseErrorMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
-            if (json == null) throw new ArgumentNullException("json");
-            if (responseMessage == null) throw new ArgumentNullException("responseMessage");
-
             json.Validate(await ErrorSchema.Value);
 
             var message = json.Value<string>("message");
