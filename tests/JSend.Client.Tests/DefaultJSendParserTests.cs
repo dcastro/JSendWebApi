@@ -28,7 +28,8 @@ namespace JSend.Client.Tests
             message.Content = new StringContent("1,2,3");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonReaderException>();
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonReaderException>();
         }
 
         [Theory, JSendAutoData]
@@ -38,8 +39,9 @@ namespace JSend.Client.Tests
             message.Content = new StringContent("[1,2,3]");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("Array");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*Array*");
         }
 
         [Theory, JSendAutoData]
@@ -52,8 +54,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("status");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*status*");
         }
 
         [Theory, JSendAutoData]
@@ -67,8 +70,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("invalid");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*invalid*");
         }
 
         [Theory, JSendAutoData]
@@ -82,8 +86,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("String");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*String*");
         }
 
         [Theory, JSendAutoData]
@@ -146,8 +151,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("data");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*data*");
         }
 
         [Theory, JSendAutoData]
@@ -161,9 +167,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSerializationException>()
-                .And.Message.Should().Contain("string")
-                .And.Contain("Model");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSerializationException>()
+                .WithInnerMessage("*string*Model*");
         }
 
         [Theory, JSendAutoData]
@@ -193,8 +199,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("data");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*data*");
         }
 
         [Theory, JSendAutoData]
@@ -208,8 +215,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("Null");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*Null*");
         }
 
         [Theory, JSendAutoData]
@@ -325,8 +333,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("message");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*message*");
         }
 
         [Theory, JSendAutoData]
@@ -340,8 +349,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("Null");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*Null*");
         }
 
         [Theory, JSendAutoData]
@@ -356,9 +366,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("String")
-                .And.Contain("Object");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*String*Object*");
         }
 
         [Theory, JSendAutoData]
@@ -374,8 +384,9 @@ namespace JSend.Client.Tests
             }");
             // Exercise system and verify outcome
             Func<Task<JSendResponse<Model>>> parse = () => parser.ParseAsync<Model>(message);
-            parse.ShouldThrow<JsonSchemaException>()
-                .And.Message.Should().Contain("Invalid type");
+            parse.ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("*Invalid type*");
         }
     }
 }

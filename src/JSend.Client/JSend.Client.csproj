@@ -68,6 +68,7 @@
     <Compile Include="IJSendParser.cs" />
     <Compile Include="JSendClient.cs" />
     <Compile Include="JSendError.cs" />
+    <Compile Include="JSendParseException.cs" />
     <Compile Include="JSendResponseException.cs" />
     <Compile Include="JSendResponse`1.cs" />
     <Compile Include="JSendStatus.cs" />

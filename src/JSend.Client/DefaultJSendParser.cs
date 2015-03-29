@@ -45,27 +45,32 @@ namespace JSend.Client
         /// <typeparam name="T">The type of the expected data.</typeparam>
         /// <param name="httpResponseMessage">The HTTP response message to parse.</param>
         /// <returns>A task representings the parsed <see cref="JSendResponse{T}"/>.</returns>
-        /// <exception cref="JsonSchemaException">The HTTP response message body is not JSend formatted.</exception>
-        /// <exception cref="JsonReaderException">The HTTP response body is not a JSON document.</exception>
-        /// <exception cref="JsonSerializationException">The JSend data cannot be converted to an instance of type <typeparamref name="T"/>.</exception>
+        /// <exception cref="JSendParseException">The HTTP response message could not be parsed.</exception>
         public async Task<JSendResponse<T>> ParseAsync<T>(HttpResponseMessage httpResponseMessage)
         {
             if (httpResponseMessage == null)
                 throw new ArgumentNullException("httpResponseMessage");
 
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            var json = JToken.Parse(content);
-            json.Validate(await BaseSchema.Value);
-
-            var status = json.Value<string>("status");
-            switch (status)
+            try
             {
-                case "success":
-                    return await ParseSuccessMessageAsync<T>(json, httpResponseMessage);
-                case "fail":
-                    return await ParseFailMessageAsync<T>(json, httpResponseMessage);
-                case "error":
-                    return await ParseErrorMessageAsync<T>(json, httpResponseMessage);
+                var content = await httpResponseMessage.Content.ReadAsStringAsync();
+                var json = JToken.Parse(content);
+                json.Validate(await BaseSchema.Value);
+
+                var status = json.Value<string>("status");
+                switch (status)
+                {
+                    case "success":
+                        return await ParseSuccessMessageAsync<T>(json, httpResponseMessage);
+                    case "fail":
+                        return await ParseFailMessageAsync<T>(json, httpResponseMessage);
+                    case "error":
+                        return await ParseErrorMessageAsync<T>(json, httpResponseMessage);
+                }
+            }
+            catch (JsonException ex)
+            {
+                throw new JSendParseException(typeof (JSendResponse<T>), ex);
             }
 
             Contract.Assert(false);
