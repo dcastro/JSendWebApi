@@ -109,5 +109,17 @@ namespace JSend.WebApi.FunctionalTests
         {
             return JSendUnauthorized(new AuthenticationHeaderValue(AuthenticationHeader));
         }
+
+        [Route("notfound"), HttpGet]
+        public IHttpActionResult NotFoundAction()
+        {
+            return JSendNotFound();
+        }
+
+        [Route("notfound-with-reason"), HttpGet]
+        public IHttpActionResult NotFoundWithReasonAction()
+        {
+            return JSendNotFound(ErrorMessage);
+        }
     }
 }

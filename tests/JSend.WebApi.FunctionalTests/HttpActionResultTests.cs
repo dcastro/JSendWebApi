@@ -346,5 +346,53 @@ namespace JSend.WebApi.FunctionalTests
                     .Should().ContainSingle(UsersController.AuthenticationHeader);
             }
         }
+
+        [Theory, JSendAutoData]
+        public async Task NotFound_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "fail"},
+                {"data", "The requested resource could not be found."}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/notfound");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
+                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task NotFoundWithReason_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "fail"},
+                {"data", UsersController.ErrorMessage}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/notfound-with-reason");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
+                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            }
+        }
     }
 }
