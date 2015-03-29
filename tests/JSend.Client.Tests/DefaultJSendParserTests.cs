@@ -41,7 +41,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*Array*");
+                .WithInnerMessage("Invalid type. Expected Object but got Array*");
         }
 
         [Theory, JSendAutoData]
@@ -56,7 +56,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*status*");
+                .WithInnerMessage("Required properties are missing from object: status*");
         }
 
         [Theory, JSendAutoData]
@@ -72,7 +72,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*invalid*");
+                .WithInnerMessage(@"Value ""invalid"" is not defined in enum*");
         }
 
         [Theory, JSendAutoData]
@@ -88,7 +88,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*String*");
+                .WithInnerMessage("Invalid type. Expected String but got Integer*");
         }
 
         [Theory, JSendAutoData]
@@ -153,7 +153,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*data*");
+                .WithInnerMessage("Required properties are missing from object: data*");
         }
 
         [Theory, JSendAutoData]
@@ -163,13 +163,13 @@ namespace JSend.Client.Tests
             message.Content = new StringContent(@"
             {
                 ""status"": ""success"",
-                ""data"": ""string""
+                ""data"": ""invalid data""
             }");
             // Exercise system and verify outcome
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSerializationException>()
-                .WithInnerMessage("*string*Model*");
+                .WithInnerMessage("Error converting value \"invalid data\"*");
         }
 
         [Theory, JSendAutoData]
@@ -201,7 +201,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*data*");
+                .WithInnerMessage("Required properties are missing from object: data*");
         }
 
         [Theory, JSendAutoData]
@@ -217,7 +217,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*Null*");
+                .WithInnerMessage("Type Null is disallowed*");
         }
 
         [Theory, JSendAutoData]
@@ -335,7 +335,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*message*");
+                .WithInnerMessage("Required properties are missing from object: message*");
         }
 
         [Theory, JSendAutoData]
@@ -351,7 +351,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*Null*");
+                .WithInnerMessage("Invalid type. Expected String but got Null*");
         }
 
         [Theory, JSendAutoData]
@@ -368,7 +368,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*String*Object*");
+                .WithInnerMessage("Invalid type. Expected String but got Object*");
         }
 
         [Theory, JSendAutoData]
@@ -386,7 +386,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("*Invalid type*");
+                .WithInnerMessage("Invalid type. Expected Integer, Null but got String*");
         }
     }
 }
