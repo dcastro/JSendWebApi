@@ -168,5 +168,11 @@ namespace JSend.WebApi.FunctionalTests
         {
             return JSendError(HttpStatusCode.Gone, ErrorMessage, ErrorCode, ErrorData);
         }
+
+        [Route("void"), HttpGet]
+        public void VoidAction()
+        {
+            
+        }
     }
 }
