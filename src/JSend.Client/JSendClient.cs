@@ -66,13 +66,12 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<JSendResponse<T>> GetAsync<T>(Uri requestUri, CancellationToken cancellationToken)
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+            Justification = "The HttpClient will dispose of the request object.")]
+        public Task<JSendResponse<T>> GetAsync<T>(Uri requestUri, CancellationToken cancellationToken)
         {
-            using (var client = _clientFactory())
-            {
-                var responseMessage = await client.GetAsync(requestUri, cancellationToken);
-                return await _parser.ParseAsync<T>(responseMessage);
-            }
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+            return SendAsync<T>(request, cancellationToken);
         }
 
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
