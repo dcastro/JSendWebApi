@@ -61,8 +61,10 @@ namespace JSend.Client
         /// <returns><see langword="true"/> if the specified error is equal to the current error; otherwise, <see langword="false"/>.</returns>
         public bool Equals(JSendError other)
         {
-            return other != null &&
-                   _status == other._status &&
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return _status == other._status &&
                    _code == other._code &&
                    string.Equals(_message, other._message, StringComparison.Ordinal) &&
                    JToken.EqualityComparer.Equals(_data, other._data);
@@ -78,6 +80,7 @@ namespace JSend.Client
 
             var other = obj as JSendError;
             if (other == null) return false;
+
             return Equals(other);
         }
 
