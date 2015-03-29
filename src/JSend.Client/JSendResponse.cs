@@ -126,6 +126,8 @@ namespace JSend.Client
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
+            if (other.GetType() != this.GetType()) return false;
+
             return _status == other._status &&
                    Equals(_error, other._error) &&
                    _httpResponseMessage.Equals(other._httpResponseMessage);

@@ -205,8 +205,8 @@ namespace JSend.Client.Tests
                     },
                     new object[]
                     {
-                        new JSendResponse(new HttpResponseMessage()),
-                        new JSendResponse<string>(new HttpResponseMessage())
+                        new JSendResponse(HttpResponseMessageSingleton),
+                        new JSendResponse<string>(HttpResponseMessageSingleton)
                     },
                 };
             }
