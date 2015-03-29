@@ -75,13 +75,7 @@ namespace JSend.Client
         /// <returns><see langword="true"/> if the specified object is equal to the current object; otherwise, <see langword="false"/>.</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-
-            var other = obj as JSendError;
-            if (other == null) return false;
-
-            return Equals(other);
+            return Equals(obj as JSendError);
         }
 
         /// <summary>Serves as a hash function for this <see cref="JSendError"/>.</summary>
