@@ -9,6 +9,9 @@ namespace JSend.WebApi.FunctionalTests
     {
         public static readonly User TestUser = new User {Username = "DCastro"};
         public static readonly string CreatedLocation = "http://localhost/users/dummy-location/5";
+        public static readonly string ErrorMessage = "dummy error message";
+        public static readonly string ModelErrorKey = "Username";
+        public static readonly string ModelErrorValue = "Invalid Username";
 
         /// <summary>
         /// Dummy action to redirect to.
@@ -84,6 +87,19 @@ namespace JSend.WebApi.FunctionalTests
                 {"id", 5}
             };
             return JSendRedirectToRoute("DummyLocation", routeValues);
+        }
+
+        [Route("badrequest-with-reason"), HttpGet]
+        public IHttpActionResult BadRequestWithReasonAction()
+        {
+            return JSendBadRequest(ErrorMessage);
+        }
+
+        [Route("badrequest-with-modelstate"), HttpGet]
+        public IHttpActionResult BadRequestWithModelStateAction()
+        {
+            ModelState.AddModelError(ModelErrorKey, ModelErrorValue);
+            return JSendBadRequest(ModelState);
         }
     }
 }

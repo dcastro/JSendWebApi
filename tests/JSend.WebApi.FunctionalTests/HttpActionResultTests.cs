@@ -266,5 +266,58 @@ namespace JSend.WebApi.FunctionalTests
                 response.StatusCode.Should().Be(HttpStatusCode.Redirect);
             }
         }
+
+        [Theory, JSendAutoData]
+        public async Task BadRequestWithReason_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "fail"},
+                {"data", UsersController.ErrorMessage}
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/badrequest-with-reason");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task BadRequestWithModelState_Returns_ExpectedResponse(HttpServer server, HttpClient client)
+        {
+            // Fixture setup
+            var expectedContent = new JObject
+            {
+                {"status", "fail"},
+                {
+                    "data", new JObject
+                    {
+                        {UsersController.ModelErrorKey, new JArray(UsersController.ModelErrorValue)}
+                    }
+                }
+            };
+
+            using (server)
+            using (client)
+            {
+                // Exercise system
+                var response = await client.GetAsync("http://localhost/users/badrequest-with-modelstate");
+
+                // Verify outcome
+                var content = JToken.Parse(await response.Content.ReadAsStringAsync());
+                JToken.DeepEquals(expectedContent, content).Should().BeTrue();
+
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            }
+        }
     }
 }
