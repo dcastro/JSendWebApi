@@ -64,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultJSendParser.cs" />
+    <Compile Include="IJSendClient.cs" />
     <Compile Include="IJSendParser.cs" />
+    <Compile Include="JSendClient.cs" />
     <Compile Include="JSendError.cs" />
     <Compile Include="JSendResponseException.cs" />
     <Compile Include="JSendResponse`1.cs" />
