@@ -42,7 +42,7 @@ namespace JSend.Client
             if (settings == null) throw new ArgumentNullException("settings");
             if (clientFactory == null) throw new ArgumentNullException("clientFactory");
 
-            _parser = settings.JSendParser ?? new DefaultJSendParser();
+            _parser = settings.Parser ?? new DefaultJSendParser();
             _encoding = settings.Encoding;
             _serializerSettings = settings.SerializerSettings;
 

@@ -12,10 +12,10 @@ namespace JSend.Client
     /// </summary>
     public class JSendClientSettings
     {
-        /// <summary>Gets or sets the parser to process JSend-formatted responses.</summary>
-        public IJSendParser JSendParser { get; set; }
+        /// <summary>Gets or sets the parser used to process JSend-formatted responses.</summary>
+        public IJSendParser Parser { get; set; }
 
-        /// <summary>Gets or sets the encoding to use to format a request's content.</summary>
+        /// <summary>Gets or sets the encoding used to format a request's content.</summary>
         public Encoding Encoding { get; set; }
 
         /// <summary>Gets or sets the settings used to serialize the content of a request.</summary>
