@@ -36,7 +36,6 @@ namespace JSend.Client
             Justification = "We need to return a response asynchronously.")]
         Task<JSendResponse<T>> GetAsync<T>(Uri requestUri, CancellationToken cancellationToken);
 
-
         /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>

@@ -87,6 +87,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The data to post.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1057:StringUriOverloadsCallSystemUriOverloads",
+            Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse<TResponse>> PostAsync<TResponse>(string requestUri, object content)
         {
             return PostAsync<TResponse>(new Uri(requestUri), content);
@@ -108,6 +110,8 @@ namespace JSend.Client
         /// <param name="content">The data to post.</param>        
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+            Justification = "The HttpClient will dispose of the request object.")]
         public Task<JSendResponse<TResponse>> PostAsync<TResponse>(Uri requestUri, object content,
             CancellationToken cancellationToken)
         {
