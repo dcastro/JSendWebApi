@@ -12,29 +12,29 @@ namespace JSend.Client
     public interface IJSendClient
     {
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
-        Task<JSendResponse<T>> GetAsync<T>(string requestUri);
+        Task<JSendResponse<TResponse>> GetAsync<TResponse>(string requestUri);
 
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
-        Task<JSendResponse<T>> GetAsync<T>(Uri requestUri);
+        Task<JSendResponse<TResponse>> GetAsync<TResponse>(Uri requestUri);
 
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
-        Task<JSendResponse<T>> GetAsync<T>(Uri requestUri, CancellationToken cancellationToken);
+        Task<JSendResponse<TResponse>> GetAsync<TResponse>(Uri requestUri, CancellationToken cancellationToken);
 
         /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>
@@ -145,20 +145,20 @@ namespace JSend.Client
             CancellationToken cancellationToken);
 
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="request">The HTTP request message to send.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
-        Task<JSendResponse<T>> SendAsync<T>(HttpRequestMessage request);
+        Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request);
 
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="request">The HTTP request message to send.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
-        Task<JSendResponse<T>> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken);
+        Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken);
     }
 }

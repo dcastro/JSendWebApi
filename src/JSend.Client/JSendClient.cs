@@ -68,36 +68,36 @@ namespace JSend.Client
         }
 
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         [SuppressMessage("Microsoft.Design", "CA1057:StringUriOverloadsCallSystemUriOverloads",
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
-        public Task<JSendResponse<T>> GetAsync<T>(string requestUri)
+        public Task<JSendResponse<TResponse>> GetAsync<TResponse>(string requestUri)
         {
-            return GetAsync<T>(new Uri(requestUri));
+            return GetAsync<TResponse>(new Uri(requestUri));
         }
 
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public Task<JSendResponse<T>> GetAsync<T>(Uri requestUri)
+        public Task<JSendResponse<TResponse>> GetAsync<TResponse>(Uri requestUri)
         {
-            return GetAsync<T>(requestUri, CancellationToken.None);
+            return GetAsync<TResponse>(requestUri, CancellationToken.None);
         }
 
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
             Justification = "The HttpClient will dispose of the request object.")]
-        public Task<JSendResponse<T>> GetAsync<T>(Uri requestUri, CancellationToken cancellationToken)
+        public Task<JSendResponse<TResponse>> GetAsync<TResponse>(Uri requestUri, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-            return SendAsync<T>(request, cancellationToken);
+            return SendAsync<TResponse>(request, cancellationToken);
         }
 
         /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
@@ -268,25 +268,25 @@ namespace JSend.Client
         }
 
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="request">The HTTP request message to send.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public Task<JSendResponse<T>> SendAsync<T>(HttpRequestMessage request)
+        public Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request)
         {
-            return SendAsync<T>(request, CancellationToken.None);
+            return SendAsync<TResponse>(request, CancellationToken.None);
         }
 
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
-        /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="request">The HTTP request message to send.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<JSendResponse<T>> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
+        public async Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             using (var client = _clientFactory())
             {
                 var responseMessage = await client.SendAsync(request, cancellationToken);
-                return await _parser.ParseAsync<T>(responseMessage);
+                return await _parser.ParseAsync<TResponse>(responseMessage);
             }
         }
 
