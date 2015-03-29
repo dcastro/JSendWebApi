@@ -23,6 +23,14 @@ namespace JSend.Client
 
         }
 
+        /// <summary>Initializes a new instance of <see cref="JSendParseException"/>.</summary>
+        /// <param name="message">The reason why the HTTP response message could not be parsed.</param>
+        public JSendParseException(string message)
+            : base(message)
+        {
+            
+        }
+
         private static string BuildMessage(Type responseType)
         {
             if (responseType == null)

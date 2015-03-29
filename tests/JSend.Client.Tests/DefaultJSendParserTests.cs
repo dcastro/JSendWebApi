@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using JSend.Client.Properties;
 using JSend.Client.Tests.FixtureCustomizations;
 using JSend.Client.Tests.TestTypes;
 using Newtonsoft.Json;
@@ -19,6 +20,17 @@ namespace JSend.Client.Tests
             // Exercise system and verify outcome
             parser.Awaiting(p => p.ParseAsync<Model>(null))
                 .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Theory, JSendAutoData]
+        public void ThrowsWhenResponseHasNoContent(HttpResponseMessage message, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = null;
+            // Exercise system and verify outcome
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
+                .WithMessage(StringResources.ResponseWithoutContent);
         }
 
         [Theory, JSendAutoData]

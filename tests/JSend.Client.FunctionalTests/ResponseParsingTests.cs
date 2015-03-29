@@ -64,5 +64,16 @@ namespace JSend.Client.FunctionalTests
                 response.Error.Data.Value<string>().Should().Be(UsersController.ErrorData);
             }
         }
+
+        [Theory, JSendAutoData]
+        public void DoesNotParseEmptyResponse(JSendClient client)
+        {
+            using (client)
+            {
+                // Exercise system and verify outcome
+                client.Awaiting(c => c.GetAsync<User>("http://localhost/users/no-content"))
+                    .ShouldThrow<JSendParseException>();
+            }
+        }
     }
 }

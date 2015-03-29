@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 using JSend.WebApi;
 
@@ -34,6 +35,12 @@ namespace JSend.Client.FunctionalTests
         public IHttpActionResult ErrorAction()
         {
             return JSendError(HttpStatusCode.InternalServerError, ErrorMessage, ErrorCode, ErrorData);
+        }
+
+        [Route("no-content"), HttpGet]
+        public HttpResponseMessage NoContentAction()
+        {
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
     }
 }

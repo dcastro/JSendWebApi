@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using JSend.Client.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
@@ -51,6 +52,9 @@ namespace JSend.Client
         {
             if (httpResponseMessage == null)
                 throw new ArgumentNullException("httpResponseMessage");
+
+            if (httpResponseMessage.Content == null)
+                throw new JSendParseException(StringResources.ResponseWithoutContent);
 
             try
             {

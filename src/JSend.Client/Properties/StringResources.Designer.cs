@@ -79,6 +79,15 @@ namespace JSend.Client.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HTTP response had an empty body..
+        /// </summary>
+        internal static string ResponseWithoutContent {
+            get {
+                return ResourceManager.GetString("ResponseWithoutContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The JSend response was successful but did not contain any data..
         /// </summary>
         internal static string SuccessResponseWithoutData {
