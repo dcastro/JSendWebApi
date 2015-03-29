@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -21,6 +22,7 @@ namespace JSend.WebApi
         /// <param name="actionResult">The action result.</param>
         /// <param name="controllerContext">The controller context.</param>
         /// <returns>The newly created <see cref="HttpResponseMessage"/>.</returns>
+        [Pure]        
         public HttpResponseMessage Convert(HttpControllerContext controllerContext, object actionResult)
         {
             if (controllerContext == null)

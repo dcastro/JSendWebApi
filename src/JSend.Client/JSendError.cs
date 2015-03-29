@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Text;
 using JSend.Client.Properties;
 using Newtonsoft.Json.Linq;
@@ -60,6 +61,7 @@ namespace JSend.Client
         /// <summary>Determines whether the specified <see cref="JSendError"/> is equal to the current <see cref="JSendError"/>.</summary>
         /// <param name="other">The object to compare with the current object.</param>
         /// <returns><see langword="true"/> if the specified error is equal to the current error; otherwise, <see langword="false"/>.</returns>
+        [Pure]
         public bool Equals(JSendError other)
         {
             if (ReferenceEquals(null, other)) return false;

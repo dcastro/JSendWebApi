@@ -46,6 +46,7 @@ namespace JSend.Client
         /// <param name="httpResponseMessage">The HTTP response message to parse.</param>
         /// <returns>A task representings the parsed <see cref="JSendResponse{T}"/>.</returns>
         /// <exception cref="JSendParseException">The HTTP response message could not be parsed.</exception>
+        [Pure]
         public async Task<JSendResponse<T>> ParseAsync<T>(HttpResponseMessage httpResponseMessage)
         {
             if (httpResponseMessage == null)
@@ -89,6 +90,7 @@ namespace JSend.Client
         /// <exception cref="JsonSerializationException">The JSend data cannot be converted to an instance of type <typeparamref name="T"/>.</exception>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
+        [Pure]
         public async Task<JSendResponse<T>> ParseSuccessMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
             json.Validate(await SuccessSchema.Value);
@@ -112,6 +114,7 @@ namespace JSend.Client
         /// <exception cref="JsonSchemaException"><paramref name="json"/> is not JSend formatted.</exception>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
+        [Pure]
         public async Task<JSendResponse<T>> ParseFailMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
             json.Validate(await FailSchema.Value);
@@ -132,6 +135,7 @@ namespace JSend.Client
         /// <exception cref="JsonSchemaException"><paramref name="json"/> is not JSend formatted.</exception>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
+        [Pure]
         public async Task<JSendResponse<T>> ParseErrorMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
             json.Validate(await ErrorSchema.Value);

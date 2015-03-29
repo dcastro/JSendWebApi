@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -18,6 +19,7 @@ namespace JSend.Client
         /// <exception cref="JSendParseException">The HTTP response message could not be parsed.</exception>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
+        [Pure]
         Task<JSendResponse<T>> ParseAsync<T>(HttpResponseMessage httpResponseMessage);
     }
 }

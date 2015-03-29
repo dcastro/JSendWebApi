@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Net.Http;
 using JSend.Client.Properties;
@@ -80,6 +81,7 @@ namespace JSend.Client
         /// otherwise the default value of <typeparamref name="T"/> is returned.
         /// </summary>
         /// <returns>The response's data or the default vale of <typeparamref name="T"/>.</returns>
+        [Pure]
         public T GetDataOrDefault()
         {
             return GetDataOrDefault(default(T));
@@ -91,6 +93,7 @@ namespace JSend.Client
         /// </summary>
         /// <param name="defaultValue">The value to return if the response does not contain any data.</param>
         /// <returns>The response's data or <paramref name="defaultValue"/>.</returns>
+        [Pure]
         public T GetDataOrDefault(T defaultValue)
         {
             return HasData ? Data : defaultValue;
@@ -109,6 +112,7 @@ namespace JSend.Client
         /// <summary>Determines whether the specified <see cref="JSendResponse{T}"/> is equal to the current <see cref="JSendResponse{T}"/>.</summary>
         /// <param name="other">The object to compare with the current object.</param>
         /// <returns><see langword="true"/> if the specified error is equal to the current error; otherwise, <see langword="false"/>.</returns>
+        [Pure]        
         public bool Equals(JSendResponse<T> other)
         {
             return base.Equals(other) &&
