@@ -21,7 +21,7 @@ namespace JSend.Client
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
         public JSendClient()
-            : this(new JSendClientSettings())
+            : this(null)
         {
 
         }
@@ -39,8 +39,10 @@ namespace JSend.Client
         /// <param name="clientFactory">A factory that creates instances of <see cref="HttpClient"/>.</param>
         public JSendClient(JSendClientSettings settings, Func<HttpClient> clientFactory)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
             if (clientFactory == null) throw new ArgumentNullException("clientFactory");
+
+            if (settings == null)
+                settings = new JSendClientSettings();
 
             _parser = settings.Parser ?? new DefaultJSendParser();
             _encoding = settings.Encoding;

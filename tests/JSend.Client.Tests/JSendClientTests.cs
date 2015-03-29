@@ -67,10 +67,17 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorsThrowWhenAnyArgumentIsNull(GuardClauseAssertion assertion)
+        public void ConstructorThrowsWhenClientFactoryIsNull(JSendClientSettings settings)
         {
             // Exercise system and verify outcome
-            assertion.Verify(typeof (JSendClient).GetConstructors());
+            Assert.Throws<ArgumentNullException>(() => new JSendClient(settings, null));
+        }
+
+        [Theory, JSendAutoData]
+        public void ClientSettingsCanBeNull()
+        {
+            // Exercise system and verify outcome
+            Assert.DoesNotThrow(() => new JSendClient(null));
         }
 
         [Theory, JSendAutoData]
