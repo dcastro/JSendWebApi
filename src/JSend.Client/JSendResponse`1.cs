@@ -141,23 +141,5 @@ namespace JSend.Client
                 return hashCode;
             }
         }
-
-        /// <summary>Returns whether the two operands are equal.</summary>
-        /// <param name="left">The left operand.</param>
-        /// <param name="right">The right operand.</param>
-        /// <returns><see langword="true"/> if both operands are equal; otherwise, <see langword="false"/>.</returns>
-        public static bool operator ==(JSendResponse<T> left, JSendResponse<T> right)
-        {
-            return Equals(left, right);
-        }
-
-        /// <summary>Returns whether the two operands are not equal.</summary>
-        /// <param name="left">The left operand.</param>
-        /// <param name="right">The right operand.</param>
-        /// <returns><see langword="true"/> if both operands are not equal; otherwise, <see langword="false"/>.</returns>
-        public static bool operator !=(JSendResponse<T> left, JSendResponse<T> right)
-        {
-            return !Equals(left, right);
-        }
     }
 }
