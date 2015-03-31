@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -8,6 +9,7 @@ using JSend.Client.Tests.TestTypes;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
@@ -50,6 +52,18 @@ namespace JSend.Client.Tests
             {
                 base.Dispose(disposing);
                 Disposed = disposing;
+            }
+        }
+
+        public class FrozenAsHttpClient : CustomizeAttribute
+        {
+            public override ICustomization GetCustomization(ParameterInfo parameter)
+            {
+                // Freezes a HttpClientStub/HttpClientSpy as HttpClient
+                // and prevents AutoFixture from setting their public fields
+                return new CompositeCustomization(
+                    new NoAutoPropertiesCustomization(parameter.ParameterType),
+                    new FreezingCustomization(parameter.ParameterType, typeof (HttpClient)));
             }
         }
 
@@ -124,7 +138,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task GetAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
-            [Frozen(As = typeof (HttpClient))] HttpClientStub clientStub,
+            [FrozenAsHttpClient] HttpClientStub clientStub,
             Uri uri, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -141,7 +155,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GetAsync_SendsGetRequest(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -153,7 +167,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GetAsync_SetsUri(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -166,7 +180,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task GenericPostAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
-            [Frozen(As = typeof (HttpClient))] HttpClientStub httpClientStub,
+            [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -183,7 +197,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPostAsync_SendsPostRequest(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -195,7 +209,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPostAsync_SetsUri(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -207,7 +221,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPostAsync_SerializesContent(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -221,7 +235,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPostAsync_SetsContentTypeHeader(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -233,7 +247,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPostAsync_SetsCharSet(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -248,7 +262,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task PostAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<JToken> parsedResponse,
-            [Frozen(As = typeof (HttpClient))] HttpClientStub httpClientStub,
+            [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -265,7 +279,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SendsPostRequest(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -277,7 +291,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SetsUri(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -289,7 +303,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SerializesContent(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -303,7 +317,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SetsContentTypeHeader(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -315,7 +329,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_SetsCharSet(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -330,7 +344,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task DeleteAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<JToken> parsedResponse,
-            [Frozen(As = typeof (HttpClient))] HttpClientStub httpClientStub,
+            [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -347,7 +361,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task DeleteAsync_SendsPostRequest(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -359,7 +373,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task DeleteAsync_SetsUri(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -372,7 +386,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
-            [Frozen(As = typeof (HttpClient))] HttpClientStub httpClientStub,
+            [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -389,7 +403,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SendsPutRequest(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -401,7 +415,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SetsUri(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -413,7 +427,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SerializesContent(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -427,7 +441,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SetsContentTypeHeader(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -439,7 +453,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_SetsCharSet(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -454,7 +468,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task PutAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<JToken> parsedResponse,
-            [Frozen(As = typeof (HttpClient))] HttpClientStub httpClientStub,
+            [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -471,7 +485,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SendsPutRequest(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -483,7 +497,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SetsUri(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -495,7 +509,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SerializesContent(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -509,7 +523,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SetsContentTypeHeader(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Exercise system
@@ -521,7 +535,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_SetsCharSet(
-            [Frozen(As = typeof (HttpClient))] HttpClientSpy httpClientSpy,
+            [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
             Uri uri, object content, [Greedy] JSendClient client)
         {
             // Fixture setup
@@ -536,7 +550,7 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public async Task SendAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
-            [Frozen(As = typeof (HttpClient))] HttpClientStub httpClientStub,
+            [FrozenAsHttpClient] HttpClientStub httpClientStub,
             HttpRequestMessage request, [Greedy] JSendClient client)
         {
             // Fixture setup
