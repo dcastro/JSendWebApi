@@ -106,6 +106,7 @@
     <Compile Include="FixtureCustomizations\JSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
     <Compile Include="GenericJSendResponseTests.cs" />
+    <Compile Include="JSendClientSettingsTests.cs" />
     <Compile Include="JSendClientTests.cs" />
     <Compile Include="JSendErrorTests.cs" />
     <Compile Include="JSendParseExceptionTests.cs" />
