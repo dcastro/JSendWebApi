@@ -64,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultJSendParser.cs" />
+    <Compile Include="ExceptionContext.cs" />
     <Compile Include="IJSendClient.cs" />
+    <Compile Include="MessageInterceptor.cs" />
     <Compile Include="IJSendParser.cs" />
     <Compile Include="JSendClient.cs" />
     <Compile Include="JSendClientSettings.cs" />
@@ -80,6 +82,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ResponseParsedContext.cs" />
+    <Compile Include="ResponseReceivedContext.cs" />
     <EmbeddedResource Include="Schemas\ErrorResponseSchema.json" />
   </ItemGroup>
   <ItemGroup>

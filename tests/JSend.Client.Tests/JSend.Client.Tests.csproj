@@ -101,6 +101,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DefaultJSendParserTests.cs" />
+    <Compile Include="ExceptionContextTests.cs" />
     <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\JSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
@@ -110,6 +111,8 @@
     <Compile Include="JSendParseExceptionTests.cs" />
     <Compile Include="JSendResponseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResponseParsedContextTests.cs" />
+    <Compile Include="ResponseReceivedContextTests.cs" />
     <Compile Include="TestTypes\Model.cs" />
   </ItemGroup>
   <ItemGroup>
