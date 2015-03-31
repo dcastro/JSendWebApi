@@ -93,6 +93,7 @@
     <Compile Include="FixtureCustomizations\JSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestSendingTests.cs" />
     <Compile Include="ResponseParsingTests.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UsersController.cs" />

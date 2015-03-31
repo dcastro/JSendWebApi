@@ -58,5 +58,41 @@ namespace JSend.Client.FunctionalTests
 
             return Content(HttpStatusCode.OK, response, formatter);
         }
+
+        [Route("get"), HttpGet]
+        public string GetAction()
+        {
+            return "get";
+        }
+
+        [Route("post"), HttpPost]
+        public string PostAction()
+        {
+            return "post";
+        }
+
+        [Route("put"), HttpPut]
+        public string PutAction()
+        {
+            return "put";
+        }
+
+        [Route("delete"), HttpDelete]
+        public string DeleteAction()
+        {
+            return "delete";
+        }
+
+        [Route("post-echo"), HttpPost]
+        public User PostEchoAction(User user)
+        {
+            return user;
+        }
+
+        [Route("put-echo"), HttpPut]
+        public User PutEchoAction(User user)
+        {
+            return user;
+        }
     }
 }
