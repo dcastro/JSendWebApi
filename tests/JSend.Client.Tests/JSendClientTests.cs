@@ -8,6 +8,7 @@ using JSend.Client.Tests.FixtureCustomizations;
 using JSend.Client.Tests.TestTypes;
 using Moq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Kernel;
 using Ploeh.AutoFixture.Xunit;
@@ -259,7 +260,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<object> parsedResponse,
+            HttpResponseMessage httpResponseMessage, JSendResponse<JToken> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
             Uri uri, Model content, [WithHandler] JSendClient client)
         {
@@ -267,7 +268,7 @@ namespace JSend.Client.Tests
             handlerStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<object>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<JToken>(httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PostAsync(uri, content);
@@ -341,7 +342,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task DeleteAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<object> parsedResponse,
+            HttpResponseMessage httpResponseMessage, JSendResponse<JToken> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
             Uri uri, [WithHandler] JSendClient client)
         {
@@ -349,7 +350,7 @@ namespace JSend.Client.Tests
             handlerStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<object>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<JToken>(httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.DeleteAsync(uri);
@@ -465,7 +466,7 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<object> parsedResponse,
+            HttpResponseMessage httpResponseMessage, JSendResponse<JToken> parsedResponse,
             [Frozen(As = typeof (HttpMessageHandler))] HttpMessageHandlerStub handlerStub,
             Uri uri, Model content, [WithHandler] JSendClient client)
         {
@@ -473,7 +474,7 @@ namespace JSend.Client.Tests
             handlerStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<object>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<JToken>(httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PutAsync(uri, content);

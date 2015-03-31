@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace JSend.Client
 {
@@ -172,7 +173,7 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         public async Task<JSendResponse> PostAsync(Uri requestUri, object content, CancellationToken cancellationToken)
         {
-            return await PostAsync<object>(requestUri, content, cancellationToken);
+            return await PostAsync<JToken>(requestUri, content, cancellationToken);
         }
 
         /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
@@ -198,7 +199,7 @@ namespace JSend.Client
         public async Task<JSendResponse> DeleteAsync(Uri requestUri, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
-            return await SendAsync<object>(request, cancellationToken);
+            return await SendAsync<JToken>(request, cancellationToken);
         }
 
         /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
@@ -268,7 +269,7 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         public async Task<JSendResponse> PutAsync(Uri requestUri, object content, CancellationToken cancellationToken)
         {
-            return await PutAsync<object>(requestUri, content, cancellationToken);
+            return await PutAsync<JToken>(requestUri, content, cancellationToken);
         }
 
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
