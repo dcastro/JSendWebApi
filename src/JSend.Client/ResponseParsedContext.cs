@@ -5,7 +5,7 @@ using System.Net.Http;
 namespace JSend.Client
 {
     /// <summary>
-    /// Represents a <see cref="JSendResponse{T}"/> and the contextual data associated with it when it was parsed.
+    /// Represents a <see cref="JSend.Client.JSendResponse{T}"/> and the contextual data associated with it when it was parsed.
     /// </summary>
     /// <typeparam name="TResponse">The type of the data contained by the JSend response.</typeparam>
     public class ResponseParsedContext<TResponse>
