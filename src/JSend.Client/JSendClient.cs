@@ -19,7 +19,7 @@ namespace JSend.Client
         private readonly Encoding _encoding;
         private readonly JsonSerializerSettings _serializerSettings;
 
-        private readonly HttpClient _client;
+        private readonly HttpClient _httpClient;
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
         public JSendClient()
@@ -40,10 +40,10 @@ namespace JSend.Client
 
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
         /// <param name="settings">The settings to configure this client.</param>
-        /// <param name="client">A client to send HTTP requests and receive HTTP responses.</param>
-        public JSendClient(JSendClientSettings settings, HttpClient client)
+        /// <param name="httpClient">A client to send HTTP requests and receive HTTP responses.</param>
+        public JSendClient(JSendClientSettings settings, HttpClient httpClient)
         {
-            if (client == null) throw new ArgumentNullException("client");
+            if (httpClient == null) throw new ArgumentNullException("httpClient");
 
             if (settings == null)
                 settings = new JSendClientSettings();
@@ -53,7 +53,7 @@ namespace JSend.Client
             _encoding = settings.Encoding;
             _serializerSettings = settings.SerializerSettings;
 
-            _client = client;
+            _httpClient = httpClient;
         }
 
         /// <summary>Gets the parser used to process JSend-formatted responses.</summary>
@@ -83,7 +83,7 @@ namespace JSend.Client
         /// <summary>Gets the client used to send HTTP requests and receive HTTP responses.</summary>
         public HttpClient HttpClient
         {
-            get { return _client; }
+            get { return _httpClient; }
         }
 
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
@@ -308,7 +308,7 @@ namespace JSend.Client
             HttpResponseMessage responseMessage;
             try
             {
-                responseMessage = await _client.SendAsync(request, cancellationToken);
+                responseMessage = await _httpClient.SendAsync(request, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -359,7 +359,7 @@ namespace JSend.Client
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-                _client.Dispose();
+                _httpClient.Dispose();
         }
     }
 }
