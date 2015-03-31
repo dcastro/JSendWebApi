@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System.Net.Http;
+using System.Text;
+using JSend.Client.Tests.TestTypes;
+using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture;
@@ -15,7 +18,8 @@ namespace JSend.Client.Tests.FixtureCustomizations
             new JTokenCustomization(),
             new JSendErrorCustomization(),
             new EncodingCustomization(),
-            new JsonSerializerSettingsCustomization())
+            new JsonSerializerSettingsCustomization(),
+            new JSendParserCustomization())
         {
 
         }
@@ -60,6 +64,28 @@ namespace JSend.Client.Tests.FixtureCustomizations
             // so we'll just use the default settings
             fixture.Customize<JsonSerializerSettings>(
                 c => c.OmitAutoProperties());
+        }
+    }
+
+    internal class JSendParserCustomization : ICustomization
+    {
+        public void Customize(IFixture fixture)
+        {
+            // Due to a limitation in Moq and AutoConfiguredMoqCustomization, generic methods are not automatically configured.
+            // Therefore, we set them up manually, aided by ReturnsUsingFixture.
+            // See https://github.com/AutoFixture/AutoFixture/wiki/Cheat-Sheet#more-information-16
+            var parserMock = fixture.Freeze<Mock<IJSendParser>>();
+
+            SetupParseAsync<Model>(parserMock, fixture);
+            SetupParseAsync<JToken>(parserMock, fixture);
+            SetupParseAsync<object>(parserMock, fixture);
+        }
+
+        private static void SetupParseAsync<T>(Mock<IJSendParser> parserMock, IFixture fixture)
+        {
+            parserMock
+                .Setup(parser => parser.ParseAsync<T>(It.IsAny<HttpResponseMessage>()))
+                .ReturnsUsingFixture(fixture);
         }
     }
 }

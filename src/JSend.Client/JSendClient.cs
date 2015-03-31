@@ -15,6 +15,7 @@ namespace JSend.Client
     public class JSendClient : IJSendClient, IDisposable
     {
         private readonly IJSendParser _parser;
+        private readonly MessageInterceptor _interceptor;
         private readonly Encoding _encoding;
         private readonly JsonSerializerSettings _serializerSettings;
 
@@ -48,6 +49,7 @@ namespace JSend.Client
                 settings = new JSendClientSettings();
 
             _parser = settings.Parser ?? new DefaultJSendParser();
+            _interceptor = settings.MessageInterceptor ?? NullMessageInterceptor.Instance;
             _encoding = settings.Encoding;
             _serializerSettings = settings.SerializerSettings;
 
@@ -58,6 +60,12 @@ namespace JSend.Client
         public IJSendParser Parser
         {
             get { return _parser; }
+        }
+
+        /// <summary>Gets the interceptor to perform additional work with outgoing requests/incoming responses.</summary>
+        public MessageInterceptor MessageInterceptor
+        {
+            get { return _interceptor; }
         }
 
         /// <summary>Gets the encoding used to format a request's content.</summary>
@@ -289,8 +297,33 @@ namespace JSend.Client
         public async Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            var responseMessage = await _client.SendAsync(request, cancellationToken);
-            return await _parser.ParseAsync<TResponse>(responseMessage);
+            _interceptor.OnSending(request);
+
+            HttpResponseMessage responseMessage;
+            try
+            {
+                responseMessage = await _client.SendAsync(request, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _interceptor.OnException(new ExceptionContext(request, ex));
+                throw;
+            }
+            _interceptor.OnReceived(new ResponseReceivedContext(request, responseMessage));
+
+            JSendResponse<TResponse> jsendResponse;
+            try
+            {
+                jsendResponse = await _parser.ParseAsync<TResponse>(responseMessage);
+            }
+            catch (Exception ex)
+            {
+                _interceptor.OnException(new ExceptionContext(request, ex));
+                throw;
+            }
+            _interceptor.OnParsed(new ResponseParsedContext<TResponse>(request, responseMessage, jsendResponse));
+
+            return jsendResponse;
         }
 
         private HttpContent Serialize(object content)

@@ -33,12 +33,14 @@ namespace JSend.Client.Tests
         {
             public bool Disposed = false;
 
+            public bool HasRequestBeenSent = false;
             public HttpRequestMessage Request;
             public string Content;
 
             public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
                 CancellationToken cancellationToken)
             {
+                HasRequestBeenSent = true;
                 Request = request;
 
                 //read the content before the request gets disposed of
@@ -64,6 +66,20 @@ namespace JSend.Client.Tests
                 return new CompositeCustomization(
                     new NoAutoPropertiesCustomization(parameter.ParameterType),
                     new FreezingCustomization(parameter.ParameterType, typeof (HttpClient)));
+            }
+        }
+
+        private class MockHttpClient : CustomizeAttribute, ICustomization
+        {
+            public override ICustomization GetCustomization(ParameterInfo parameter)
+            {
+                return this;
+            }
+
+            public void Customize(IFixture fixture)
+            {
+                var clientMock = fixture.Create<Mock<HttpClient>>();
+                fixture.Inject(clientMock.Object);
             }
         }
 
@@ -97,6 +113,24 @@ namespace JSend.Client.Tests
             var client = new JSendClient();
             // Verify outcome
             client.Parser.Should().BeOfType<DefaultJSendParser>();
+        }
+
+        [Theory, JSendAutoData]
+        public void MessageInterceptor_IsCorrectlyInitialized(JSendClientSettings settings)
+        {
+            // Exercise system
+            var client = new JSendClient(settings);
+            // Verify outcome
+            client.MessageInterceptor.Should().BeSameAs(settings.MessageInterceptor);
+        }
+
+        [Fact]
+        public void MessageInterceptor_IsNullMessageInterceptor_ByDefault()
+        {
+            // Exercise system
+            var client = new JSendClient();
+            // Verify outcome
+            client.MessageInterceptor.Should().BeSameAs(NullMessageInterceptor.Instance);
         }
 
         [Theory, JSendAutoData]
@@ -563,6 +597,154 @@ namespace JSend.Client.Tests
             var response = await client.SendAsync<Model>(request);
             // Verify outcome
             response.Should().BeSameAs(parsedResponse);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task Executes_OnSending_BeforeSendingRequest(
+            HttpRequestMessage request,
+            [Frozen] MessageInterceptor interceptor,
+            [FrozenAsHttpClient] HttpClientSpy httpClient,
+            [Greedy] JSendClient client)
+        {
+            // Fixture setup
+            Mock.Get(interceptor)
+                .Setup(i => i.OnSending(It.IsAny<HttpRequestMessage>()))
+                .Callback(
+                    () => httpClient.HasRequestBeenSent.Should().BeFalse());
+            // Exercise system
+            await client.SendAsync<object>(request);
+            // Verify outcome
+            Mock.Get(interceptor)
+                .Verify(i => i.OnSending(It.IsAny<HttpRequestMessage>()), Times.Once);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task Executes_OnSending_WithCorrectRequest(
+            HttpRequestMessage request,
+            [Frozen] MessageInterceptor interceptor,
+            [Greedy, MockHttpClient] JSendClient client)
+        {
+            // Exercise system
+            await client.SendAsync<object>(request);
+            // Verify outcome
+            Mock.Get(interceptor)
+                .Verify(i => i.OnSending(request));
+        }
+
+        [Theory, JSendAutoData]
+        public async Task Executes_OnReceived_BeforeParsingResponse(
+            HttpRequestMessage request,
+            [Frozen] MessageInterceptor interceptor,
+            [Frozen] IJSendParser parser,
+            [Greedy, MockHttpClient] JSendClient client)
+        {
+            // Fixture setup
+            Action verifyResponseHasntBeenParsed = () =>
+                Mock.Get(parser)
+                    .Verify(
+                        p => p.ParseAsync<object>(It.IsAny<HttpResponseMessage>()),
+                        Times.Never);
+
+            Mock.Get(interceptor)
+                .Setup(i => i.OnReceived(It.IsAny<ResponseReceivedContext>()))
+                .Callback(verifyResponseHasntBeenParsed);
+
+            // Exercise system
+            await client.SendAsync<object>(request);
+            // Verify outcome
+            Mock.Get(interceptor)
+                .Verify(i => i.OnReceived(It.IsAny<ResponseReceivedContext>()), Times.Once);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task Executes_OnReceived_WithCorrectContext(
+            HttpRequestMessage request,
+            [Frozen] HttpResponseMessage response,
+            [Frozen] MessageInterceptor interceptor,
+            [Greedy, MockHttpClient] JSendClient client)
+        {
+            // Exercise system
+            await client.SendAsync<object>(request);
+            // Verify outcome
+            Mock.Get(interceptor)
+                .Verify(i => i.OnReceived(
+                    It.Is<ResponseReceivedContext>(
+                        ctx => ctx.HttpRequestMessage == request && ctx.HttpResponseMessage == response)));
+        }
+
+        [Theory, JSendAutoData]
+        public async Task Executes_OnParsed_WithCorrectContext(
+            HttpRequestMessage request,
+            [Frozen] HttpResponseMessage response,
+            [Frozen] JSendResponse<object> jsendResponse,
+            [Frozen] MessageInterceptor interceptor,
+            [Greedy, MockHttpClient] JSendClient client)
+        {
+            // Exercise system
+            await client.SendAsync<object>(request);
+            // Verify outcome
+            Mock.Get(interceptor)
+                .Verify(i => i.OnParsed<object>(
+                    It.Is<ResponseParsedContext<object>>(
+                        ctx => ctx.HttpRequestMessage == request &&
+                               ctx.HttpResponseMessage == response &&
+                               ctx.JSendResponse == jsendResponse)));
+        }
+
+        [Theory, JSendAutoData]
+        public async Task Executes_OnException_WhenSendingFails_WithCorrectContext(
+            Exception exception,
+            HttpRequestMessage request,
+            [MockHttpClient] HttpClient httpClient,
+            [Frozen] MessageInterceptor interceptor,
+            [Greedy] JSendClient client)
+        {
+            // Fixture setup
+            Mock.Get(httpClient)
+                .Setup(c => c.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(exception);
+            // Exercise system
+            try
+            {
+                await client.SendAsync<object>(request);
+            }
+            catch
+            {
+            }
+            // Verify outcome
+            Mock.Get(interceptor)
+                .Verify(i => i.OnException(It.Is<ExceptionContext>(
+                    ctx => ctx.HttpRequestMessage == request &&
+                           ctx.Exception == exception
+                    )), Times.Once);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task Executes_OnException_WhenParsingFails_WithCorrectContext(
+            Exception exception,
+            HttpRequestMessage request,
+            [Frozen] IJSendParser parser,
+            [Frozen] MessageInterceptor interceptor,
+            [Greedy, MockHttpClient] JSendClient client)
+        {
+            // Fixture setup
+            Mock.Get(parser)
+                .Setup(c => c.ParseAsync<object>(It.IsAny<HttpResponseMessage>()))
+                .ThrowsAsync(exception);
+            // Exercise system
+            try
+            {
+                await client.SendAsync<object>(request);
+            }
+            catch
+            {
+            }
+            // Verify outcome
+            Mock.Get(interceptor)
+                .Verify(i => i.OnException(It.Is<ExceptionContext>(
+                    ctx => ctx.HttpRequestMessage == request &&
+                           ctx.Exception == exception
+                    )), Times.Once);
         }
 
         [Theory, JSendAutoData]
