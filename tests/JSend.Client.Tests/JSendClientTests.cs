@@ -170,6 +170,24 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
+        public void HttpClient_IsCorrectlyInitialized(HttpClient httpClient)
+        {
+            // Exercise system
+            var client = new JSendClient(null, httpClient);
+            // Verify outcome
+            client.HttpClient.Should().BeSameAs(httpClient);
+        }
+
+        [Fact]
+        public void HttpClient_IsNotNull_ByDefault()
+        {
+            // Exercise system
+            var client = new JSendClient();
+            // Verify outcome
+            client.HttpClient.Should().NotBeNull();
+        }
+
+        [Theory, JSendAutoData]
         public async Task GetAsync_ReturnsParsedResponse(
             HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
             [FrozenAsHttpClient] HttpClientStub clientStub,

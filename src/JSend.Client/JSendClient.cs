@@ -80,6 +80,12 @@ namespace JSend.Client
             get { return _serializerSettings; }
         }
 
+        /// <summary>Gets the client used to send HTTP requests and receive HTTP responses.</summary>
+        public HttpClient HttpClient
+        {
+            get { return _client; }
+        }
+
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
