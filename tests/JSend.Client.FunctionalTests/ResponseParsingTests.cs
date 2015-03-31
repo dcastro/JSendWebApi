@@ -65,13 +65,17 @@ namespace JSend.Client.FunctionalTests
             }
         }
 
-        [Theory, JSendAutoData]
-        public void DoesNotParseEmptyResponse(JSendClient client)
+        [Theory]
+        [InlineJSendAutoData("no-content")]
+        [InlineJSendAutoData("non-jsend")]
+        [InlineJSendAutoData("non-json")]
+        public void DoesNotParseInvalidResponses(string route, JSendClient client)
         {
             using (client)
             {
                 // Exercise system and verify outcome
-                client.Awaiting(c => c.GetAsync<User>("http://localhost/users/no-content"))
+                client
+                    .Awaiting(c => c.GetAsync<User>("http://localhost/users/" + route))
                     .ShouldThrow<JSendParseException>();
             }
         }

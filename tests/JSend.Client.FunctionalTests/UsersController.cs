@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Web.Http;
 using JSend.WebApi;
+using JSend.WebApi.Responses;
 
 namespace JSend.Client.FunctionalTests
 {
@@ -41,6 +42,21 @@ namespace JSend.Client.FunctionalTests
         public HttpResponseMessage NoContentAction()
         {
             return new HttpResponseMessage(HttpStatusCode.NoContent);
+        }
+
+        [Route("non-jsend"), HttpGet]
+        public IHttpActionResult NonJSendAction()
+        {
+            return Ok(TestUser);
+        }
+
+        [Route("non-json"), HttpGet]
+        public IHttpActionResult NonJsonAction()
+        {
+            var response = new SuccessResponse(TestUser);
+            var formatter = Configuration.Formatters.XmlFormatter;
+
+            return Content(HttpStatusCode.OK, response, formatter);
         }
     }
 }
