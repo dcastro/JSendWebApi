@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using JSend.Client.FunctionalTests.FixtureCustomizations;
-using Newtonsoft.Json.Linq;
 using Xunit.Extensions;
 
 namespace JSend.Client.FunctionalTests
