@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using JSend.WebApi;
@@ -93,6 +95,13 @@ namespace JSend.Client.FunctionalTests
         public User PutEchoAction(User user)
         {
             return user;
+        }
+
+        [Route("echo-headers"), HttpGet]
+        public IDictionary<string, IEnumerable<string>> EchoHeadersAction()
+        {
+            return Request.Headers.ToDictionary(
+                header => header.Key, header => header.Value);
         }
     }
 }

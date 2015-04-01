@@ -92,6 +92,7 @@
     <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\JSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
+    <Compile Include="MessageInterceptionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestSendingTests.cs" />
     <Compile Include="ResponseParsingTests.cs" />
