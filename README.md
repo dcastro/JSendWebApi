@@ -1,21 +1,26 @@
-# JSendWebApi
+# JSend.WebApi & JSend.Client
 
-JSendWebApi extends [ASP.NET Web API 2][0]'s [`ApiController`][2] and enables easy generation of [JSend-formatted responses]
-[1].
- 
- * [Return types](#return-types)
-   * [Void actions](#void-actions)
-   * [`IHttpActionResult`](#ihttpactionresult)
-   * [Other return types](#other-return-types)
- * [Exceptions](#exceptions)
- * [Other stuff](#other-stuff)
+`JSendApiController` extends [ASP.NET Web API 2][0]'s [`ApiController`][2] and enables easy generation of [JSend-formatted responses][1].
+
+On the other hand, `JSendClient` wraps around `HttpClient` and provides an easy way to send HTTP requests and parse JSend-formatted responses.
+
+ * [JSend.WebApi](#jsend.webapi)
+   * [Return types](#return-types)
+     * [Void actions](#void-actions)
+     * [`IHttpActionResult`](#ihttpactionresult)
+     * [Other return types](#other-return-types)
+   * [Exceptions](#exceptions)
+   * [Other stuff](#other-stuff)
  * [Download](#download)
 
-## Return Types
+
+## JSend.WebApi
+
+### Return types
 
 The return value of a `JSendApiController` action is converted to a HTTP response as follows:
 
-### Void actions
+#### Void actions
 
 Actions that don't return anything are converted to a 200 response with its status set to `success`.  
 
@@ -37,7 +42,7 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
-### `IHttpActionResult`
+#### `IHttpActionResult`
 
 The `JSendApiController` provides several helper methods to easily build JSend-formatted responses.  
 [Here's a full list of these helpers methods and examples responses][3].
@@ -105,7 +110,7 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
-### Other return types
+#### Other return types
 
 For all other return types (*), they'll be wrapped in a 200 response with its status set to `success` , 
 
@@ -138,7 +143,7 @@ Content-Type: application/json; charset=utf-8
 
 (*) Except `HttpResponseMessage`, which is converted directly to an HTTP response.
 
-## Exceptions
+### Exceptions
 
 Depending on the current [`IncludeErrorDetailPolicy`][4] and on whether the client is local or remote, 
 exceptions thrown by `JSendApiController` actions will be formatted as either:
@@ -168,7 +173,7 @@ Content-Type: application/json; charset=utf-8
 
 The default behavior is to show exception details to local clients and hide them from remote clients.
 
-## Other stuff
+### Other stuff
 
 * The `JSendAuthorize` attribute is available and replaces the `Authorize` attribute
 
