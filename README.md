@@ -13,7 +13,7 @@ JSendWebApi extends [ASP.NET Web API 2][0]'s [`ApiController`][2] and enables ea
 
 ## Return Types
 
-The return value of a `JSendApIController` action is converted to a HTTP response as follows:
+The return value of a `JSendApiController` action is converted to a HTTP response as follows:
 
 ### Void actions
 
