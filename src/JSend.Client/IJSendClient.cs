@@ -9,7 +9,7 @@ namespace JSend.Client
     /// <summary>
     /// Sends HTTP requests and parses JSend-formatted HTTP responses.
     /// </summary>
-    public interface IJSendClient
+    public interface IJSendClient : IDisposable
     {
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>

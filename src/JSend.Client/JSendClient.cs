@@ -12,7 +12,7 @@ namespace JSend.Client
     /// <summary>
     /// Sends HTTP requests and parses JSend-formatted HTTP responses.
     /// </summary>
-    public class JSendClient : IJSendClient, IDisposable
+    public class JSendClient : IJSendClient
     {
         private readonly IJSendParser _parser;
         private readonly MessageInterceptor _interceptor;
