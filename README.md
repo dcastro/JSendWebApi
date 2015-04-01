@@ -4,6 +4,7 @@
 
 On the other hand, `JSendClient` wraps around `HttpClient` and provides an easy way to send HTTP requests and parse JSend-formatted responses.
 
+ * [Example](#example)
  * [JSend.WebApi](#jsend.webapi)
    * [Return types](#return-types)
      * [Void actions](#void-actions)
@@ -13,6 +14,44 @@ On the other hand, `JSendClient` wraps around `HttpClient` and provides an easy 
    * [Other stuff](#other-stuff)
  * [Download](#download)
 
+## Example
+
+JSend.WebApi
+
+```csharp
+public class ArticlesController : JSendApiController
+{
+    public IHttpActionResult Get(int id)
+    {
+        var article = _repo.Get(id);
+
+        if (article != null)
+            return JSendOk(article);
+
+        return JSendNotFound();
+    }
+}
+```
+
+JSend.Client
+
+```csharp
+using (var client = new JSendClient())
+{
+    var getResponse = await client.GetAsync<Article>("http://localhost/articles/4");
+    var existingArticle = getResponse.GetDataOrDefault();
+
+    var postResponse = await client.PostAsync<Article>("http://localhost/articles/", article);
+    var newArticle = postResponse.Data;
+
+    var deleteResponse = await client.DeleteAsync("http://localhost/articles/4");
+    deleteResponse.EnsureSuccessStatus(); //throws if the response's status is not "success"
+
+    var putResponse = await client.PutAsync("http://localhost/articles/4", existingArticle);
+    if (! putResponse.IsSuccess)
+        Logger.Log(putResponse.Error);
+}
+```
 
 ## JSend.WebApi
 
