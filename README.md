@@ -2,7 +2,7 @@
 
 `JSendApiController` extends [ASP.NET Web API 2][0]'s [`ApiController`][2] and enables easy generation of [JSend-formatted responses][1].
 
-On the other hand, `JSendClient` wraps around `HttpClient` and provides an easy way to send HTTP requests and parse JSend-formatted responses.
+`JSendClient` complements the controller, by wrapping around `HttpClient` and providing an easy way to send HTTP requests and parse JSend-formatted responses.
 
  * [Example](#example)
  * [JSend.WebApi](#jsendwebapi)
