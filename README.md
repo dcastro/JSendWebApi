@@ -305,9 +305,11 @@ To install JSend.WebApi, run the following command in the Package Manager Consol
 
     PM> Install-Package JSend.WebApi
 
-Or download the binaries/source code from [here][5].
+To install JSend.Client, run the following command in the Package Manager Console
 
-The JSend.Client will soon be available on NuGet.
+    PM> Install-Package JSend.Client
+
+Or download the binaries/source code from [here][5].
 
  [0]: http://www.asp.net/web-api/overview/getting-started-with-aspnet-web-api/tutorial-your-first-web-api
  [1]: http://labs.omniti.com/labs/jsend
