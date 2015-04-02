@@ -5,13 +5,17 @@
 On the other hand, `JSendClient` wraps around `HttpClient` and provides an easy way to send HTTP requests and parse JSend-formatted responses.
 
  * [Example](#example)
- * [JSend.WebApi](#jsend.webapi)
+ * [JSend.WebApi](#jsendwebapi)
    * [Return types](#return-types)
      * [Void actions](#void-actions)
      * [`IHttpActionResult`](#ihttpactionresult)
      * [Other return types](#other-return-types)
    * [Exceptions](#exceptions)
    * [Other stuff](#other-stuff)
+ * [JSend.Client](#jsendclient)
+   * [Querying an API](#querying-an-api)
+   * [Handling the response](#handling-the-response)
+   * [Configuring the client](#configuring-the-client)
  * [Download](#download)
 
 ## Example
@@ -216,15 +220,106 @@ The default behavior is to show exception details to local clients and hide them
 
 * The `JSendAuthorize` attribute is available and replaces the `Authorize` attribute
 
+## JSend.Client
+
+### Querying an API
+
+```csharp
+await client.GetAsync<Article>(uri);
+
+await client.PostAsync<Article>(uri, article);   // If you expect an updated article back
+await client.PostAsync(uri, article);            // If you don't expect data back
+
+await client.PutAsync<Article>(uri, article);    // If you expect an updated article back
+await client.PutAsync(uri, article);             // If you don't expect data back
+
+await client.DeleteAsync(uri);
+```
+
+### Handling the response
+
+If you expect the API to always return a "success response"...
+
+```csharp
+//... and you don't need any data
+response.EnsureSuccessStatus();  //(throws if response was not successful)
+
+//... and you expect the response to always contain data
+var article = response.Data;     //(throws if response was not successful or did not contain data)
+
+//... and you're not sure whether the response contains data
+var article = response.GetDataOrDefault();
+var article = response.GetDataOrDefault(new Article());
+if (response.HasData) { ... }
+```
+
+If the API might return a "fail/error response" (e.g., because a resource was not found)...
+
+```csharp
+//... and you don't need any data
+if (response.IsSuccess) { ... }
+
+//... and you need the data
+var article = response.GetDataOrDefault();
+var article = response.GetDataOrDefault(new Article());
+if (response.HasData) { ... }
+
+//... and you want to handle the error
+if (! response.IsSuccess) { Logger.Log(response.Error); }
+```
+
+If you want to know more details about the response, such as its status code, you can use the [`JSendResponse.HttpResponseMessage`][7] property to access the original HTTP response message.
+
+```csharp
+if (response.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+{
+    ...
+}
+```
+
+### Configuring the client
+
+If you want the client to perform some additional work (e.g., add a "X-Version" header to all requests, or log all exceptions) you can do so by extending [`MessageInterceptor`][6]:
+
+```csharp
+public class MyCustomInterceptor : MessageInterceptor
+{
+    public override void OnSending(HttpRequestMessage request)
+    {
+        request.Headers.Add("X-Version", "2.0");
+    }
+
+    public override void OnException(ExceptionContext context)
+    {
+        Logger.Log(context.Exception);
+    }
+}
+```
+
+You can then configure the client like this:
+
+```csharp
+var settings = new JSendClientSettings
+    {
+        MessageInterceptor = new MyCustomInterceptor(),
+        SerializerSettings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented
+            }
+    };
+
+var client = new JSendClient(settings);
+```
+
 ## Download
 
-To install JSend Web API, run the following command in the Package Manager Console
+To install JSend.WebApi, run the following command in the Package Manager Console
 
     PM> Install-Package JSend.WebApi
 
 Or download the binaries/source code from [here][5].
 
-
+The JSend.Client will soon be available on NuGet.
 
  [0]: http://www.asp.net/web-api/overview/getting-started-with-aspnet-web-api/tutorial-your-first-web-api
  [1]: http://labs.omniti.com/labs/jsend
@@ -232,3 +327,5 @@ Or download the binaries/source code from [here][5].
  [3]: https://github.com/dcastro/JSendWebApi/wiki#list-of-helper-methods
  [4]: https://msdn.microsoft.com/en-us/library/system.web.http.httpconfiguration.includeerrordetailpolicy%28v=vs.118%29.aspx
  [5]: https://github.com/dcastro/JSendWebApi/releases
+ [6]: https://github.com/dcastro/JSendWebApi/blob/master/src/JSend.Client/MessageInterceptor.cs
+ [7]: https://github.com/dcastro/JSendWebApi/blob/master/src/JSend.Client/JSendResponse.cs#L60
