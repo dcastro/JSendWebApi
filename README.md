@@ -140,18 +140,6 @@ Content-Type: application/json; charset=utf-8
     }
 }
 ```
-The `Get` action will return:
-```
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-    "status" : "success",
-    "data" : {
-        "title" : "Ground-breaking study discovers how to exit Vim"
-    }
-}
-```
 
 #### Other return types
 
