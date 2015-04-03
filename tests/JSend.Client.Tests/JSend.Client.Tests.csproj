@@ -102,6 +102,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="CompositeMessageInterceptorTests.cs" />
     <Compile Include="DefaultJSendParserTests.cs" />
     <Compile Include="ExceptionContextTests.cs" />
     <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
