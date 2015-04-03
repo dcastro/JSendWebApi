@@ -40,7 +40,7 @@ namespace JSend.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="JSendRequestException"/> with serialized data.
+        /// Initializes a new instance of the <see cref="JSendParseException"/> with serialized data.
         /// </summary>
         /// <param name="info">
         /// The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.
