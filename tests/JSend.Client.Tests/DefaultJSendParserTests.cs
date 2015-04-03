@@ -8,12 +8,23 @@ using JSend.Client.Tests.TestTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
+using Xunit;
 using Xunit.Extensions;
 
 namespace JSend.Client.Tests
 {
     public class DefaultJSendParserTests
     {
+        [Fact]
+        public void InstanceIsSingleton()
+        {
+            // Exercise system
+            var first = DefaultJSendParser.Instance;
+            var second = DefaultJSendParser.Instance;
+            // Verify outcome
+            first.Should().BeSameAs(second);
+        }
+
         [Theory, JSendAutoData]
         public void ThrowsWhenHttpResponseMessageIsNull(DefaultJSendParser parser)
         {

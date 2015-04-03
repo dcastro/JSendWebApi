@@ -40,6 +40,14 @@ namespace JSend.Client
             }
         }
 
+        private static readonly DefaultJSendParser _instance = new DefaultJSendParser();
+
+        /// <summary>Gets an instance of <see cref="DefaultJSendParser"/>.</summary>
+        public static DefaultJSendParser Instance
+        {
+            get { return _instance; }
+        }
+
         /// <summary>
         /// Parses the content of a <see cref="HttpResponseMessage"/> and returns a <see cref="JSendResponse{T}"/>.
         /// </summary>
