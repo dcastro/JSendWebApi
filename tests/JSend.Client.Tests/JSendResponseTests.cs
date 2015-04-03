@@ -99,7 +99,7 @@ namespace JSend.Client.Tests
             var nonSuccessResponse = new JSendResponse(error, httpResponseMessage);
             // Exercise system and verify outcome
             nonSuccessResponse.Invoking(rsp => rsp.EnsureSuccessStatus())
-                .ShouldThrow<JSendResponseException>()
+                .ShouldThrow<JSendRequestException>()
                 .And.Message.Should().Be("JSend status does not indicate success: \"fail\".");
         }
 

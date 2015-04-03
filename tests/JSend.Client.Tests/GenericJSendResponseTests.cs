@@ -76,7 +76,7 @@ namespace JSend.Client.Tests
             var response = new JSendResponse<Model>(httpResponseMessage);
             // Verify outcome
             Action data = () => { var x = response.Data; };
-            data.ShouldThrow<JSendResponseException>()
+            data.ShouldThrow<JSendRequestException>()
                 .And.Message.Should().StartWith(StringResources.SuccessResponseWithoutData);
         }
 
@@ -89,7 +89,7 @@ namespace JSend.Client.Tests
             var response = new JSendResponse<Model>(error, httpResponseMessage);
             // Verify outcome
             Action data = () => { var x = response.Data; };
-            data.ShouldThrow<JSendResponseException>()
+            data.ShouldThrow<JSendRequestException>()
                 .And.Message.Should().StartWith("JSend status does not indicate success: \"fail\".");
         }
 
@@ -154,7 +154,7 @@ namespace JSend.Client.Tests
             var nonSuccessResponse = new JSendResponse<Model>(error, httpResponseMessage);
             // Exercise system and verify outcome
             nonSuccessResponse.Invoking(rsp => rsp.EnsureSuccessStatus())
-                .ShouldThrow<JSendResponseException>()
+                .ShouldThrow<JSendRequestException>()
                 .And.Message.Should().Be("JSend status does not indicate success: \"fail\".");
         }
 

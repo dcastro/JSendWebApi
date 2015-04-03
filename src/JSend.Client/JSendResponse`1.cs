@@ -51,9 +51,9 @@ namespace JSend.Client
         /// <summary>
         /// Gets the data returned by the API.
         /// If none was returned or if the response was not successful,
-        /// a <see cref="JSendResponseException"/> will be thrown.
+        /// a <see cref="JSendRequestException"/> will be thrown.
         /// </summary>
-        /// <exception cref="JSendResponseException">The request was not successful or did not return any data.</exception>        
+        /// <exception cref="JSendRequestException">The request was not successful or did not return any data.</exception>        
         [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations",
             Justification = "This is the same pattern used by Nullable<T>.")]
         public T Data
@@ -63,7 +63,7 @@ namespace JSend.Client
                 EnsureSuccessStatus();
 
                 if (!HasData)
-                    throw new JSendResponseException(StringResources.SuccessResponseWithoutData);
+                    throw new JSendRequestException(StringResources.SuccessResponseWithoutData);
                 return _data;
             }
         }
@@ -101,7 +101,7 @@ namespace JSend.Client
 
         /// <summary>Throws an exception if <see cref="JSendResponse.IsSuccess"/> is <see langword="false"/>.</summary>
         /// <returns>Returns itself if the call is successful.</returns>
-        /// <exception cref="JSendResponseException">The request was not successful.</exception>
+        /// <exception cref="JSendRequestException">The request was not successful.</exception>
         public new JSendResponse<T> EnsureSuccessStatus()
         {
             base.EnsureSuccessStatus();

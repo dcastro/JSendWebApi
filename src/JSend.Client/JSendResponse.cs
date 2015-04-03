@@ -73,7 +73,7 @@ namespace JSend.Client
 
         /// <summary>Throws an exception if <see cref="IsSuccess"/> is <see langword="false"/>.</summary>
         /// <returns>Returns itself if the call is successful.</returns>
-        /// <exception cref="JSendResponseException">The request was not successful.</exception>
+        /// <exception cref="JSendRequestException">The request was not successful.</exception>
         [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase",
             Justification = "We explicitly want the lower-case string here")]
         public JSendResponse EnsureSuccessStatus()
@@ -86,7 +86,7 @@ namespace JSend.Client
                 // cleaning up its state.
                 Dispose();
 
-                throw new JSendResponseException(
+                throw new JSendRequestException(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         StringResources.UnsuccessfulResponse, Status.ToString().ToLowerInvariant()));

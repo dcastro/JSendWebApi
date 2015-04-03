@@ -12,7 +12,7 @@ namespace JSend.Client
     [Serializable]
     [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors",
         Justification = "Type and Exception are required.")]
-    public class JSendParseException : JSendResponseException
+    public class JSendParseException : JSendRequestException
     {
         /// <summary>Initializes a new instance of <see cref="JSendParseException"/>.</summary>
         /// <param name="responseType">The type into which the parsing failed.</param>
@@ -40,7 +40,7 @@ namespace JSend.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="JSendResponseException"/> with serialized data.
+        /// Initializes a new instance of the <see cref="JSendRequestException"/> with serialized data.
         /// </summary>
         /// <param name="info">
         /// The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.
