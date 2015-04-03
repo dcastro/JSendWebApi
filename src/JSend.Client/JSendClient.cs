@@ -91,6 +91,8 @@ namespace JSend.Client
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         [SuppressMessage("Microsoft.Design", "CA1057:StringUriOverloadsCallSystemUriOverloads",
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse<TResponse>> GetAsync<TResponse>(string requestUri)
@@ -102,6 +104,8 @@ namespace JSend.Client
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public Task<JSendResponse<TResponse>> GetAsync<TResponse>(Uri requestUri)
         {
             return GetAsync<TResponse>(requestUri, CancellationToken.None);
@@ -112,6 +116,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
             Justification = "The HttpClient will dispose of the request object.")]
         public Task<JSendResponse<TResponse>> GetAsync<TResponse>(Uri requestUri, CancellationToken cancellationToken)
@@ -125,6 +131,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The data to post.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         [SuppressMessage("Microsoft.Design", "CA1057:StringUriOverloadsCallSystemUriOverloads",
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse<TResponse>> PostAsync<TResponse>(string requestUri, object content)
@@ -137,6 +145,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The data to post.</param>        
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public Task<JSendResponse<TResponse>> PostAsync<TResponse>(Uri requestUri, object content)
         {
             return PostAsync<TResponse>(requestUri, content, CancellationToken.None);
@@ -148,6 +158,8 @@ namespace JSend.Client
         /// <param name="content">The data to post.</param>        
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
             Justification = "The HttpClient will dispose of the request object.")]
         public Task<JSendResponse<TResponse>> PostAsync<TResponse>(Uri requestUri, object content,
@@ -165,6 +177,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The data to post.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         [SuppressMessage("Microsoft.Design", "CA1057:StringUriOverloadsCallSystemUriOverloads",
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse> PostAsync(string requestUri, object content)
@@ -176,6 +190,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The data to post.</param>        
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public Task<JSendResponse> PostAsync(Uri requestUri, object content)
         {
             return PostAsync(requestUri, content, CancellationToken.None);
@@ -186,6 +202,8 @@ namespace JSend.Client
         /// <param name="content">The data to post.</param>        
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public async Task<JSendResponse> PostAsync(Uri requestUri, object content, CancellationToken cancellationToken)
         {
             return await PostAsync<JToken>(requestUri, content, cancellationToken);
@@ -194,6 +212,8 @@ namespace JSend.Client
         /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public Task<JSendResponse> DeleteAsync(string requestUri)
         {
             return DeleteAsync(new Uri(requestUri));
@@ -202,6 +222,8 @@ namespace JSend.Client
         /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public Task<JSendResponse> DeleteAsync(Uri requestUri)
         {
             return DeleteAsync(requestUri, CancellationToken.None);
@@ -211,6 +233,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public async Task<JSendResponse> DeleteAsync(Uri requestUri, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
@@ -222,6 +246,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The data to post.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         [SuppressMessage("Microsoft.Design", "CA1057:StringUriOverloadsCallSystemUriOverloads",
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse<TResponse>> PutAsync<TResponse>(string requestUri, object content)
@@ -234,6 +260,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The data to post.</param>        
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public Task<JSendResponse<TResponse>> PutAsync<TResponse>(Uri requestUri, object content)
         {
             return PutAsync<TResponse>(requestUri, content, CancellationToken.None);
@@ -245,6 +273,8 @@ namespace JSend.Client
         /// <param name="content">The data to post.</param>        
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
             Justification = "The HttpClient will dispose of the request object.")]
         public Task<JSendResponse<TResponse>> PutAsync<TResponse>(Uri requestUri, object content,
@@ -261,6 +291,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The data to post.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         [SuppressMessage("Microsoft.Design", "CA1057:StringUriOverloadsCallSystemUriOverloads",
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse> PutAsync(string requestUri, object content)
@@ -272,6 +304,8 @@ namespace JSend.Client
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <param name="content">The data to post.</param>        
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public Task<JSendResponse> PutAsync(Uri requestUri, object content)
         {
             return PutAsync(requestUri, content, CancellationToken.None);
@@ -282,6 +316,8 @@ namespace JSend.Client
         /// <param name="content">The data to post.</param>        
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public async Task<JSendResponse> PutAsync(Uri requestUri, object content, CancellationToken cancellationToken)
         {
             return await PutAsync<JToken>(requestUri, content, cancellationToken);
@@ -291,6 +327,8 @@ namespace JSend.Client
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="request">The HTTP request message to send.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request)
         {
             return SendAsync<TResponse>(request, CancellationToken.None);
@@ -301,6 +339,8 @@ namespace JSend.Client
         /// <param name="request">The HTTP request message to send.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
+        /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public async Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
