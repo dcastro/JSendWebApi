@@ -14,7 +14,7 @@
         <tags>JSend Client Api WebApi REST </tags>
         <dependencies>
             <dependency id="Newtonsoft.Json" version="4.5.11" />
-            <dependency id="Microsoft.Net.Http" version="2.2.29" />
+            <dependency id="Microsoft.Net.Http" version="2.1.10" />
         </dependencies>
     </metadata>
     <files>
