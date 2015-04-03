@@ -49,7 +49,7 @@ namespace JSend.Client
             if (settings == null)
                 settings = new JSendClientSettings();
 
-            _parser = settings.Parser ?? new DefaultJSendParser();
+            _parser = settings.Parser ?? DefaultJSendParser.Instance;
             _interceptor = settings.MessageInterceptor ?? NullMessageInterceptor.Instance;
             _encoding = settings.Encoding;
             _serializerSettings = settings.SerializerSettings;

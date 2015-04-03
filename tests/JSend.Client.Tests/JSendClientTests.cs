@@ -112,7 +112,7 @@ namespace JSend.Client.Tests
             // Exercise system
             var client = new JSendClient();
             // Verify outcome
-            client.Parser.Should().BeOfType<DefaultJSendParser>();
+            client.Parser.Should().BeSameAs(DefaultJSendParser.Instance);
         }
 
         [Theory, JSendAutoData]
