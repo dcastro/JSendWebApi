@@ -11,7 +11,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>JSend.Client is a web client for performing basic CRUD operations on an API that conforms to the JSend specification.</description>
         <language>en-US</language>
-        <tags>JSend Client Api WebApi REST </tags>
+        <tags>JSend Http Client Api WebApi REST </tags>
         <dependencies>
             <dependency id="Newtonsoft.Json" version="4.5.11" />
             <dependency id="Microsoft.Net.Http" version="2.1.10" />
