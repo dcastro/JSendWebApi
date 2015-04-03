@@ -766,6 +766,40 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
+        public void ParserExceptionsBubbleUp(
+            HttpRequestMessage request,
+            JSendParseException exception,
+            [Frozen] IJSendParser parser,
+            [Greedy, MockHttpClient] JSendClient client)
+        {
+            // Fixture setup
+            Mock.Get(parser)
+                .Setup(p => p.ParseAsync<object>(It.IsAny<HttpResponseMessage>()))
+                .ThrowsAsync(exception);
+            // Exercise system and verify outcome
+            client
+                .Awaiting(c => c.SendAsync<object>(request))
+                .ShouldThrow<JSendParseException>();
+        }
+
+        [Theory, JSendAutoData]
+        public void HttpClientExceptionsAreWrappedAndRethrown(
+            HttpRequestMessage request,
+            [MockHttpClient] HttpClient httpClient,
+            [Greedy] JSendClient client)
+        {
+            // Fixture setup
+            Mock.Get(httpClient)
+                .Setup(c => c.SendAsync(request, It.IsAny<CancellationToken>()))
+                .Throws<HttpRequestException>();
+            // Exercise system and verify outcome
+            client
+                .Awaiting(c => c.SendAsync<object>(request))
+                .ShouldThrow<JSendRequestException>()
+                .WithInnerException<HttpRequestException>();
+        }
+
+        [Theory, JSendAutoData]
         public void DisposingOfTheJSendClient_DisposesOfTheHttpClient(HttpClientSpy spy)
         {
             // Fixture setup

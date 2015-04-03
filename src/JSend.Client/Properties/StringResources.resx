@@ -120,6 +120,9 @@
   <data name="ErrorWithSuccessStatus" xml:space="preserve">
     <value>Status cannot be JSendStatus.Success.</value>
   </data>
+  <data name="HttpClientExecutionError" xml:space="preserve">
+    <value>An error occurred while sending the request.</value>
+  </data>
   <data name="JSendParseException" xml:space="preserve">
     <value>HTTP response message could not be parsed into an instance of type "{0}".</value>
   </data>

@@ -70,6 +70,15 @@ namespace JSend.Client.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred while sending the request..
+        /// </summary>
+        internal static string HttpClientExecutionError {
+            get {
+                return ResourceManager.GetString("HttpClientExecutionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to HTTP response message could not be parsed into an instance of type &quot;{0}&quot;..
         /// </summary>
         internal static string JSendParseException {

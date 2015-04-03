@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using JSend.Client.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -303,33 +304,42 @@ namespace JSend.Client
         public async Task<JSendResponse<TResponse>> SendAsync<TResponse>(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            _interceptor.OnSending(request);
-
-            HttpResponseMessage responseMessage;
             try
             {
-                responseMessage = await _httpClient.SendAsync(request, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _interceptor.OnException(new ExceptionContext(request, ex));
-                throw;
-            }
-            _interceptor.OnReceived(new ResponseReceivedContext(request, responseMessage));
+                _interceptor.OnSending(request);
 
-            JSendResponse<TResponse> jsendResponse;
-            try
-            {
-                jsendResponse = await _parser.ParseAsync<TResponse>(responseMessage);
-            }
-            catch (Exception ex)
-            {
-                _interceptor.OnException(new ExceptionContext(request, ex));
-                throw;
-            }
-            _interceptor.OnParsed(new ResponseParsedContext<TResponse>(request, responseMessage, jsendResponse));
+                HttpResponseMessage responseMessage;
+                try
+                {
+                    responseMessage = await _httpClient.SendAsync(request, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _interceptor.OnException(new ExceptionContext(request, ex));
+                    throw;
+                }
+                _interceptor.OnReceived(new ResponseReceivedContext(request, responseMessage));
 
-            return jsendResponse;
+                JSendResponse<TResponse> jsendResponse;
+                try
+                {
+                    jsendResponse = await _parser.ParseAsync<TResponse>(responseMessage);
+                }
+                catch (Exception ex)
+                {
+                    _interceptor.OnException(new ExceptionContext(request, ex));
+                    throw;
+                }
+                _interceptor.OnParsed(new ResponseParsedContext<TResponse>(request, responseMessage, jsendResponse));
+
+                return jsendResponse;
+            }
+            catch (HttpRequestException ex)
+            {
+                // Wrap HttpClient exceptions in a JSendRequestException.
+                // Other exceptions, such as InvalidOperationException, should not be wrapped.
+                throw new JSendRequestException(StringResources.HttpClientExecutionError, ex);
+            }
         }
 
         private HttpContent Serialize(object content)
