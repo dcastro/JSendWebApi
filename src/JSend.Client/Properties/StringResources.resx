@@ -124,7 +124,7 @@
     <value>An error occurred while sending the request.</value>
   </data>
   <data name="JSendParseException" xml:space="preserve">
-    <value>HTTP response message could not be parsed into an instance of type "{0}".</value>
+    <value>HTTP response message could not be parsed into an instance of type "{0}". Content:{1}{2}</value>
   </data>
   <data name="ResponseWithoutContent" xml:space="preserve">
     <value>HTTP response had an empty body.</value>

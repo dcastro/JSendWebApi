@@ -16,9 +16,10 @@ namespace JSend.Client
     {
         /// <summary>Initializes a new instance of <see cref="JSendParseException"/>.</summary>
         /// <param name="responseType">The type into which the parsing failed.</param>
+        /// <param name="content">The content of the HTTP response message that could not be parsed.</param>
         /// <param name="innerException">The exception that occurred while trying to parse a HTTP response message.</param>
-        public JSendParseException(Type responseType, Exception innerException)
-            : base(BuildMessage(responseType), innerException)
+        public JSendParseException(Type responseType, string content, Exception innerException)
+            : base(BuildMessage(responseType, content), innerException)
         {
 
         }
@@ -31,12 +32,15 @@ namespace JSend.Client
             
         }
 
-        private static string BuildMessage(Type responseType)
+        private static string BuildMessage(Type responseType, string content)
         {
-            if (responseType == null)
-                throw new ArgumentNullException("responseType");
+            if (responseType == null) throw new ArgumentNullException("responseType");
+            if (content == null) throw new ArgumentNullException("content");
 
-            return string.Format(CultureInfo.InvariantCulture, StringResources.JSendParseException, responseType);
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                StringResources.JSendParseException,
+                responseType, Environment.NewLine, content);
         }
 
         /// <summary>

@@ -64,9 +64,10 @@ namespace JSend.Client
             if (httpResponseMessage.Content == null)
                 throw new JSendParseException(StringResources.ResponseWithoutContent);
 
+            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+
             try
             {
-                var content = await httpResponseMessage.Content.ReadAsStringAsync();
                 var json = JToken.Parse(content);
                 json.Validate(await BaseSchema.Value);
 
@@ -86,7 +87,7 @@ namespace JSend.Client
             }
             catch (JsonException ex)
             {
-                throw new JSendParseException(typeof (JSendResponse<T>), ex);
+                throw new JSendParseException(typeof (JSendResponse<T>), content, ex);
             }
         }
 
