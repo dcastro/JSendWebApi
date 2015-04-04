@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace JSend.Client
 {
@@ -11,6 +12,12 @@ namespace JSend.Client
     /// </summary>
     public interface IJSendClient : IDisposable
     {
+        /// <summary>Gets the settings used to serialize the content of a request.</summary>
+        JsonSerializerSettings SerializerSettings { get; }
+
+        /// <summary>Gets the client used to send HTTP requests and receive HTTP responses.</summary>
+        HttpClient HttpClient { get; }
+
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>
         /// <param name="requestUri">The Uri the request is sent to.</param>
