@@ -45,6 +45,25 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
+        public void WrapsJsonExeptionsWithCorrectMessage(HttpResponseMessage message, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            const string invalidContent = "qwerty";
+
+            var expectedMessage =
+                @"HTTP response message could not be parsed into an instance of type ""JSend.Client.JSendResponse`1[JSend.Client.Tests.TestTypes.Model]"". Content:" +
+                Environment.NewLine +
+                invalidContent;
+
+            message.Content = new StringContent(invalidContent);
+            // Exercise system and verify outcome
+            parser.Awaiting(p => p.ParseAsync<Model>(message))
+                .ShouldThrow<JSendParseException>()
+                .WithMessage(expectedMessage)
+                .WithInnerException<JsonException>();
+        }
+
+        [Theory, JSendAutoData]
         public void ThrowsWhenResponse_IsNotValidJson(HttpResponseMessage message, DefaultJSendParser parser)
         {
             // Fixture setup

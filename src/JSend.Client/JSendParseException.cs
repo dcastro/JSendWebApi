@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Runtime.Serialization;
-using JSend.Client.Properties;
 
 namespace JSend.Client
 {
@@ -11,19 +9,9 @@ namespace JSend.Client
     /// </summary>
     [Serializable]
     [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors",
-        Justification = "Type and Exception are required.")]
+        Justification = "A message must be provided.")]
     public class JSendParseException : JSendRequestException
     {
-        /// <summary>Initializes a new instance of <see cref="JSendParseException"/>.</summary>
-        /// <param name="responseType">The type into which the parsing failed.</param>
-        /// <param name="content">The content of the HTTP response message that could not be parsed.</param>
-        /// <param name="innerException">The exception that occurred while trying to parse a HTTP response message.</param>
-        public JSendParseException(Type responseType, string content, Exception innerException)
-            : base(BuildMessage(responseType, content), innerException)
-        {
-
-        }
-
         /// <summary>Initializes a new instance of <see cref="JSendParseException"/>.</summary>
         /// <param name="message">The reason why the HTTP response message could not be parsed.</param>
         public JSendParseException(string message)
@@ -32,15 +20,13 @@ namespace JSend.Client
             
         }
 
-        private static string BuildMessage(Type responseType, string content)
+        /// <summary>Initializes a new instance of <see cref="JSendParseException"/>.</summary>
+        /// <param name="message">The reason why the HTTP response message could not be parsed.</param>
+        /// <param name="innerException">The exception that occurred while trying to parse a HTTP response message.</param>
+        public JSendParseException(string message, Exception innerException)
+            : base(message, innerException)
         {
-            if (responseType == null) throw new ArgumentNullException("responseType");
-            if (content == null) throw new ArgumentNullException("content");
 
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                StringResources.JSendParseException,
-                responseType, Environment.NewLine, content);
         }
 
         /// <summary>

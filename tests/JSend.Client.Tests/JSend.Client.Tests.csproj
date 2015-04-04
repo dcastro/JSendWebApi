@@ -118,7 +118,6 @@
     <Compile Include="JSendClientSettingsTests.cs" />
     <Compile Include="JSendClientTests.cs" />
     <Compile Include="JSendErrorTests.cs" />
-    <Compile Include="JSendParseExceptionTests.cs" />
     <Compile Include="JSendResponseTests.cs" />
     <Compile Include="NullMessageInterceptorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

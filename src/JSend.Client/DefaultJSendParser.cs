@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -87,7 +88,12 @@ namespace JSend.Client
             }
             catch (JsonException ex)
             {
-                throw new JSendParseException(typeof (JSendResponse<T>), content, ex);
+                var message = string.Format(
+                    CultureInfo.InvariantCulture,
+                    StringResources.ResponseParseError,
+                    typeof (JSendResponse<T>), Environment.NewLine, content);
+
+                throw new JSendParseException(message, ex);
             }
         }
 

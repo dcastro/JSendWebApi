@@ -81,9 +81,9 @@ namespace JSend.Client.Properties {
         /// <summary>
         ///   Looks up a localized string similar to HTTP response message could not be parsed into an instance of type &quot;{0}&quot;. Content:{1}{2}.
         /// </summary>
-        internal static string JSendParseException {
+        internal static string ResponseParseError {
             get {
-                return ResourceManager.GetString("JSendParseException", resourceCulture);
+                return ResourceManager.GetString("ResponseParseError", resourceCulture);
             }
         }
         
