@@ -79,15 +79,15 @@ namespace JSend.Client
                         return await ParseFailMessageAsync<T>(json, httpResponseMessage);
                     case "error":
                         return await ParseErrorMessageAsync<T>(json, httpResponseMessage);
+                    default:
+                        Contract.Assert(false);
+                        return null;
                 }
             }
             catch (JsonException ex)
             {
                 throw new JSendParseException(typeof (JSendResponse<T>), ex);
             }
-
-            Contract.Assert(false);
-            return null;
         }
 
         /// <summary>
