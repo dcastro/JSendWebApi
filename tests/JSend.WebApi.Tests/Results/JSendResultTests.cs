@@ -47,7 +47,7 @@ namespace JSend.WebApi.Tests.Results
             // Exercise system and verify outcome
             Action ctor = () => new JSendResult<IJSendResponse>(status, response, request);
             ctor.ShouldThrow<ArgumentException>()
-                .And.Message.Should().StartWith("HttpRequestContext.Configuration must not be null.");
+                .WithMessage("HttpRequestContext.Configuration must not be null.*");
         }
 
         [Theory, JSendAutoData]

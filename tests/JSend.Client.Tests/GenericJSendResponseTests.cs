@@ -77,7 +77,7 @@ namespace JSend.Client.Tests
             // Verify outcome
             Action data = () => { var x = response.Data; };
             data.ShouldThrow<JSendRequestException>()
-                .And.Message.Should().StartWith(StringResources.SuccessResponseWithoutData);
+                .WithMessage(StringResources.SuccessResponseWithoutData);
         }
 
         [Theory, JSendAutoData]
@@ -90,7 +90,7 @@ namespace JSend.Client.Tests
             // Verify outcome
             Action data = () => { var x = response.Data; };
             data.ShouldThrow<JSendRequestException>()
-                .And.Message.Should().StartWith("JSend status does not indicate success: \"fail\".");
+                .WithMessage("JSend status does not indicate success: \"fail\".");
         }
 
         [Theory, JSendAutoData]
