@@ -3,6 +3,8 @@ using System.Threading;
 using System.Web.Http.Controllers;
 using FluentAssertions;
 using JSend.WebApi.Tests.FixtureCustomizations;
+using Moq;
+using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
@@ -46,9 +48,10 @@ namespace JSend.WebApi.Tests
         }
 
         [Theory, JSendAutoData]
-        public void DelegatesGetParameters(DelegatingActionDescriptor descriptor)
+        public void DelegatesGetParameters(IFixture fixture, DelegatingActionDescriptor descriptor)
         {
             // Fixture setup
+            fixture.Register(() => new Mock<HttpParameterDescriptor>().Object);
             var expectedParameters = descriptor.InnerActionDescriptor.GetParameters();
             // Exercise system
             var parameters = descriptor.GetParameters();

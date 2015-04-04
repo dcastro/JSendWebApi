@@ -33,8 +33,10 @@ namespace JSend.WebApi.Tests
             IFixture fixture, VoidActionFilterAttribute filter)
         {
             // FIxture  setup
-            var initialDescriptorMock = fixture.Freeze<Mock<HttpActionDescriptor>>();
-            initialDescriptorMock.SetupGet(des => des.ReturnType)
+            var initialDescriptor = fixture.Freeze<HttpActionDescriptor>();
+
+            Mock.Get(initialDescriptor)
+                .SetupGet(des => des.ReturnType)
                 .Returns(null as Type);
 
             var context = fixture.Create<HttpActionContext>();
@@ -45,7 +47,7 @@ namespace JSend.WebApi.Tests
 
             descriptor.Should().BeOfType<DelegatingActionDescriptor>();
             descriptor.As<DelegatingActionDescriptor>()
-                .InnerActionDescriptor.Should().Be(initialDescriptorMock.Object);
+                .InnerActionDescriptor.Should().Be(initialDescriptor);
         }
 
         [Theory, JSendAutoData]
@@ -53,7 +55,7 @@ namespace JSend.WebApi.Tests
             IFixture fixture, VoidActionFilterAttribute filter)
         {
             // Fixture setup
-            fixture.Freeze<Mock<HttpActionDescriptor>>()
+            Mock.Get(fixture.Freeze<HttpActionDescriptor>())
                 .SetupGet(des => des.ReturnType)
                 .Returns(null as Type);
 
@@ -72,7 +74,7 @@ namespace JSend.WebApi.Tests
             Type actionType, IFixture fixture, VoidActionFilterAttribute filter)
         {
             // Fixture setup
-            fixture.Freeze<Mock<HttpActionDescriptor>>()
+            Mock.Get(fixture.Freeze<HttpActionDescriptor>())
                 .SetupGet(des => des.ReturnType)
                 .Returns(actionType);
 

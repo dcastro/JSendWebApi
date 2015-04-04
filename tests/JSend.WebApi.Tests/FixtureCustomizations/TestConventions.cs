@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -22,7 +23,8 @@ namespace JSend.WebApi.Tests.FixtureCustomizations
                 new JSendApiControllerCustomization(),
                 new JsonMediaTypeFormatterCustomization(),
                 new UrlHelperCustomization(),
-                new RandomHttpStatusCodeCustomization())
+                new RandomHttpStatusCodeCustomization(),
+                new RecursionCustomization())
         {
 
         }
@@ -98,6 +100,21 @@ namespace JSend.WebApi.Tests.FixtureCustomizations
         {
             var values = Enum.GetValues(typeof (HttpStatusCode));
             return (HttpStatusCode) values.GetValue(rnd.Next(values.Length));
+        }
+    }
+
+    internal class RecursionCustomization : ICustomization
+    {
+        public void Customize(IFixture fixture)
+        {
+            // There are many circular dependencies within the WebApi framework
+            // (e.g., HttpActionDescriptor - HttpActionBinding - HttpActionDescriptor)
+            // so we have to allow AutoFixture to create circular dependencies
+            // (but only resolve the first level).
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => fixture.Behaviors.Remove(b));
+
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior(1));
         }
     }
 }
