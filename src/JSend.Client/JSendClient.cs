@@ -97,7 +97,8 @@ namespace JSend.Client
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse<TResponse>> GetAsync<TResponse>(string requestUri)
         {
-            return GetAsync<TResponse>(new Uri(requestUri));
+            var uri = BuildUri(requestUri);
+            return GetAsync<TResponse>(uri);
         }
 
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
@@ -137,7 +138,8 @@ namespace JSend.Client
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse<TResponse>> PostAsync<TResponse>(string requestUri, object content)
         {
-            return PostAsync<TResponse>(new Uri(requestUri), content);
+            var uri = BuildUri(requestUri);
+            return PostAsync<TResponse>(uri, content);
         }
 
         /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
@@ -183,7 +185,8 @@ namespace JSend.Client
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse> PostAsync(string requestUri, object content)
         {
-            return PostAsync(new Uri(requestUri), content);
+            var uri = BuildUri(requestUri);
+            return PostAsync(uri, content);
         }
 
         /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
@@ -216,7 +219,8 @@ namespace JSend.Client
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
         public Task<JSendResponse> DeleteAsync(string requestUri)
         {
-            return DeleteAsync(new Uri(requestUri));
+            var uri = BuildUri(requestUri);
+            return DeleteAsync(uri);
         }
 
         /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
@@ -252,7 +256,8 @@ namespace JSend.Client
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse<TResponse>> PutAsync<TResponse>(string requestUri, object content)
         {
-            return PutAsync<TResponse>(new Uri(requestUri), content);
+            var uri = BuildUri(requestUri);
+            return PutAsync<TResponse>(uri, content);
         }
 
         /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
@@ -297,7 +302,8 @@ namespace JSend.Client
             Justification = "This is a false positive, see bug report here https://connect.microsoft.com/VisualStudio/feedback/details/1185269")]
         public Task<JSendResponse> PutAsync(string requestUri, object content)
         {
-            return PutAsync(new Uri(requestUri), content);
+            var uri = BuildUri(requestUri);
+            return PutAsync(uri, content);
         }
 
         /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
@@ -386,6 +392,16 @@ namespace JSend.Client
         {
             var serialized = JsonConvert.SerializeObject(content, _serializerSettings);
             return new StringContent(serialized, _encoding, "application/json");
+        }
+
+        private static Uri BuildUri(string uri)
+        {
+            // The URI is allowed to be null if HttpClient.BaseAddress isn't.
+            if (string.IsNullOrEmpty(uri))
+                return null;
+
+            // The URI is allowed to be relative as long as HttpClient.BaseAddress is not null.
+            return new Uri(uri, UriKind.RelativeOrAbsolute);
         }
 
         /// <summary>

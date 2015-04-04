@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
@@ -81,6 +82,29 @@ namespace JSend.Client.Tests
                 var clientMock = fixture.Create<Mock<HttpClient>>();
                 fixture.Inject(clientMock.Object);
             }
+        }
+
+        public static IEnumerable<object[]> AbsoluteUri
+        {
+            get
+            {
+                yield return new object[] {"http://www.contoso.com/users/", new Uri("http://www.contoso.com/users/")};
+            }
+        }
+
+        public static IEnumerable<object[]> RelativeUri
+        {
+            get { yield return new object[] {"users", new Uri("users", UriKind.Relative)}; }
+        }
+
+        public static IEnumerable<object[]> EmptyUri
+        {
+            get { yield return new object[] {"", null}; }
+        }
+
+        public static IEnumerable<object[]> NullUri
+        {
+            get { yield return new object[] {null, null}; }
         }
 
         [Theory, JSendAutoData]
@@ -217,16 +241,22 @@ namespace JSend.Client.Tests
             request.Method.Should().Be(HttpMethod.Get);
         }
 
-        [Theory, JSendAutoData]
+        [Theory]
+        [PropertyJSendAutoData("AbsoluteUri")]
+        [PropertyJSendAutoData("RelativeUri")]
+        [PropertyJSendAutoData("EmptyUri")]
+        [PropertyJSendAutoData("NullUri")]
         public async Task GetAsync_SetsUri(
+            string uri,
+            Uri expectedUri,
             [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
-            Uri uri, [Greedy] JSendClient client)
+            [Greedy] JSendClient client)
         {
             // Exercise system
             await client.GetAsync<Model>(uri);
             // Verify outcome
             var request = httpClientSpy.Request;
-            request.RequestUri.Should().Be(uri);
+            request.RequestUri.Should().Be(expectedUri);
         }
 
         [Theory, JSendAutoData]
@@ -259,16 +289,23 @@ namespace JSend.Client.Tests
             request.Method.Should().Be(HttpMethod.Post);
         }
 
-        [Theory, JSendAutoData]
+        [Theory]
+        [PropertyJSendAutoData("AbsoluteUri")]
+        [PropertyJSendAutoData("RelativeUri")]
+        [PropertyJSendAutoData("EmptyUri")]
+        [PropertyJSendAutoData("NullUri")]
         public async Task GenericPostAsync_SetsUri(
+            string uri,
+            Uri expectedUri,
+            object content,
             [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
-            Uri uri, object content, [Greedy] JSendClient client)
+            [Greedy] JSendClient client)
         {
             // Exercise system
             await client.PostAsync<object>(uri, content);
             // Verify outcome
             var request = httpClientSpy.Request;
-            request.RequestUri.Should().Be(uri);
+            request.RequestUri.Should().Be(expectedUri);
         }
 
         [Theory, JSendAutoData]
@@ -341,16 +378,23 @@ namespace JSend.Client.Tests
             request.Method.Should().Be(HttpMethod.Post);
         }
 
-        [Theory, JSendAutoData]
+        [Theory]
+        [PropertyJSendAutoData("AbsoluteUri")]
+        [PropertyJSendAutoData("RelativeUri")]
+        [PropertyJSendAutoData("EmptyUri")]
+        [PropertyJSendAutoData("NullUri")]
         public async Task PostAsync_SetsUri(
+            string uri,
+            Uri expectedUri,
+            object content,
             [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
-            Uri uri, object content, [Greedy] JSendClient client)
+            [Greedy] JSendClient client)
         {
             // Exercise system
             await client.PostAsync(uri, content);
             // Verify outcome
             var request = httpClientSpy.Request;
-            request.RequestUri.Should().Be(uri);
+            request.RequestUri.Should().Be(expectedUri);
         }
 
         [Theory, JSendAutoData]
@@ -423,16 +467,22 @@ namespace JSend.Client.Tests
             request.Method.Should().Be(HttpMethod.Delete);
         }
 
-        [Theory, JSendAutoData]
+        [Theory]
+        [PropertyJSendAutoData("AbsoluteUri")]
+        [PropertyJSendAutoData("RelativeUri")]
+        [PropertyJSendAutoData("EmptyUri")]
+        [PropertyJSendAutoData("NullUri")]
         public async Task DeleteAsync_SetsUri(
+            string uri,
+            Uri expectedUri,
             [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
-            Uri uri, [Greedy] JSendClient client)
+            [Greedy] JSendClient client)
         {
             // Exercise system
             await client.DeleteAsync(uri);
             // Verify outcome
             var request = httpClientSpy.Request;
-            request.RequestUri.Should().Be(uri);
+            request.RequestUri.Should().Be(expectedUri);
         }
 
         [Theory, JSendAutoData]
@@ -465,16 +515,23 @@ namespace JSend.Client.Tests
             request.Method.Should().Be(HttpMethod.Put);
         }
 
-        [Theory, JSendAutoData]
+        [Theory]
+        [PropertyJSendAutoData("AbsoluteUri")]
+        [PropertyJSendAutoData("RelativeUri")]
+        [PropertyJSendAutoData("EmptyUri")]
+        [PropertyJSendAutoData("NullUri")]
         public async Task GenericPutAsync_SetsUri(
+            string uri,
+            Uri expectedUri,
+            object content,
             [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
-            Uri uri, object content, [Greedy] JSendClient client)
+            [Greedy] JSendClient client)
         {
             // Exercise system
             await client.PutAsync<object>(uri, content);
             // Verify outcome
             var request = httpClientSpy.Request;
-            request.RequestUri.Should().Be(uri);
+            request.RequestUri.Should().Be(expectedUri);
         }
 
         [Theory, JSendAutoData]
@@ -547,16 +604,23 @@ namespace JSend.Client.Tests
             request.Method.Should().Be(HttpMethod.Put);
         }
 
-        [Theory, JSendAutoData]
+        [Theory]
+        [PropertyJSendAutoData("AbsoluteUri")]
+        [PropertyJSendAutoData("RelativeUri")]
+        [PropertyJSendAutoData("EmptyUri")]
+        [PropertyJSendAutoData("NullUri")]
         public async Task PutAsync_SetsUri(
+            string uri,
+            Uri expectedUri,
+            object content,
             [FrozenAsHttpClient] HttpClientSpy httpClientSpy,
-            Uri uri, object content, [Greedy] JSendClient client)
+            [Greedy] JSendClient client)
         {
             // Exercise system
             await client.PutAsync(uri, content);
             // Verify outcome
             var request = httpClientSpy.Request;
-            request.RequestUri.Should().Be(uri);
+            request.RequestUri.Should().Be(expectedUri);
         }
 
         [Theory, JSendAutoData]

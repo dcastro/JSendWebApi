@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using JSend.Client.FunctionalTests.FixtureCustomizations;
 using Xunit.Extensions;
@@ -7,54 +8,96 @@ namespace JSend.Client.FunctionalTests
 {
     public class RequestSendingTests
     {
-        [Theory, JSendAutoData]
-        public async Task SendsGetRequestsToTheCorrectEndpoint(JSendClient client)
+        [Theory]
+        [InlineJSendAutoData("http://localhost/users/get", null)]
+        [InlineJSendAutoData("http://localhost/users/get", "")]
+        [InlineJSendAutoData("http://localhost/users/", "get")]
+        [InlineJSendAutoData(null, "http://localhost/users/get")]
+        public async Task SendsGetRequestsToTheCorrectEndpoint(string baseAddress, string requestUri, JSendClient client)
         {
-            // Exercise system
             using (client)
-            using (var response = await client.GetAsync<string>("http://localhost/users/get"))
             {
-                // Verify outcome
-                response.Status.Should().Be(JSendStatus.Success);
-                response.Data.Should().Be("get");
+                // Fixture setup
+                client.HttpClient.BaseAddress = baseAddress == null ? null : new Uri(baseAddress);
+
+                // Exercise system
+                using (var response = await client.GetAsync<string>(requestUri))
+                {
+                    // Verify outcome
+                    response.Status.Should().Be(JSendStatus.Success);
+                    response.Data.Should().Be("get");
+                }
             }
         }
 
-        [Theory, JSendAutoData]
-        public async Task SendsPostRequestsToTheCorrectEndpoint(User user, JSendClient client)
+        [Theory]
+        [InlineJSendAutoData("http://localhost/users/post", null)]
+        [InlineJSendAutoData("http://localhost/users/post", "")]
+        [InlineJSendAutoData("http://localhost/users/", "post")]
+        [InlineJSendAutoData(null, "http://localhost/users/post")]
+        public async Task SendsPostRequestsToTheCorrectEndpoint(
+            string baseAddress, string requestUri,
+            User user, JSendClient client)
         {
-            // Exercise system
             using (client)
-            using (var response = await client.PostAsync<string>("http://localhost/users/post", user))
             {
-                // Verify outcome
-                response.Status.Should().Be(JSendStatus.Success);
-                response.Data.Should().Be("post");
+                // Fixture setup
+                client.HttpClient.BaseAddress = baseAddress == null ? null : new Uri(baseAddress);
+
+                // Exercise system
+                using (var response = await client.PostAsync<string>(requestUri, user))
+                {
+                    // Verify outcome
+                    response.Status.Should().Be(JSendStatus.Success);
+                    response.Data.Should().Be("post");
+                }
             }
         }
 
-        [Theory, JSendAutoData]
-        public async Task SendsPutRequestsToTheCorrectEndpoint(User user, JSendClient client)
+        [Theory]
+        [InlineJSendAutoData("http://localhost/users/put", null)]
+        [InlineJSendAutoData("http://localhost/users/put", "")]
+        [InlineJSendAutoData("http://localhost/users/", "put")]
+        [InlineJSendAutoData(null, "http://localhost/users/put")]
+        public async Task SendsPutRequestsToTheCorrectEndpoint(
+            string baseAddress, string requestUri,
+            User user, JSendClient client)
         {
-            // Exercise system
             using (client)
-            using (var response = await client.PutAsync<string>("http://localhost/users/put", user))
             {
-                // Verify outcome
-                response.Status.Should().Be(JSendStatus.Success);
-                response.Data.Should().Be("put");
+                // Fixture setup
+                client.HttpClient.BaseAddress = baseAddress == null ? null : new Uri(baseAddress);
+
+                // Exercise system
+                using (var response = await client.PutAsync<string>(requestUri, user))
+                {
+                    // Verify outcome
+                    response.Status.Should().Be(JSendStatus.Success);
+                    response.Data.Should().Be("put");
+                }
             }
         }
 
-        [Theory, JSendAutoData]
-        public async Task SendsDeleteRequestsToTheCorrectEndpoint(JSendClient client)
+        [Theory]
+        [InlineJSendAutoData("http://localhost/users/delete", null)]
+        [InlineJSendAutoData("http://localhost/users/delete", "")]
+        [InlineJSendAutoData("http://localhost/users/", "delete")]
+        [InlineJSendAutoData(null, "http://localhost/users/delete")]
+        public async Task SendsDeleteRequestsToTheCorrectEndpoint(
+            string baseAddress, string requestUri,
+            JSendClient client)
         {
-            // Exercise system
             using (client)
-            using (var response = await client.DeleteAsync("http://localhost/users/delete"))
             {
-                // Verify outcome
-                response.Status.Should().Be(JSendStatus.Success);
+                // Fixture setup
+                client.HttpClient.BaseAddress = baseAddress == null ? null : new Uri(baseAddress);
+
+                // Exercise system
+                using (var response = await client.DeleteAsync(requestUri))
+                {
+                    // Verify outcome
+                    response.Status.Should().Be(JSendStatus.Success);
+                }
             }
         }
 

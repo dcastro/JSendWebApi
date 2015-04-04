@@ -112,6 +112,7 @@
     <Compile Include="ExceptionContextTests.cs" />
     <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\JSendAutoDataAttribute.cs" />
+    <Compile Include="FixtureCustomizations\PropertyJSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\TestConventions.cs" />
     <Compile Include="GenericJSendResponseTests.cs" />
     <Compile Include="JSendClientSettingsTests.cs" />
