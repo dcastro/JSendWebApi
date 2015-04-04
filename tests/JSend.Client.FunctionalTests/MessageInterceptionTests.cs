@@ -85,6 +85,16 @@ namespace JSend.Client.FunctionalTests
             }
         }
 
+        public class FrozenWithoutAutoPropertiesAttribute : CustomizeAttribute
+        {
+            public override ICustomization GetCustomization(ParameterInfo parameter)
+            {
+                return new CompositeCustomization(
+                    new NoAutoPropertiesCustomization(parameter.ParameterType),
+                    new FreezingCustomization(parameter.ParameterType));
+            }
+        }
+
         [Theory, JSendAutoData]
         public async Task InterceptsRequestsBeforeBeingSent(
             [WithInterceptor(typeof (VersionHeaderInterceptor))] JSendClient client)
@@ -114,7 +124,7 @@ namespace JSend.Client.FunctionalTests
 
         [Theory, JSendAutoData]
         public async Task InterceptsParsedResponses(
-            [NoAutoProperties, Frozen] InterceptorSpy spy,
+            [FrozenWithoutAutoProperties] InterceptorSpy spy,
             [WithInterceptor(typeof (InterceptorSpy))] JSendClient client)
         {
             using (client)
@@ -130,7 +140,7 @@ namespace JSend.Client.FunctionalTests
 
         [Theory, JSendAutoData]
         public async Task InterceptsExceptions(
-            [NoAutoProperties, Frozen] InterceptorSpy spy,
+            [FrozenWithoutAutoProperties] InterceptorSpy spy,
             [WithInterceptor(typeof (InterceptorSpy))] JSendClient client)
         {
             using (client)
