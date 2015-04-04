@@ -6,6 +6,7 @@ using JSend.WebApi.Responses;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
 using Newtonsoft.Json.Linq;
+using Ploeh.AutoFixture.Idioms;
 using Xunit;
 using Xunit.Extensions;
 
@@ -56,46 +57,17 @@ namespace JSend.WebApi.Tests.Responses
             response.Status.Should().Be("error");
         }
 
-        [Theory, JSendAutoData]
-        public void MessageIsCorrectlyInitialized(string message)
+        [Theory]
+        [InlineJSendAutoData("Message")]
+        [InlineJSendAutoData("Code")]
+        [InlineJSendAutoData("Data")]
+        public void PropertiesAreCorrectlyInitialized(
+            string propertyName, ConstructorInitializedMemberAssertion assertion)
         {
-            // Exercise system
-            var response = new ErrorResponse(message);
-            // Verify outcome
-            response.Message.Should().Be(message);
-        }
-
-        [Theory, JSendAutoData]
-        public void MessageAndCodeAreCorrectlyInitialized(string message, int code)
-        {
-            // Exercise system
-            var response = new ErrorResponse(message, code);
-            // Verify outcome
-            response.Message.Should().Be(message);
-            response.Code.Should().HaveValue()
-                .And.Be(code);
-        }
-
-        [Theory, JSendAutoData]
-        public void MessageAndDataAreCorrectlyInitialized(string message, object data)
-        {
-            // Exercise system
-            var response = new ErrorResponse(message, data);
-            // Verify outcome
-            response.Message.Should().Be(message);
-            response.Data.Should().BeSameAs(data);
-        }
-
-        [Theory, JSendAutoData]
-        public void MessageCodeAndDataAreCorrectlyInitialized(string message, int code, object data)
-        {
-            // Exercise system
-            var response = new ErrorResponse(message, code, data);
-            // Verify outcome
-            response.Message.Should().Be(message);
-            response.Code.Should().HaveValue()
-                .And.Be(code);
-            response.Data.Should().BeSameAs(data);
+            // Fixture setup
+            var property = typeof (ErrorResponse).GetProperty(propertyName);
+            // Exercise system and verify outcome
+            assertion.Verify(property);
         }
 
         [Theory, JSendAutoData]

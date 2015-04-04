@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using FluentAssertions;
 using JSend.Client.Tests.FixtureCustomizations;
+using Ploeh.Albedo;
+using Ploeh.AutoFixture.Idioms;
 using Xunit;
 using Xunit.Extensions;
 
@@ -72,23 +74,21 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void HttpResponseMessageIsCorrectlyInitialized(HttpResponseMessage httpResponseMessage)
+        public void HttpResponseMessageIsCorrectlyInitialized(ConstructorInitializedMemberAssertion assertion)
         {
-            // Exercise system
-            var response = new JSendResponse(httpResponseMessage);
-            // Verify outcome
-            response.HttpResponseMessage.Should().Be(httpResponseMessage);
+            // Fixture setup
+            var property = new Properties<JSendResponse>().Select(rsp => rsp.HttpResponseMessage);
+            // Exercise system and verify outcome
+            assertion.Verify(property);
         }
 
         [Theory, JSendAutoData]
-        public void ErrorAndHttpResponseMessageAreCorrectlyInitialized(JSendError error,
-            HttpResponseMessage httpResponseMessage)
+        public void ErrorIsCorrectlyInitialized(ConstructorInitializedMemberAssertion assertion)
         {
-            // Exercise system
-            var response = new JSendResponse(error, httpResponseMessage);
-            // Verify outcome
-            response.Error.Should().Be(error);
-            response.HttpResponseMessage.Should().Be(httpResponseMessage);
+            // Fixture setup
+            var property = new Properties<JSendResponse>().Select(rsp => rsp.Error);
+            // Exercise system and verify outcome
+            assertion.Verify(property);
         }
 
         [Theory, JSendAutoData]
