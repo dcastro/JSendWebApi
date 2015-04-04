@@ -28,93 +28,93 @@ namespace JSend.WebApi.Tests.FixtureCustomizations
         {
 
         }
-    }
 
-    internal class HttpRequestContextCustomization : ICustomization
-    {
-        public void Customize(IFixture fixture)
+        private class HttpRequestContextCustomization : ICustomization
         {
-            //we freeze the HttpRequestContext so that the same context is injected into the controller and the request object
-            //otherwise, a conflict would happen and an InvalidOperationException would be thrown
-            var requestContext = fixture.Build<HttpRequestContext>()
-                .Without(x => x.ClientCertificate)
-                .Create();
+            public void Customize(IFixture fixture)
+            {
+                //we freeze the HttpRequestContext so that the same context is injected into the controller and the request object
+                //otherwise, a conflict would happen and an InvalidOperationException would be thrown
+                var requestContext = fixture.Build<HttpRequestContext>()
+                    .Without(x => x.ClientCertificate)
+                    .Create();
 
-            fixture.Inject(requestContext);
-        }
-    }
-
-    internal class HttpResquestMessageCustomization : ICustomization
-    {
-        public void Customize(IFixture fixture)
-        {
-            fixture.Customize<HttpRequestMessage>(
-                c => c.Do(
-                    req => req.SetRequestContext(fixture.Create<HttpRequestContext>())));
-        }
-    }
-
-    internal class JSendApiControllerCustomization : ICustomization
-    {
-        public void Customize(IFixture fixture)
-        {
-            fixture.Customizations.Add(
-                new TypeRelay(
-                    typeof (JSendApiController),
-                    typeof (TestableJSendApiController)));
-        }
-    }
-
-    public class JsonMediaTypeFormatterCustomization : ICustomization
-    {
-        public void Customize(IFixture fixture)
-        {
-            fixture.Customize<JsonMediaTypeFormatter>(
-                c => c.OmitAutoProperties());
-        }
-    }
-
-    internal class UrlHelperCustomization : ICustomization
-    {
-        public const string RouteLink = "http://localhost/models/";
-
-        public void Customize(IFixture fixture)
-        {
-            var urlFactoryMock = new Mock<UrlHelper>();
-            urlFactoryMock.Setup(x => x.Link(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>()))
-                .Returns((string name, IDictionary<string, object> values) => RouteLink);
-
-            fixture.Inject(urlFactoryMock.Object);
-        }
-    }
-
-    public class RandomHttpStatusCodeCustomization : ICustomization
-    {
-        public void Customize(IFixture fixture)
-        {
-            var rnd = new Random();
-            fixture.Register<HttpStatusCode>(() => Generate(rnd));
+                fixture.Inject(requestContext);
+            }
         }
 
-        private static HttpStatusCode Generate(Random rnd)
+        private class HttpResquestMessageCustomization : ICustomization
         {
-            var values = Enum.GetValues(typeof (HttpStatusCode));
-            return (HttpStatusCode) values.GetValue(rnd.Next(values.Length));
+            public void Customize(IFixture fixture)
+            {
+                fixture.Customize<HttpRequestMessage>(
+                    c => c.Do(
+                        req => req.SetRequestContext(fixture.Create<HttpRequestContext>())));
+            }
         }
-    }
 
-    internal class RecursionCustomization : ICustomization
-    {
-        public void Customize(IFixture fixture)
+        private class JSendApiControllerCustomization : ICustomization
         {
-            // There are many circular dependencies within the WebApi framework
-            // (e.g., HttpActionDescriptor - HttpActionBinding - HttpActionDescriptor)
-            // so we have to allow AutoFixture to create circular dependencies
-            // (but only resolve the first level).
-            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
-                .ForEach(b => fixture.Behaviors.Remove(b));
+            public void Customize(IFixture fixture)
+            {
+                fixture.Customizations.Add(
+                    new TypeRelay(
+                        typeof (JSendApiController),
+                        typeof (TestableJSendApiController)));
+            }
+        }
 
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior(1));
+        private class JsonMediaTypeFormatterCustomization : ICustomization
+        {
+            public void Customize(IFixture fixture)
+            {
+                fixture.Customize<JsonMediaTypeFormatter>(
+                    c => c.OmitAutoProperties());
+            }
+        }
+
+        internal const string RouteLink = "http://localhost/models/";
+
+        private class UrlHelperCustomization : ICustomization
+        {
+            public void Customize(IFixture fixture)
+            {
+                var urlFactoryMock = new Mock<UrlHelper>();
+                urlFactoryMock.Setup(x => x.Link(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>()))
+                    .Returns((string name, IDictionary<string, object> values) => RouteLink);
+
+                fixture.Inject(urlFactoryMock.Object);
+            }
+        }
+
+        private class RandomHttpStatusCodeCustomization : ICustomization
+        {
+            public void Customize(IFixture fixture)
+            {
+                var rnd = new Random();
+                fixture.Register<HttpStatusCode>(() => Generate(rnd));
+            }
+
+            private static HttpStatusCode Generate(Random rnd)
+            {
+                var values = Enum.GetValues(typeof (HttpStatusCode));
+                return (HttpStatusCode) values.GetValue(rnd.Next(values.Length));
+            }
+        }
+
+        private class RecursionCustomization : ICustomization
+        {
+            public void Customize(IFixture fixture)
+            {
+                // There are many circular dependencies within the WebApi framework
+                // (e.g., HttpActionDescriptor - HttpActionBinding - HttpActionDescriptor)
+                // so we have to allow AutoFixture to create circular dependencies
+                // (but only resolve the first level).
+                fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                    .ForEach(b => fixture.Behaviors.Remove(b));
+
+                fixture.Behaviors.Add(new OmitOnRecursionBehavior(1));
+            }
         }
     }
 }

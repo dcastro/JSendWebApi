@@ -55,7 +55,7 @@ namespace JSend.WebApi.Tests.Results
             ApiController controller)
         {
             // Fixture setup
-            var expectedLocation = new Uri(UrlHelperCustomization.RouteLink);
+            var expectedLocation = new Uri(TestConventions.RouteLink);
             // Exercise system
             var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
             // Verify outcome
@@ -98,7 +98,7 @@ namespace JSend.WebApi.Tests.Results
             // Exercise system
             var message = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            message.Headers.Location.Should().Be(UrlHelperCustomization.RouteLink);
+            message.Headers.Location.Should().Be(TestConventions.RouteLink);
         }
     }
 }
