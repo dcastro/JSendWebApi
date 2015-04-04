@@ -46,7 +46,7 @@ namespace JSend.WebApi.Tests.Responses
         public void ConstructorsThrowWhenMessageIsWhiteSpace(Action ctor)
         {
             ctor.ShouldThrow<ArgumentException>()
-                .And.Message.Should().Contain(StringResources.ErrorResponse_WhiteSpaceMessage);
+                .And.Message.Should().StartWith(StringResources.ErrorResponse_WhiteSpaceMessage);
         }
 
         [Theory, JSendAutoData]

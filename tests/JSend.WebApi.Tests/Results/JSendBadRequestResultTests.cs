@@ -36,7 +36,7 @@ namespace JSend.WebApi.Tests.Results
             // Exercise system and verify outcome
             Action ctor = () => new JSendBadRequestResult("  ", controller);
             ctor.ShouldThrow<ArgumentException>()
-                .And.Message.Should().Contain(StringResources.BadRequest_WhiteSpaceReason);
+                .And.Message.Should().StartWith(StringResources.BadRequest_WhiteSpaceReason);
         }
 
         [Theory, JSendAutoData]

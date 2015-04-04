@@ -36,7 +36,7 @@ namespace JSend.WebApi.Tests.Results
             // Exercise system and verify outcome
             Action ctor = () => new JSendNotFoundResult("  ", controller);
             ctor.ShouldThrow<ArgumentException>()
-                .And.Message.Should().Contain(StringResources.NotFound_WhiteSpaceReason);
+                .And.Message.Should().StartWith(StringResources.NotFound_WhiteSpaceReason);
         }
 
         [Theory, JSendAutoData]
