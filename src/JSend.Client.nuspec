@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>JSend.Client</id>
         <version>0.0.0.0</version>
@@ -10,8 +10,9 @@
         <projectUrl>https://github.com/dcastro/JSendWebApi</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>JSend.Client is a web client for performing basic CRUD operations on an API that conforms to the JSend specification.</description>
+        <releaseNotes>https://github.com/dcastro/JSendWebApi/releases</releaseNotes>
         <language>en-US</language>
-        <tags>JSend Http Client Api WebApi REST </tags>
+        <tags>JSend Http Client Api WebApi REST</tags>
         <dependencies>
             <dependency id="Newtonsoft.Json" version="4.5.11" />
             <dependency id="Microsoft.Net.Http" version="2.1.10" />
@@ -20,6 +21,6 @@
     <files>
         <file src="..\build\JSend.Client.dll" target="lib\net45\JSend.Client.dll" />
         <file src="..\build\JSend.Client.pdb" target="lib\net45\JSend.Client.pdb" />
-        <file src="..\build\JSend.Client.xml" target="lib\net45\JSend.Client.XML" />
+        <file src="..\build\JSend.Client.XML" target="lib\net45\JSend.Client.XML" />
     </files>
 </package>
