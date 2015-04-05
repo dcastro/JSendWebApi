@@ -267,16 +267,19 @@ if (response.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
 
 ### Configuring the client
 
-If you want the client to perform some additional work (e.g., add a "X-Version" header to all requests, or log all exceptions) you can do so by extending [`MessageInterceptor`][6]:
+If you want the client to perform some additional work (e.g., add a "X-Message-Id" header to all requests, or log all exceptions) you can do so by extending [`MessageInterceptor`][6]:
 
 ```csharp
-public class MyCustomInterceptor : MessageInterceptor
+class MessageIdInterceptor : MessageInterceptor
 {
     public override void OnSending(HttpRequestMessage request)
     {
-        request.Headers.Add("X-Version", "2.0");
+        request.Headers.Add("X-Message-Id", Guid.NewGuid().ToString());
     }
+}
 
+class LoggerInterceptor : MessageInterceptor
+{
     public override void OnException(ExceptionContext context)
     {
         Logger.Log(context.Exception);
@@ -287,9 +290,13 @@ public class MyCustomInterceptor : MessageInterceptor
 You can then configure the client like this:
 
 ```csharp
+var interceptor = new CompositeMessageInterceptor(
+    new MessageIdInterceptor(),
+    new LoggerInterceptor());
+
 var settings = new JSendClientSettings
     {
-        MessageInterceptor = new MyCustomInterceptor(),
+        MessageInterceptor = interceptor,
         SerializerSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented
