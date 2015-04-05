@@ -53,11 +53,13 @@ namespace JSend.Client
         /// Parses the content of a <see cref="HttpResponseMessage"/> and returns a <see cref="JSendResponse{T}"/>.
         /// </summary>
         /// <typeparam name="T">The type of the expected data.</typeparam>
+        /// <param name="serializerSettings">The settings used to deserialize the response.</param>
         /// <param name="httpResponseMessage">The HTTP response message to parse.</param>
         /// <returns>A task representings the parsed <see cref="JSendResponse{T}"/>.</returns>
         /// <exception cref="JSendParseException">The HTTP response message could not be parsed.</exception>
         [Pure]
-        public async Task<JSendResponse<T>> ParseAsync<T>(HttpResponseMessage httpResponseMessage)
+        public async Task<JSendResponse<T>> ParseAsync<T>(JsonSerializerSettings serializerSettings,
+            HttpResponseMessage httpResponseMessage)
         {
             if (httpResponseMessage == null)
                 throw new ArgumentNullException("httpResponseMessage");
@@ -69,14 +71,14 @@ namespace JSend.Client
 
             try
             {
-                var json = JToken.Parse(content);
+                var json = JsonConvert.DeserializeObject<JToken>(content, serializerSettings);
                 json.Validate(await BaseSchema.Value);
 
                 var status = json.Value<string>("status");
                 switch (status)
                 {
                     case "success":
-                        return await ParseSuccessMessageAsync<T>(json, httpResponseMessage);
+                        return await ParseSuccessMessageAsync<T>(json, serializerSettings, httpResponseMessage);
                     case "fail":
                         return await ParseFailMessageAsync<T>(json, httpResponseMessage);
                     case "error":
@@ -103,6 +105,7 @@ namespace JSend.Client
         /// </summary>
         /// <typeparam name="T">The type of the expected data.</typeparam>
         /// <param name="json">The <see cref="JToken"/> to parse.</param>
+        /// <param name="serializerSettings">The settings used to deserialize the response.</param>
         /// <param name="responseMessage">The HTTP response message from where <paramref name="json"/> was extracted.</param>
         /// <returns>A task representing the successful <see cref="JSendResponse{T}"/>.</returns>
         /// <exception cref="JsonSchemaException"><paramref name="json"/> is not JSend formatted.</exception>
@@ -110,7 +113,8 @@ namespace JSend.Client
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
         [Pure]
-        public async Task<JSendResponse<T>> ParseSuccessMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
+        public async Task<JSendResponse<T>> ParseSuccessMessageAsync<T>(JToken json,
+            JsonSerializerSettings serializerSettings, HttpResponseMessage responseMessage)
         {
             json.Validate(await SuccessSchema.Value);
 
@@ -118,7 +122,9 @@ namespace JSend.Client
             if (dataToken.Type == JTokenType.Null)
                 return new JSendResponse<T>(responseMessage);
 
-            T data = dataToken.ToObject<T>();
+            var serializer = JsonSerializer.Create(serializerSettings);
+
+            T data = dataToken.ToObject<T>(serializer);
             return new JSendResponse<T>(data, responseMessage);
         }
 

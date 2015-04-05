@@ -221,7 +221,7 @@ namespace JSend.Client.Tests
             clientStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<Model>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.GetAsync<Model>(uri);
@@ -269,7 +269,7 @@ namespace JSend.Client.Tests
             httpClientStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<Model>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PostAsync<Model>(uri, content);
@@ -358,7 +358,7 @@ namespace JSend.Client.Tests
             httpClientStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<JToken>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<JToken>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PostAsync(uri, content);
@@ -447,7 +447,7 @@ namespace JSend.Client.Tests
             httpClientStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<JToken>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<JToken>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.DeleteAsync(uri);
@@ -495,7 +495,7 @@ namespace JSend.Client.Tests
             httpClientStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<Model>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PutAsync<Model>(uri, content);
@@ -584,7 +584,7 @@ namespace JSend.Client.Tests
             httpClientStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<JToken>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<JToken>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PutAsync(uri, content);
@@ -673,7 +673,7 @@ namespace JSend.Client.Tests
             httpClientStub.ReturnOnSend = httpResponseMessage;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<Model>(httpResponseMessage))
+                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.SendAsync<Model>(request);
@@ -724,7 +724,7 @@ namespace JSend.Client.Tests
             Action verifyResponseHasntBeenParsed = () =>
                 Mock.Get(parser)
                     .Verify(
-                        p => p.ParseAsync<object>(It.IsAny<HttpResponseMessage>()),
+                        p => p.ParseAsync<object>(It.IsAny<JsonSerializerSettings>(), It.IsAny<HttpResponseMessage>()),
                         Times.Never);
 
             Mock.Get(interceptor)
@@ -811,7 +811,7 @@ namespace JSend.Client.Tests
         {
             // Fixture setup
             Mock.Get(parser)
-                .Setup(c => c.ParseAsync<object>(It.IsAny<HttpResponseMessage>()))
+                .Setup(c => c.ParseAsync<object>(It.IsAny<JsonSerializerSettings>(), It.IsAny<HttpResponseMessage>()))
                 .ThrowsAsync(exception);
             // Exercise system
             try
@@ -838,7 +838,7 @@ namespace JSend.Client.Tests
         {
             // Fixture setup
             Mock.Get(parser)
-                .Setup(p => p.ParseAsync<object>(It.IsAny<HttpResponseMessage>()))
+                .Setup(p => p.ParseAsync<object>(It.IsAny<JsonSerializerSettings>(), It.IsAny<HttpResponseMessage>()))
                 .ThrowsAsync(exception);
             // Exercise system and verify outcome
             client

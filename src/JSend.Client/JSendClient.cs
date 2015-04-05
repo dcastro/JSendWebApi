@@ -369,7 +369,7 @@ namespace JSend.Client
                 JSendResponse<TResponse> jsendResponse;
                 try
                 {
-                    jsendResponse = await _parser.ParseAsync<TResponse>(responseMessage);
+                    jsendResponse = await _parser.ParseAsync<TResponse>(_serializerSettings, responseMessage);
                 }
                 catch (Exception ex)
                 {

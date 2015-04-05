@@ -83,7 +83,8 @@ namespace JSend.Client.Tests.FixtureCustomizations
             private static void SetupParseAsync<T>(Mock<IJSendParser> parserMock, IFixture fixture)
             {
                 parserMock
-                    .Setup(parser => parser.ParseAsync<T>(It.IsAny<HttpResponseMessage>()))
+                    .Setup(parser =>
+                        parser.ParseAsync<T>(It.IsAny<JsonSerializerSettings>(), It.IsAny<HttpResponseMessage>()))
                     .ReturnsUsingFixture(fixture);
             }
         }

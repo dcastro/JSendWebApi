@@ -8,6 +8,7 @@ using JSend.Client.Tests.TestTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
+using Ploeh.AutoFixture.Xunit;
 using Xunit;
 using Xunit.Extensions;
 
@@ -29,7 +30,7 @@ namespace JSend.Client.Tests
         public void ThrowsWhenHttpResponseMessageIsNull(DefaultJSendParser parser)
         {
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(null))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, null))
                 .ShouldThrow<ArgumentNullException>();
         }
 
@@ -39,7 +40,7 @@ namespace JSend.Client.Tests
             // Fixture setup
             message.Content = null;
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithMessage(StringResources.ResponseWithoutContent);
         }
@@ -57,7 +58,7 @@ namespace JSend.Client.Tests
 
             message.Content = new StringContent(invalidContent);
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithMessage(expectedMessage)
                 .WithInnerException<JsonException>();
@@ -69,7 +70,7 @@ namespace JSend.Client.Tests
             // Fixture setup
             message.Content = new StringContent("1,2,3");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonReaderException>();
         }
@@ -80,7 +81,7 @@ namespace JSend.Client.Tests
             // Fixture setup
             message.Content = new StringContent("[1,2,3]");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Invalid type. Expected Object but got Array*");
@@ -95,7 +96,7 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Required properties are missing from object: status*");
@@ -111,7 +112,7 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage(@"Value ""invalid"" is not defined in enum*");
@@ -127,7 +128,7 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Invalid type. Expected String but got Integer*");
@@ -143,7 +144,7 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system
-            var response = await parser.ParseAsync<Model>(message);
+            var response = await parser.ParseAsync<Model>(null, message);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Success);
             response.HasData.Should().BeFalse();
@@ -160,7 +161,7 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system
-            var response = await parser.ParseAsync<int>(message);
+            var response = await parser.ParseAsync<int>(null, message);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Success);
             response.HasData.Should().BeFalse();
@@ -177,10 +178,48 @@ namespace JSend.Client.Tests
                 ""data"": " + JsonConvert.SerializeObject(model) + @"
             }");
             // Exercise system
-            var response = await parser.ParseAsync<Model>(message);
+            var response = await parser.ParseAsync<Model>(null, message);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Success);
             response.Data.ShouldBeEquivalentTo(model);
+        }
+
+        public class ModelWithPrivateDefaultConstructor
+        {
+            [JsonIgnore] public bool PrivateDefaultConstructorCalled = false;
+
+            private ModelWithPrivateDefaultConstructor()
+            {
+                PrivateDefaultConstructorCalled = true;
+            }
+
+            public ModelWithPrivateDefaultConstructor(string s)
+            {
+            }
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ParsesSuccessResponse_WithData_UsingSerializerSettings(
+            [NoAutoProperties] ModelWithPrivateDefaultConstructor model,
+            HttpResponseMessage message,
+            DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent(@"
+            {
+                ""status"": ""success"",
+                ""data"": " + JsonConvert.SerializeObject(model) + @"
+            }");
+
+            var serializerSettings = new JsonSerializerSettings
+            {
+                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+            };
+
+            // Exercise system
+            var response = await parser.ParseAsync<ModelWithPrivateDefaultConstructor>(serializerSettings, message);
+            // Verify outcome
+            response.Data.PrivateDefaultConstructorCalled.Should().BeTrue();
         }
 
         [Theory, JSendAutoData]
@@ -192,7 +231,7 @@ namespace JSend.Client.Tests
                 ""status"": ""success""
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Required properties are missing from object: data*");
@@ -208,7 +247,7 @@ namespace JSend.Client.Tests
                 ""data"": ""invalid data""
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSerializationException>()
                 .WithInnerMessage("Error converting value \"invalid data\"*");
@@ -224,11 +263,34 @@ namespace JSend.Client.Tests
                 ""data"": """ + reason + @"""
             }");
             // Exercise system
-            var response = await parser.ParseAsync<Model>(message);
+            var response = await parser.ParseAsync<Model>(null, message);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Fail);
             response.Error.Data.Type.Should().Be(JTokenType.String);
             response.Error.Data.Value<string>().Should().Be(reason);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ParsesFailResponse_UsingSerializerSettings(
+            HttpResponseMessage message, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent(@"
+            {
+                ""status"": ""fail"",
+                ""data"": ""1989-01-02T15:14:03.9030824""
+            }");
+
+            var serializerSettings = new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            };
+
+            // Exercise system
+            var response = await parser.ParseAsync<Model>(serializerSettings, message);
+            // Verify outcome
+            var date = response.Error.Data.Value<DateTime>();
+            date.Kind.Should().Be(DateTimeKind.Utc);
         }
 
         [Theory, JSendAutoData]
@@ -240,7 +302,7 @@ namespace JSend.Client.Tests
                 ""status"": ""fail""
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Required properties are missing from object: data*");
@@ -256,7 +318,7 @@ namespace JSend.Client.Tests
                 ""data"": null
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Type Null is disallowed*");
@@ -277,7 +339,7 @@ namespace JSend.Client.Tests
 
             var expectedError = new JSendError(JSendStatus.Error, message, code, JToken.FromObject(data));
             // Exercise system
-            var response = await parser.ParseAsync<Model>(responseMessage);
+            var response = await parser.ParseAsync<Model>(null, responseMessage);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Error);
             response.Error.ShouldBeEquivalentTo(expectedError);
@@ -297,7 +359,7 @@ namespace JSend.Client.Tests
 
             var expectedError = new JSendError(JSendStatus.Error, message, null, JToken.FromObject(data));
             // Exercise system
-            var response = await parser.ParseAsync<Model>(responseMessage);
+            var response = await parser.ParseAsync<Model>(null, responseMessage);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Error);
             response.Error.ShouldBeEquivalentTo(expectedError);
@@ -318,7 +380,7 @@ namespace JSend.Client.Tests
 
             var expectedError = new JSendError(JSendStatus.Error, message, null, JToken.FromObject(data));
             // Exercise system
-            var response = await parser.ParseAsync<Model>(responseMessage);
+            var response = await parser.ParseAsync<Model>(null, responseMessage);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Error);
             response.Error.ShouldBeEquivalentTo(expectedError);
@@ -338,7 +400,7 @@ namespace JSend.Client.Tests
 
             var expectedError = new JSendError(JSendStatus.Error, message, code, null);
             // Exercise system
-            var response = await parser.ParseAsync<Model>(responseMessage);
+            var response = await parser.ParseAsync<Model>(null, responseMessage);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Error);
             response.Error.ShouldBeEquivalentTo(expectedError);
@@ -359,10 +421,34 @@ namespace JSend.Client.Tests
 
             var expectedError = new JSendError(JSendStatus.Error, message, code, null);
             // Exercise system
-            var response = await parser.ParseAsync<Model>(responseMessage);
+            var response = await parser.ParseAsync<Model>(null, responseMessage);
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Error);
             response.Error.ShouldBeEquivalentTo(expectedError);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ParsesErrorResponse_UsingSerializerSettings(
+            HttpResponseMessage message, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent(@"
+            {
+                ""status"": ""error"",
+                ""message"": ""message"",
+                ""data"": ""1989-01-02T15:14:03.9030824""
+            }");
+
+            var serializerSettings = new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            };
+
+            // Exercise system
+            var response = await parser.ParseAsync<Model>(serializerSettings, message);
+            // Verify outcome
+            var date = response.Error.Data.Value<DateTime>();
+            date.Kind.Should().Be(DateTimeKind.Utc);
         }
 
         [Theory, JSendAutoData]
@@ -374,7 +460,7 @@ namespace JSend.Client.Tests
                 ""status"": ""error""
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Required properties are missing from object: message*");
@@ -390,7 +476,7 @@ namespace JSend.Client.Tests
                 ""message"": null
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Invalid type. Expected String but got Null*");
@@ -407,7 +493,7 @@ namespace JSend.Client.Tests
                 ""message"": { }
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Invalid type. Expected String but got Object*");
@@ -425,7 +511,7 @@ namespace JSend.Client.Tests
                 ""code"": ""invalid""
             }");
             // Exercise system and verify outcome
-            parser.Awaiting(p => p.ParseAsync<Model>(message))
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Invalid type. Expected Integer, Null but got String*");
