@@ -75,7 +75,7 @@ namespace JSend.Client
             get { return _encoding; }
         }
 
-        /// <summary>Gets the settings used to serialize the content of a request.</summary>
+        /// <summary>Gets the settings used to serialize requests/deserialize responses.</summary>
         public JsonSerializerSettings SerializerSettings
         {
             get { return _serializerSettings; }

@@ -12,7 +12,7 @@ namespace JSend.Client
     /// </summary>
     public interface IJSendClient : IDisposable
     {
-        /// <summary>Gets the settings used to serialize the content of a request.</summary>
+        /// <summary>Gets the settings used to serialize requests/deserialize responses.</summary>
         JsonSerializerSettings SerializerSettings { get; }
 
         /// <summary>Gets the client used to send HTTP requests and receive HTTP responses.</summary>

@@ -17,7 +17,7 @@ namespace JSend.Client
         /// <summary>Gets or sets the encoding used to format a request's content.</summary>
         public Encoding Encoding { get; set; }
 
-        /// <summary>Gets or sets the settings used to serialize the content of a request.</summary>
+        /// <summary>Gets or sets the settings used to serialize requests/deserialize responses.</summary>
         public JsonSerializerSettings SerializerSettings { get; set; }
     }
 }
