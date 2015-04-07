@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="JSend.Client.ruleset" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Schemas\ErrorResponseSchema.json" />
     <EmbeddedResource Include="Schemas\FailResponseSchema.json" />
