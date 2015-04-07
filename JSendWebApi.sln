@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSend.Client", "src\JSend.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSend.Client.Tests", "tests\JSend.Client.Tests\JSend.Client.Tests.csproj", "{252AA0D9-682F-4A9D-BD18-19F3F9841935}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSend.Client.FunctionalTests", "tests\JSend.Client.FunctionalTests\JSend.Client.FunctionalTests.csproj", "{F714E67E-F87F-463B-8302-C0A791F70A3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{252AA0D9-682F-4A9D-BD18-19F3F9841935}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{252AA0D9-682F-4A9D-BD18-19F3F9841935}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{252AA0D9-682F-4A9D-BD18-19F3F9841935}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F714E67E-F87F-463B-8302-C0A791F70A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F714E67E-F87F-463B-8302-C0A791F70A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F714E67E-F87F-463B-8302-C0A791F70A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F714E67E-F87F-463B-8302-C0A791F70A3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
