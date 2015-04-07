@@ -23,13 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSend.Client", "src\JSend.Client\JSend.Client.csproj", "{9B52181E-5322-4E96-85C2-28482E851981}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSend.Client.Tests", "tests\JSend.Client.Tests\JSend.Client.Tests.csproj", "{252AA0D9-682F-4A9D-BD18-19F3F9841935}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSend.WebApi.FunctionalTests", "tests\JSend.WebApi.FunctionalTests\JSend.WebApi.FunctionalTests.csproj", "{7EADD390-1BB0-425D-AC4C-D0CE78140321}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSend.Client.FunctionalTests", "tests\JSend.Client.FunctionalTests\JSend.Client.FunctionalTests.csproj", "{F714E67E-F87F-463B-8302-C0A791F70A3C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSend.Client", "src\JSend.Client\JSend.Client.csproj", "{89E073C5-994A-4F52-9FF8-3FA4407EF73C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,22 +41,14 @@ Global
 		{59CE72D8-84AF-4214-BF08-965F5A785EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59CE72D8-84AF-4214-BF08-965F5A785EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59CE72D8-84AF-4214-BF08-965F5A785EF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B52181E-5322-4E96-85C2-28482E851981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B52181E-5322-4E96-85C2-28482E851981}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B52181E-5322-4E96-85C2-28482E851981}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B52181E-5322-4E96-85C2-28482E851981}.Release|Any CPU.Build.0 = Release|Any CPU
-		{252AA0D9-682F-4A9D-BD18-19F3F9841935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{252AA0D9-682F-4A9D-BD18-19F3F9841935}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{252AA0D9-682F-4A9D-BD18-19F3F9841935}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{252AA0D9-682F-4A9D-BD18-19F3F9841935}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7EADD390-1BB0-425D-AC4C-D0CE78140321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7EADD390-1BB0-425D-AC4C-D0CE78140321}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EADD390-1BB0-425D-AC4C-D0CE78140321}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EADD390-1BB0-425D-AC4C-D0CE78140321}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F714E67E-F87F-463B-8302-C0A791F70A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F714E67E-F87F-463B-8302-C0A791F70A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F714E67E-F87F-463B-8302-C0A791F70A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F714E67E-F87F-463B-8302-C0A791F70A3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89E073C5-994A-4F52-9FF8-3FA4407EF73C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89E073C5-994A-4F52-9FF8-3FA4407EF73C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89E073C5-994A-4F52-9FF8-3FA4407EF73C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89E073C5-994A-4F52-9FF8-3FA4407EF73C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

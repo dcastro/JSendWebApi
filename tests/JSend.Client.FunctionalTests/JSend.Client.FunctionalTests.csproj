@@ -106,10 +106,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\JSend.Client\JSend.Client.csproj">
-      <Project>{9b52181e-5322-4e96-85c2-28482e851981}</Project>
-      <Name>JSend.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\JSend.WebApi\JSend.WebApi.csproj">
       <Project>{cd0034a9-b940-4d53-b349-575196c2e87e}</Project>
       <Name>JSend.WebApi</Name>

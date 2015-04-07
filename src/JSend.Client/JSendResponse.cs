@@ -181,12 +181,12 @@ namespace JSend.Client
         {
             var sb = new StringBuilder();
 
-            sb.AppendFormat("Status: {0}", Status);
+            sb.AppendFormat(CultureInfo.InvariantCulture, "Status: {0}", Status);
 
             if (Error != null)
-                sb.AppendFormat(", Error: {{{0}}}", Error);
+                sb.AppendFormat(CultureInfo.CurrentCulture, ", Error: {{{0}}}", Error);
 
-            sb.AppendFormat(", HttpResponseMessage: {{{0}}}", HttpResponseMessage);
+            sb.AppendFormat(CultureInfo.CurrentCulture, ", HttpResponseMessage: {{{0}}}", HttpResponseMessage);
 
             return sb.ToString();
         }

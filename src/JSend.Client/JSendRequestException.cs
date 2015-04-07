@@ -7,7 +7,6 @@ namespace JSend.Client
     /// <summary>
     /// Represents an exception that ocurred while querying a JSend API.
     /// </summary>
-    [Serializable]
     [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors", Justification = "A message must be provided.")]
     public class JSendRequestException : Exception
     {
@@ -24,21 +23,6 @@ namespace JSend.Client
         public JSendRequestException(string message, Exception innerException)
             : base(message, innerException)
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JSendRequestException"/> with serialized data.
-        /// </summary>
-        /// <param name="info">
-        /// The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.
-        /// </param>
-        /// <param name="context">
-        /// The <see cref="StreamingContext"/> that contains contextual information about the source or destination.
-        /// </param>
-        protected JSendRequestException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-
         }
     }
 }

@@ -129,12 +129,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\JSend.Client\JSend.Client.csproj">
-      <Project>{9b52181e-5322-4e96-85c2-28482e851981}</Project>
-      <Name>JSend.Client</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

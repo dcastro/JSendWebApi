@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Text;
 using JSend.Client.Properties;
 using Newtonsoft.Json.Linq;
@@ -119,16 +120,17 @@ namespace JSend.Client
         {
             var sb = new StringBuilder();
 
-            sb.AppendFormat("Status: {0}", Status);
+            sb.AppendFormat(CultureInfo.InvariantCulture, "Status: {0}", Status);
 
             if (Message != null)
-                sb.AppendFormat(", Message: {0}", Message);
+                sb.AppendFormat(CultureInfo.CurrentCulture, ", Message: {0}", Message);
 
             if (Code.HasValue)
-                sb.AppendFormat(", Code: {0}", Code.Value);
+                sb.AppendFormat(CultureInfo.CurrentCulture, ", Code: {0}", Code.Value);
 
             if (Data != null)
-                sb.AppendFormat(", Data: {0}", Data.Type == JTokenType.Null ? "<null>" : Data);
+                sb.AppendFormat(CultureInfo.CurrentCulture, ", Data: {0}",
+                    Data.Type == JTokenType.Null ? "<null>" : Data);
 
             return sb.ToString();
         }
