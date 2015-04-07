@@ -131,7 +131,7 @@ namespace JSend.Client.Tests
             parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
-                .WithInnerMessage("Invalid type. Expected String but got Integer*");
+                .WithInnerMessage("Value 123 is not defined in enum.");
         }
 
         [Theory, JSendAutoData]
