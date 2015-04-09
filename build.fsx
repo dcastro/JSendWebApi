@@ -9,7 +9,7 @@ RestorePackages()
 let buildDir = "./build/"
 let testResultsDir = "./testresults/"
 let nugetDir = buildDir @@ "nuget"
-let version = "0.4.0.0"
+let version = "0.5.0.0"
 
 // Targets
 Target "Clean" (fun _ ->
