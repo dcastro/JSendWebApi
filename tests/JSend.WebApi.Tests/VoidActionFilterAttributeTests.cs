@@ -55,7 +55,7 @@ namespace JSend.WebApi.Tests
             IFixture fixture, VoidActionFilterAttribute filter)
         {
             // Fixture setup
-            Mock.Get(fixture.Freeze<HttpActionDescriptor>())
+            fixture.Freeze<Mock<HttpActionDescriptor>>()
                 .SetupGet(des => des.ReturnType)
                 .Returns(null as Type);
 
@@ -74,7 +74,7 @@ namespace JSend.WebApi.Tests
             Type actionType, IFixture fixture, VoidActionFilterAttribute filter)
         {
             // Fixture setup
-            Mock.Get(fixture.Freeze<HttpActionDescriptor>())
+            fixture.Freeze<Mock<HttpActionDescriptor>>()
                 .SetupGet(des => des.ReturnType)
                 .Returns(actionType);
 

@@ -59,7 +59,7 @@ namespace JSend.WebApi.Tests
             Type actionType, Type expectedConverterType, IFixture fixture, ValueActionFilterAttribute filter)
         {
             // Fixture setup
-            Mock.Get(fixture.Freeze<HttpActionDescriptor>())
+            fixture.Freeze<Mock<HttpActionDescriptor>>()
                 .SetupGet(des => des.ReturnType)
                 .Returns(actionType);
 
@@ -78,7 +78,7 @@ namespace JSend.WebApi.Tests
             Type actionType, IFixture fixture, ValueActionFilterAttribute filter)
         {
             // Fixture setup
-            Mock.Get(fixture.Freeze<HttpActionDescriptor>())
+            fixture.Freeze<Mock<HttpActionDescriptor>>()
                 .SetupGet(des => des.ReturnType)
                 .Returns(actionType);
 
