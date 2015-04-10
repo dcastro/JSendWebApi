@@ -8,7 +8,6 @@ using JSend.WebApi.Tests.TestTypes;
 using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture.Idioms;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests.Responses
 {
@@ -43,7 +42,7 @@ namespace JSend.WebApi.Tests.Responses
         }
 
         [Theory]
-        [PropertyData("ConstructorCallsWithWhiteSpaceMessage")]
+        [MemberData("ConstructorCallsWithWhiteSpaceMessage")]
         public void ConstructorsThrowWhenMessageIsWhiteSpace(Action ctor)
         {
             ctor.ShouldThrow<ArgumentException>()

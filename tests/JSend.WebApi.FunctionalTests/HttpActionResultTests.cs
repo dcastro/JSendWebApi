@@ -9,7 +9,6 @@ using JSend.WebApi.FunctionalTests.FixtureCustomizations;
 using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.WebApi.FunctionalTests
 {
@@ -314,7 +313,7 @@ namespace JSend.WebApi.FunctionalTests
         }
 
         [Theory]
-        [PropertyData("RoutesAndExpectedContent")]
+        [MemberData("RoutesAndExpectedContent")]
         public async Task ActionsReturnExpectedContent(string route, JObject expectedContent)
         {
             // Fixture setup

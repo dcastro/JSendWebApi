@@ -9,8 +9,8 @@ using JSend.Client.FunctionalTests.FixtureCustomizations;
 using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Kernel;
-using Ploeh.AutoFixture.Xunit;
-using Xunit.Extensions;
+using Ploeh.AutoFixture.Xunit2;
+using Xunit;
 
 namespace JSend.Client.FunctionalTests
 {

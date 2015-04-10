@@ -7,7 +7,6 @@ using FluentAssertions;
 using JSend.WebApi.FunctionalTests.FixtureCustomizations;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.WebApi.FunctionalTests
 {

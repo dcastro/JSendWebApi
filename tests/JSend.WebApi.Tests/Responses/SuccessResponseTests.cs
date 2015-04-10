@@ -3,9 +3,8 @@ using JSend.WebApi.Responses;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
 using Newtonsoft.Json.Linq;
-using Ploeh.AutoFixture.Xunit;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests.Responses
 {

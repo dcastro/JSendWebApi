@@ -1,5 +1,5 @@
-﻿using Ploeh.AutoFixture.Xunit;
-using Xunit.Extensions;
+﻿using Ploeh.AutoFixture.Xunit2;
+using Xunit;
 
 namespace JSend.Client.Tests.FixtureCustomizations
 {
@@ -7,7 +7,7 @@ namespace JSend.Client.Tests.FixtureCustomizations
     {
         public PropertyJSendAutoDataAttribute(string propertyName)
             : base(
-                new PropertyDataAttribute(propertyName),
+                new MemberDataAttribute(propertyName),
                 new JSendAutoDataAttribute())
         {
         }

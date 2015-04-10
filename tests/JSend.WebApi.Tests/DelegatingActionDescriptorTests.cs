@@ -6,8 +6,8 @@ using JSend.WebApi.Tests.FixtureCustomizations;
 using Moq;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
-using Ploeh.AutoFixture.Xunit;
-using Xunit.Extensions;
+using Ploeh.AutoFixture.Xunit2;
+using Xunit;
 
 namespace JSend.WebApi.Tests
 {

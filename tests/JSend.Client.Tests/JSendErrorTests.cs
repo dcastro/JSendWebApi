@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.Client.Tests
 {
@@ -114,7 +113,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentErrors")]
+        [MemberData("EquivalentErrors")]
         public void TwoErrors_AreEqual_WhenTheirFieldsMatch(JSendError first, JSendError second)
         {
             // Exercise system and verify outcome
@@ -122,7 +121,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctErrors")]
+        [MemberData("DistinctErrors")]
         public void TwoErrors_AreNotEqual_WhenTheirFieldsDoNotMatch(JSendError first, JSendError second)
         {
             // Exercise system and verify outcome
@@ -151,8 +150,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentErrors")]
-        [PropertyData("DistinctErrors")]
+        [MemberData("EquivalentErrors")]
+        [MemberData("DistinctErrors")]
         public void Equals_IsSymmetric(JSendError first, JSendError second)
         {
             // Exercise system
@@ -163,7 +162,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentErrors")]
+        [MemberData("EquivalentErrors")]
         public void EqualityOperator_ReturnsTrue_WhenFieldsMatch(JSendError first, JSendError second)
         {
             // Exercise system
@@ -186,7 +185,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctErrors")]
+        [MemberData("DistinctErrors")]
         public void EqualityOperator_ReturnsFalse_WhenFieldsDoNotMatch(JSendError first, JSendError second)
         {
             // Exercise system
@@ -225,8 +224,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        [PropertyData("EquivalentErrors")]
-        [PropertyData("DistinctErrors")]
+        [MemberData("EquivalentErrors")]
+        [MemberData("DistinctErrors")]
         public void EqualityOperator_IsSymmetric(JSendError first, JSendError second)
         {
             // Exercise system
@@ -237,7 +236,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentErrors")]
+        [MemberData("EquivalentErrors")]
         public void InequalityOperator_ReturnsFalse_WhenFieldsMatch(JSendError first, JSendError second)
         {
             // Exercise system
@@ -260,7 +259,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctErrors")]
+        [MemberData("DistinctErrors")]
         public void InequalityOperator_ReturnsTrue_WhenFieldsDoNotMatch(JSendError first, JSendError second)
         {
             // Exercise system
@@ -299,8 +298,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        [PropertyData("EquivalentErrors")]
-        [PropertyData("DistinctErrors")]
+        [MemberData("EquivalentErrors")]
+        [MemberData("DistinctErrors")]
         public void InequalityOperator_IsSymmetric(JSendError first, JSendError second)
         {
             // Exercise system
@@ -311,7 +310,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentErrors")]
+        [MemberData("EquivalentErrors")]
         public void EqualErrorsHaveTheSameHashCode(JSendError first, JSendError second)
         {
             // Exercise system and verify outcome

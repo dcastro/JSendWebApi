@@ -1,6 +1,6 @@
 ﻿using JSend.Client.Tests.FixtureCustomizations;
 using Ploeh.AutoFixture.Idioms;
-using Xunit.Extensions;
+using Xunit;
 
 namespace JSend.Client.Tests
 {

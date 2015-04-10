@@ -6,7 +6,6 @@ using JSend.Client.Tests.FixtureCustomizations;
 using Ploeh.Albedo;
 using Ploeh.AutoFixture.Idioms;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.Client.Tests
 {
@@ -213,7 +212,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
+        [MemberData("EquivalentResponses")]
         public void TwoResponses_AreEqual_WhenTheirFieldsMatch(JSendResponse first, JSendResponse second)
         {
             // Exercise system and verify outcome
@@ -221,7 +220,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctResponses")]
+        [MemberData("DistinctResponses")]
         public void TwoResponses_AreNotEqual_WhenTheirFieldsDoNotMatch(JSendResponse first, JSendResponse second)
         {
             // Exercise system and verify outcome
@@ -250,8 +249,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
-        [PropertyData("DistinctResponses")]
+        [MemberData("EquivalentResponses")]
+        [MemberData("DistinctResponses")]
         public void Equals_IsSymmetric(JSendResponse first, JSendResponse second)
         {
             // Exercise system
@@ -262,7 +261,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
+        [MemberData("EquivalentResponses")]
         public void EqualityOperator_ReturnsTrue_WhenFieldsMatch(JSendResponse first, JSendResponse second)
         {
             // Exercise system
@@ -285,7 +284,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctResponses")]
+        [MemberData("DistinctResponses")]
         public void EqualityOperator_ReturnsFalse_WhenFieldsDoNotMatch(JSendResponse first, JSendResponse second)
         {
             // Exercise system
@@ -324,8 +323,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        [PropertyData("EquivalentResponses")]
-        [PropertyData("DistinctResponses")]
+        [MemberData("EquivalentResponses")]
+        [MemberData("DistinctResponses")]
         public void EqualityOperator_IsSymmetric(JSendResponse first, JSendResponse second)
         {
             // Exercise system
@@ -336,7 +335,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
+        [MemberData("EquivalentResponses")]
         public void InequalityOperator_ReturnsFalse_WhenFieldsMatch(JSendResponse first, JSendResponse second)
         {
             // Exercise system
@@ -359,7 +358,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctResponses")]
+        [MemberData("DistinctResponses")]
         public void InequalityOperator_ReturnsTrue_WhenFieldsDoNotMatch(JSendResponse first, JSendResponse second)
         {
             // Exercise system
@@ -398,8 +397,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        [PropertyData("EquivalentResponses")]
-        [PropertyData("DistinctResponses")]
+        [MemberData("EquivalentResponses")]
+        [MemberData("DistinctResponses")]
         public void InequalityOperator_IsSymmetric(JSendResponse first, JSendResponse second)
         {
             // Exercise system
@@ -410,7 +409,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
+        [MemberData("EquivalentResponses")]
         public void EqualResponsesHaveTheSameHashCode(JSendResponse first, JSendResponse second)
         {
             // Exercise system and verify outcome

@@ -10,7 +10,6 @@ using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests
 {
@@ -119,7 +118,9 @@ namespace JSend.WebApi.Tests
             // Fixture setup
             const string location = "http://localhost/";
             // Exercise system and verify outcome
-            Assert.DoesNotThrow(() => controller.JSendCreated(location, model));
+            controller
+                .Invoking(c => c.JSendCreated(location, model))
+                .ShouldNotThrow();
         }
 
         [Theory, JSendAutoData]
@@ -128,7 +129,9 @@ namespace JSend.WebApi.Tests
             // Fixture setup
             const string location = "/about";
             // Exercise system and verify outcome
-            Assert.DoesNotThrow(() => controller.JSendCreated(location, model));
+            controller
+                .Invoking(c => c.JSendCreated(location, model))
+                .ShouldNotThrow();
         }
 
         [Theory, JSendAutoData]

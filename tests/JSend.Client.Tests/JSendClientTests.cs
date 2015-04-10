@@ -11,9 +11,8 @@ using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Xunit;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.Client.Tests
 {
@@ -117,8 +116,10 @@ namespace JSend.Client.Tests
         [Theory, JSendAutoData]
         public void ClientSettingsCanBeNull()
         {
-            // Exercise system and verify outcome
-            Assert.DoesNotThrow(() => new JSendClient(null));
+            // Exercise system
+            Action ctor = () => new JSendClient(null);
+            // Verify outcome
+            ctor.ShouldNotThrow();
         }
 
         [Theory, JSendAutoData]

@@ -4,7 +4,7 @@ using FluentAssertions;
 using JSend.Client.Tests.FixtureCustomizations;
 using Moq;
 using Ploeh.AutoFixture.Idioms;
-using Xunit.Extensions;
+using Xunit;
 
 namespace JSend.Client.Tests
 {

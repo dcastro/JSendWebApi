@@ -8,9 +8,8 @@ using JSend.Client.Tests.TestTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
-using Ploeh.AutoFixture.Xunit;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.Client.Tests
 {

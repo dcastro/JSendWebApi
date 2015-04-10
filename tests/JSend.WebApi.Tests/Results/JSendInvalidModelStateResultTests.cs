@@ -13,9 +13,8 @@ using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Idioms;
-using Ploeh.AutoFixture.Xunit;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests.Results
 {

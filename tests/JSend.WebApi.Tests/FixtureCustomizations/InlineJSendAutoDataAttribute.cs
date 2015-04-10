@@ -1,4 +1,4 @@
-﻿using Ploeh.AutoFixture.Xunit;
+﻿using Ploeh.AutoFixture.Xunit2;
 
 namespace JSend.WebApi.Tests.FixtureCustomizations
 {

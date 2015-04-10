@@ -2,7 +2,7 @@
 using FluentAssertions;
 using JSend.Client.FunctionalTests.FixtureCustomizations;
 using Newtonsoft.Json.Linq;
-using Xunit.Extensions;
+using Xunit;
 
 namespace JSend.Client.FunctionalTests
 {

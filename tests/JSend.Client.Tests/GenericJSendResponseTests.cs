@@ -7,9 +7,8 @@ using JSend.Client.Properties;
 using JSend.Client.Tests.FixtureCustomizations;
 using JSend.Client.Tests.TestTypes;
 using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Xunit;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.Client.Tests
 {
@@ -247,7 +246,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
+        [MemberData("EquivalentResponses")]
         public void TwoResponses_AreEqual_WhenTheirFieldsMatch(JSendResponse<string> first, JSendResponse<string> second)
         {
             // Exercise system and verify outcome
@@ -255,7 +254,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctResponses")]
+        [MemberData("DistinctResponses")]
         public void TwoResponses_AreNotEqual_WhenTheirFieldsDoNotMatch(JSendResponse<string> first,
             JSendResponse<string> second)
         {
@@ -264,7 +263,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctResponses")]
+        [MemberData("DistinctResponses")]
         public void TwoResponses_AreNotEqual_WhenTheirFieldsDoNotMatch_AndRightOperandIsCastToBaseClass(
             JSendResponse<string> first, JSendResponse<string> second)
         {
@@ -307,8 +306,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
-        [PropertyData("DistinctResponses")]
+        [MemberData("EquivalentResponses")]
+        [MemberData("DistinctResponses")]
         public void Equals_IsSymmetric(JSendResponse<string> first, JSendResponse<string> second)
         {
             // Exercise system
@@ -319,7 +318,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
+        [MemberData("EquivalentResponses")]
         public void EqualityOperator_ReturnsTrue_WhenFieldsMatch(JSendResponse<string> first, JSendResponse<string> second)
         {
             // Exercise system
@@ -342,7 +341,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctResponses")]
+        [MemberData("DistinctResponses")]
         public void EqualityOperator_ReturnsFalse_WhenFieldsDoNotMatch(JSendResponse<string> first, JSendResponse<string> second)
         {
             // Exercise system
@@ -381,8 +380,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        [PropertyData("EquivalentResponses")]
-        [PropertyData("DistinctResponses")]
+        [MemberData("EquivalentResponses")]
+        [MemberData("DistinctResponses")]
         public void EqualityOperator_IsSymmetric(JSendResponse<string> first, JSendResponse<string> second)
         {
             // Exercise system
@@ -393,7 +392,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
+        [MemberData("EquivalentResponses")]
         public void InequalityOperator_ReturnsFalse_WhenFieldsMatch(JSendResponse<string> first, JSendResponse<string> second)
         {
             // Exercise system
@@ -416,7 +415,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("DistinctResponses")]
+        [MemberData("DistinctResponses")]
         public void InequalityOperator_ReturnsTrue_WhenFieldsDoNotMatch(JSendResponse<string> first, JSendResponse<string> second)
         {
             // Exercise system
@@ -455,8 +454,8 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        [PropertyData("EquivalentResponses")]
-        [PropertyData("DistinctResponses")]
+        [MemberData("EquivalentResponses")]
+        [MemberData("DistinctResponses")]
         public void InequalityOperator_IsSymmetric(JSendResponse<string> first, JSendResponse<string> second)
         {
             // Exercise system
@@ -467,7 +466,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory]
-        [PropertyData("EquivalentResponses")]
+        [MemberData("EquivalentResponses")]
         public void EqualResponsesHaveTheSameHashCode(JSendResponse<string> first, JSendResponse<string> second)
         {
             // Exercise system and verify outcome

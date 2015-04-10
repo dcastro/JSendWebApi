@@ -9,7 +9,6 @@ using JSend.WebApi.Tests.TestTypes;
 using Moq;
 using Ploeh.AutoFixture;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests
 {

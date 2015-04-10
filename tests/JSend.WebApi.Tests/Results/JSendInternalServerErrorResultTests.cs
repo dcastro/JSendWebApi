@@ -9,7 +9,6 @@ using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests.Results
 {

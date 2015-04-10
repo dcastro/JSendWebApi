@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using JSend.Client.FunctionalTests.FixtureCustomizations;
-using Xunit.Extensions;
+using Xunit;
 
 namespace JSend.Client.FunctionalTests
 {

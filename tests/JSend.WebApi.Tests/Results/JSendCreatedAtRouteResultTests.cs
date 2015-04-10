@@ -11,7 +11,6 @@ using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
 using Newtonsoft.Json;
 using Xunit;
-using Xunit.Extensions;
 
 namespace JSend.WebApi.Tests.Results
 {
