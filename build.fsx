@@ -2,6 +2,7 @@
 #r "packages/FAKE/tools/FakeLib.dll"
 open Fake
 open Fake.AssemblyInfoFile
+open XUnit2Helper
 
 RestorePackages()
 
@@ -39,8 +40,7 @@ Target "BuildTests" (fun _ ->
 
 Target "RunTests" (fun _ ->
     !! "./tests/**/bin/debug/*Tests.dll" 
-        |> xUnit (fun p ->
-            {p with 
+        |> xUnit2 (fun p ->
                 ShadowCopy = false;
                 HtmlOutput = true;
                 OutputDir = testResultsDir})
