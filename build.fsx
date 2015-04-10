@@ -41,6 +41,8 @@ Target "BuildTests" (fun _ ->
 Target "RunTests" (fun _ ->
     !! "./tests/**/bin/debug/*Tests.dll" 
         |> xUnit2 (fun p ->
+            {p with
+                Parallel = ParallelOption.All
                 ShadowCopy = false;
                 HtmlOutput = true;
                 OutputDir = testResultsDir})
