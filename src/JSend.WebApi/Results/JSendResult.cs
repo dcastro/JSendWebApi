@@ -21,8 +21,6 @@ namespace JSend.WebApi.Results
     /// <typeparam name="TResponse">The type of the JSend response.</typeparam>
     public sealed class JSendResult<TResponse> : IHttpActionResult where TResponse : IJSendResponse
     {
-        private readonly TResponse _response;
-        private readonly HttpStatusCode _statusCode;
         private readonly FormattedContentResult<TResponse> _formattedContentResult;
 
         private static readonly MediaTypeHeaderValue MediaTypeHeader = new MediaTypeHeaderValue("application/json");
@@ -51,9 +49,6 @@ namespace JSend.WebApi.Results
         {
             if (response == null) throw new ArgumentNullException("response");
 
-            _response = response;
-            _statusCode = statusCode;
-
             var mediaTypeHeader = new MediaTypeHeaderValue(MediaTypeHeader.MediaType);
 
             _formattedContentResult = new FormattedContentResult<TResponse>(statusCode, response,
@@ -63,13 +58,13 @@ namespace JSend.WebApi.Results
         /// <summary>Gets the response to be formatted into the message's body.</summary>
         public TResponse Response
         {
-            get { return _response; }
+            get { return _formattedContentResult.Content; }
         }
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
         public HttpStatusCode StatusCode
         {
-            get { return _statusCode; }
+            get { return _formattedContentResult.StatusCode; }
         }
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
