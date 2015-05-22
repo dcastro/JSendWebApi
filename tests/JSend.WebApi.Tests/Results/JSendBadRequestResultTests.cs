@@ -58,6 +58,15 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitializedUsingController(string reason, ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendBadRequestResult(reason, controller);
+            // Verify outcome
+            result.Request.Should().Be(controller.Request);
+        }
+
+        [Theory, JSendAutoData]
         public void ReasonIsCorrectlyInitialized(string reason, ApiController controller)
         {
             // Exercise system

@@ -56,6 +56,15 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitializedUsingController(Uri location, Model content, ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendCreatedResult<Model>(location, content, controller);
+            // Verify outcome
+            result.Request.Should().Be(controller.Request);
+        }
+
+        [Theory, JSendAutoData]
         public void LocationIsCorrectlyInitialized(Uri location, Model content, ApiController controller)
         {
             // Exercise system

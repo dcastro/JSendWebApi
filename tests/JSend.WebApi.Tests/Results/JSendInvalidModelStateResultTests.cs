@@ -66,6 +66,16 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitializedUsingController(
+            [InvalidModelState] ModelStateDictionary modelState, ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendInvalidModelStateResult(modelState, controller);
+            // Verify outcome
+            result.Request.Should().Be(controller.Request);
+        }
+
+        [Theory, JSendAutoData]
         public void ResponseDataMatchesModelState([InvalidModelState] JSendInvalidModelStateResult result)
         {
             // Exercise system and verify outcome

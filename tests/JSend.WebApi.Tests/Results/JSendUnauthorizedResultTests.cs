@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,6 +49,26 @@ namespace JSend.WebApi.Tests.Results
         {
             // Exercise system and verify outcome
             result.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitialized(
+            IEnumerable<AuthenticationHeaderValue> challenges, HttpRequestMessage request)
+        {
+            // Exercise system
+            var result = new JSendUnauthorizedResult(challenges, request);
+            // Verify outcome
+            result.Request.Should().Be(request);
+        }
+
+        [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitializedUsingController(
+            IEnumerable<AuthenticationHeaderValue> challenges, ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendUnauthorizedResult(challenges, controller);
+            // Verify outcome
+            result.Request.Should().Be(controller.Request);
         }
 
         [Theory, JSendAutoData]

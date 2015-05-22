@@ -64,6 +64,16 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitializedUsingController(
+            string message, int? code, Exception data, ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendInternalServerErrorResult(message, code, data, controller);
+            // Verify outcome
+            result.Request.Should().Be(controller.Request);
+        }
+
+        [Theory, JSendAutoData]
         public void MessageIsCorrectlyInitialized(string message, int? errorCode, Exception data,
             ApiController controller)
         {

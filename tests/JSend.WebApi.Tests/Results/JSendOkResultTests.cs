@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -44,6 +45,24 @@ namespace JSend.WebApi.Tests.Results
         {
             // Exercise system and verify outcome
             result.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitialized(HttpRequestMessage request)
+        {
+            // Exercise system
+            var result = new JSendOkResult(request);
+            // Verify outcome
+            result.Request.Should().Be(request);
+        }
+
+        [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitializedUsingController(ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendOkResult(controller);
+            // Verify outcome
+            result.Request.Should().Be(controller.Request);
         }
 
         [Theory, JSendAutoData]

@@ -39,6 +39,12 @@ namespace JSend.WebApi.Results
             get { return _result.StatusCode; }
         }
 
+        /// <summary>Gets the request message which led to this result.</summary>
+        public HttpRequestMessage Request
+        {
+            get { return _result.Request; }
+        }
+
         /// <summary>Gets the error message explaining what went wrong.</summary>
         public string Message
         {

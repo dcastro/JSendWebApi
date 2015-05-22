@@ -48,6 +48,15 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitializedUsingController(Uri location, ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendRedirectResult(location, controller);
+            // Verify outcome
+            result.Request.Should().Be(controller.Request);
+        }
+
+        [Theory, JSendAutoData]
         public void LocationIsCorrectlyInitialized(Uri location, ApiController controller)
         {
             // Exercise system
