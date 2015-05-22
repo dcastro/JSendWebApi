@@ -86,6 +86,24 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitialized(HttpStatusCode status, IJSendResponse response, HttpRequestMessage request)
+        {
+            // Exercise system
+            var result = new JSendResult<IJSendResponse>(status, response, request);
+            // Verify outcome
+            result.Request.Should().Be(request);
+        }
+
+        [Theory, JSendAutoData]
+        public void RequestIsCorrectlyInitializedUsingController(HttpStatusCode status, IJSendResponse response, ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendResult<IJSendResponse>(status, response, controller);
+            // Verify outcome
+            result.Request.Should().Be(controller.Request);
+        }
+
+        [Theory, JSendAutoData]
         public async Task SerializesResponse(JSendResult<SuccessResponse> result)
         {
             // Fixture setup

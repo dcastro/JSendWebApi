@@ -67,6 +67,12 @@ namespace JSend.WebApi.Results
             get { return _formattedContentResult.StatusCode; }
         }
 
+        /// <summary>Gets the request message which led to this result.</summary>
+        public HttpRequestMessage Request
+        {
+            get { return _formattedContentResult.Request; }
+        }
+
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
