@@ -16,7 +16,7 @@ namespace JSend.WebApi.Results
     /// with status code <see cref="HttpStatusCode.Created"/>.
     /// </summary>
     /// <typeparam name="T">The type of the created content.</typeparam>
-    public class JSendCreatedAtRouteResult<T> : IHttpActionResult
+    public class JSendCreatedAtRouteResult<T> : IJSendResult<SuccessResponse>
     {
         private readonly JSendResult<SuccessResponse> _result;
         private readonly Uri _location;

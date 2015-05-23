@@ -10,7 +10,7 @@ namespace JSend.WebApi.Results
     /// <summary>
     /// Represents an action result that returns a <see cref="SuccessResponse"/> with status code <see cref="HttpStatusCode.OK"/>.
     /// </summary>
-    public class JSendOkResult : IHttpActionResult
+    public class JSendOkResult : IJSendResult<SuccessResponse>
     {
         private readonly JSendResult<SuccessResponse> _result;
 

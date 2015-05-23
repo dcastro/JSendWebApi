@@ -12,7 +12,7 @@ namespace JSend.WebApi.Results
     /// <summary>
     /// Represents an action result that returns a <see cref="FailResponse"/> with status code <see cref="HttpStatusCode.BadRequest"/>.
     /// </summary>
-    public class JSendNotFoundResult : IHttpActionResult
+    public class JSendNotFoundResult : IJSendResult<FailResponse>
     {
         private readonly JSendResult<FailResponse> _result;
 

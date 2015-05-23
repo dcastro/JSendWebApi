@@ -12,7 +12,7 @@ namespace JSend.WebApi.Results
     /// with status code <see cref="HttpStatusCode.OK"/>.
     /// </summary>
     /// <typeparam name="T">The type of the content in the entity body.</typeparam>
-    public class JSendOkResult<T> : IHttpActionResult
+    public class JSendOkResult<T> : IJSendResult<SuccessResponse>
     {
         private readonly JSendResult<SuccessResponse> _result;
 

@@ -11,7 +11,7 @@ namespace JSend.WebApi.Results
     /// <summary>
     /// Represents an action result that returns a <see cref="SuccessResponse"/> with status code <see cref="HttpStatusCode.Redirect"/>.
     /// </summary>
-    public class JSendRedirectResult : IHttpActionResult
+    public class JSendRedirectResult : IJSendResult<SuccessResponse>
     {
         private readonly Uri _location;
         private readonly JSendResult<SuccessResponse> _result;

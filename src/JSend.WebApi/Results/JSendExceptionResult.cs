@@ -14,7 +14,7 @@ namespace JSend.WebApi.Results
     /// Represents an action result that returns a <see cref="ErrorResponse"/> containing the specified error details
     /// with status code <see cref="HttpStatusCode.InternalServerError"/>.
     /// </summary>
-    public class JSendExceptionResult : IHttpActionResult
+    public class JSendExceptionResult : IJSendResult<ErrorResponse>
     {
         private readonly JSendResult<ErrorResponse> _result;
         private readonly Exception _exception;

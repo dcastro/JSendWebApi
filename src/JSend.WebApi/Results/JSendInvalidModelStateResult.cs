@@ -17,7 +17,7 @@ namespace JSend.WebApi.Results
     /// Represents an action result that returns a <see cref="FailResponse"/> containing the specified model state errors
     /// with status code <see cref="HttpStatusCode.BadRequest"/>.
     /// </summary>
-    public class JSendInvalidModelStateResult : IHttpActionResult
+    public class JSendInvalidModelStateResult : IJSendResult<FailResponse>
     {
         private readonly JSendResult<FailResponse> _result;
 

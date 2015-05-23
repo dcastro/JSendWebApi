@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="DelegatingActionDescriptor.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IJSendResult.cs" />
     <Compile Include="JSendAuthorizeAttribute.cs" />
     <Compile Include="JSendValueResultConverter.cs" />
     <Compile Include="Responses\IJSendResponse.cs" />

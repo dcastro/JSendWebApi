@@ -19,7 +19,7 @@ namespace JSend.WebApi.Results
     /// Represents an action result that returns the specified JSend response with the specified status code.
     /// </summary>
     /// <typeparam name="TResponse">The type of the JSend response.</typeparam>
-    public sealed class JSendResult<TResponse> : IHttpActionResult where TResponse : IJSendResponse
+    public sealed class JSendResult<TResponse> : IJSendResult<TResponse> where TResponse : IJSendResponse
     {
         private readonly FormattedContentResult<TResponse> _formattedContentResult;
 

@@ -14,7 +14,7 @@ namespace JSend.WebApi.Results
     /// <summary>
     /// Represents an action result that returns a <see cref="FailResponse"/> with status code <see cref="HttpStatusCode.Unauthorized"/>.
     /// </summary>
-    public class JSendUnauthorizedResult : IHttpActionResult
+    public class JSendUnauthorizedResult : IJSendResult<FailResponse>
     {
         private readonly IEnumerable<AuthenticationHeaderValue> _challenges;
         private readonly JSendResult<FailResponse> _result;
