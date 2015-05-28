@@ -12,7 +12,9 @@ namespace JSend.WebApi.Results
     /// </summary>
     public class JSendOkResult : IJSendResult<SuccessResponse>
     {
-        private readonly JSendResult<SuccessResponse> _result;
+        private static readonly SuccessResponse SuccessResponse = new SuccessResponse();
+
+        private readonly JSendResult<SuccessResponse>.IDependencyProvider _dependencies;
 
         /// <summary>Initializes a new instance of <see cref="JSendOkResult"/>.</summary>
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
@@ -32,27 +34,25 @@ namespace JSend.WebApi.Results
 
         private JSendOkResult(JSendResult<SuccessResponse>.IDependencyProvider dependencies)
         {
-            var response = new SuccessResponse();
-
-            _result = new JSendResult<SuccessResponse>(HttpStatusCode.OK, response, dependencies.RequestMessage);
+            _dependencies = dependencies;
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
         public SuccessResponse Response
         {
-            get { return _result.Response; }
+            get { return SuccessResponse; }
         }
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
         public HttpStatusCode StatusCode
         {
-            get { return _result.StatusCode; }
+            get { return HttpStatusCode.OK; }
         }
 
         /// <summary>Gets the request message which led to this result.</summary>
         public HttpRequestMessage Request
         {
-            get { return _result.Request; }
+            get { return _dependencies.RequestMessage; }
         }
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
@@ -60,7 +60,9 @@ namespace JSend.WebApi.Results
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            return _result.ExecuteAsync(cancellationToken);
+            var result = new JSendResult<SuccessResponse>(StatusCode, SuccessResponse, _dependencies.RequestMessage);
+
+            return result.ExecuteAsync(cancellationToken);
         }
     }
 }

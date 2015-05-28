@@ -10,6 +10,7 @@ using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
 using Newtonsoft.Json;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
 namespace JSend.WebApi.Tests.Results
@@ -35,6 +36,15 @@ namespace JSend.WebApi.Tests.Results
         {
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(() => new JSendOkResult<Model>(model, null as HttpRequestMessage));
+        }
+
+        [Theory, JSendAutoData]
+        public void CanBeCreatedWithControllerWithoutRequest(
+            Model content, [NoAutoProperties] TestableJSendApiController controller)
+        {
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendOkResult<Model>(content, controller);
+            ctor.ShouldNotThrow();
         }
 
         [Theory, JSendAutoData]

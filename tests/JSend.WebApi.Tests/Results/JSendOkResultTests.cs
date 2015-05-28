@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture.Idioms;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
 namespace JSend.WebApi.Tests.Results
@@ -27,6 +29,14 @@ namespace JSend.WebApi.Tests.Results
         {
             // Exercise system and verify outcome
             assertion.Verify(typeof (JSendOkResult).GetConstructors());
+        }
+
+        [Theory, JSendAutoData]
+        public void CanBeCreatedWithControllerWithoutRequest([NoAutoProperties] TestableJSendApiController controller)
+        {
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendOkResult(controller);
+            ctor.ShouldNotThrow();
         }
 
         [Theory, JSendAutoData]
