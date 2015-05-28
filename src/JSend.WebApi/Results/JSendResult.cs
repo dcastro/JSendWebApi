@@ -21,7 +21,9 @@ namespace JSend.WebApi.Results
     /// <typeparam name="TResponse">The type of the JSend response.</typeparam>
     public sealed class JSendResult<TResponse> : IJSendResult<TResponse> where TResponse : IJSendResponse
     {
-        private readonly FormattedContentResult<TResponse> _formattedContentResult;
+        private readonly HttpStatusCode _statusCode;
+        private readonly TResponse _response;
+        private readonly IDependencyProvider _dependencies;
 
         private static readonly MediaTypeHeaderValue MediaTypeHeader = new MediaTypeHeaderValue("application/json");
 
@@ -49,28 +51,27 @@ namespace JSend.WebApi.Results
         {
             if (response == null) throw new ArgumentNullException("response");
 
-            var mediaTypeHeader = new MediaTypeHeaderValue(MediaTypeHeader.MediaType);
-
-            _formattedContentResult = new FormattedContentResult<TResponse>(statusCode, response,
-                dependencies.Formatter, mediaTypeHeader, dependencies.RequestMessage);
+            _statusCode = statusCode;
+            _response = response;
+            _dependencies = dependencies;
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
         public TResponse Response
         {
-            get { return _formattedContentResult.Content; }
+            get { return _response; }
         }
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
         public HttpStatusCode StatusCode
         {
-            get { return _formattedContentResult.StatusCode; }
+            get { return _statusCode; }
         }
 
         /// <summary>Gets the request message which led to this result.</summary>
         public HttpRequestMessage Request
         {
-            get { return _formattedContentResult.Request; }
+            get { return _dependencies.RequestMessage; }
         }
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
@@ -78,7 +79,12 @@ namespace JSend.WebApi.Results
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            return _formattedContentResult.ExecuteAsync(cancellationToken);
+            var mediaTypeHeader = new MediaTypeHeaderValue(MediaTypeHeader.MediaType);
+
+            var result = new FormattedContentResult<TResponse>(_statusCode, _response,
+                _dependencies.Formatter, mediaTypeHeader, _dependencies.RequestMessage);
+
+            return result.ExecuteAsync(cancellationToken);
         }
 
         internal interface IDependencyProvider
@@ -90,67 +96,112 @@ namespace JSend.WebApi.Results
 
         internal sealed class RequestDependencyProvider : IDependencyProvider
         {
-            private readonly JsonMediaTypeFormatter _formatter;
             private readonly HttpRequestMessage _requestMessage;
+
+            private JsonMediaTypeFormatter _formatter;
 
             public RequestDependencyProvider(HttpRequestMessage requestMessage)
             {
-                var requestContext = requestMessage.GetRequestContext();
-                if (requestContext == null)
-                    throw new ArgumentException(StringResources.Request_RequestContextMustNotBeNull, "requestMessage");
+                if (requestMessage == null) throw new ArgumentNullException("requestMessage");
 
-                var configuration = requestContext.Configuration;
-                if (configuration == null)
-                    throw new ArgumentException(
-                        string.Format(
-                            CultureInfo.CurrentCulture,
-                            StringResources.TypePropertyMustNotBeNull,
-                            typeof (HttpRequestContext).Name,
-                            "Configuration"),
-                        "requestMessage");
-
-                var formatters = configuration.Formatters;
-                Contract.Assert(formatters != null);
-
-                var formatter = formatters.FindWriter(typeof (TResponse), MediaTypeHeader);
-
-                if (formatter == null)
-                    throw new ArgumentException(StringResources.ConfigurationMustContainFormatter, "requestMessage");
-
-                _formatter = formatters.JsonFormatter;
                 _requestMessage = requestMessage;
             }
 
             public JsonMediaTypeFormatter Formatter
             {
-                get { return _formatter; }
+                get
+                {
+                    EnsureResolved();
+                    return _formatter;
+                }
             }
 
             public HttpRequestMessage RequestMessage
             {
-                get { return _requestMessage; }
+                get
+                {
+                    EnsureResolved();
+                    return _requestMessage;
+                }
+            }
+
+            private void EnsureResolved()
+            {
+                if (_formatter == null)
+                {
+                    var requestContext = _requestMessage.GetRequestContext();
+                    if (requestContext == null)
+                        throw new InvalidOperationException(StringResources.Request_RequestContextMustNotBeNull);
+
+                    var configuration = requestContext.Configuration;
+                    if (configuration == null)
+                        throw new InvalidOperationException(
+                            string.Format(
+                                CultureInfo.CurrentCulture,
+                                StringResources.TypePropertyMustNotBeNull,
+                                typeof (HttpRequestContext).Name,
+                                "Configuration"));
+
+                    var formatters = configuration.Formatters;
+                    Contract.Assert(formatters != null);
+
+                    var formatter = formatters.FindWriter(typeof (TResponse), MediaTypeHeader);
+
+                    if (formatter == null)
+                        throw new InvalidOperationException(StringResources.ConfigurationMustContainFormatter);
+
+                    _formatter = formatters.JsonFormatter;
+                }
             }
         }
 
         internal sealed class ControllerDependencyProvider : IDependencyProvider
         {
-            private readonly IDependencyProvider _dependencies;
+            private readonly ApiController _controller;
+
+            private IDependencyProvider _resolvedDependencies;
 
             public ControllerDependencyProvider(ApiController controller)
             {
                 if (controller == null) throw new ArgumentNullException("controller");
 
-                _dependencies = new RequestDependencyProvider(controller.Request);
+                _controller = controller;
             }
 
             public JsonMediaTypeFormatter Formatter
             {
-                get { return _dependencies.Formatter; }
+                get
+                {
+                    EnsureResolved();
+                    return _resolvedDependencies.Formatter;
+                }
             }
 
             public HttpRequestMessage RequestMessage
             {
-                get { return _dependencies.RequestMessage; }
+                get
+                {
+                    EnsureResolved();
+                    return _resolvedDependencies.RequestMessage;
+                }
+            }
+
+            public void EnsureResolved()
+            {
+                if (_resolvedDependencies == null)
+                {
+                    var request = _controller.Request;
+
+                    if (request == null)
+                        throw new InvalidOperationException(
+                            string.Format(
+                                CultureInfo.CurrentCulture,
+                                StringResources.TypePropertyMustNotBeNull,
+                                typeof (ApiController).Name,
+                                "Request"));
+
+                    _resolvedDependencies = new RequestDependencyProvider(request);
+                }
             }
         }
     }

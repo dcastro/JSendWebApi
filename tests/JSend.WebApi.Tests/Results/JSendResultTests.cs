@@ -14,6 +14,7 @@ using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture.Idioms;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
 namespace JSend.WebApi.Tests.Results
@@ -28,30 +29,55 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenRequestHasNoContext(HttpStatusCode status, IJSendResponse response)
+        public void CanBeCreatedWithControllerWithoutRequest(HttpStatusCode status, IJSendResponse response,
+            [NoAutoProperties] TestableJSendApiController controller)
         {
-            // Fixture setup
-            var request = new HttpRequestMessage();
             // Exercise system and verify outcome
-            Action ctor = () => new JSendResult<IJSendResponse>(status, response, request);
-            ctor.ShouldThrow<ArgumentException>()
-                .And.Message.Should().StartWith(StringResources.Request_RequestContextMustNotBeNull);
+            Action ctor = () => new JSendResult<IJSendResponse>(status, response, controller);
+            ctor.ShouldNotThrow();
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenRequestContextHasNoConfiguration(HttpRequestMessage request, HttpStatusCode status, IJSendResponse response)
+        public void ExecuteThrowsWhenControllerHasNoRequest(HttpStatusCode status, IJSendResponse response,
+            [NoAutoProperties] TestableJSendApiController controller)
+        {
+            // Fixture setup
+            var result = new JSendResult<IJSendResponse>(status, response, controller);
+            // Exercise system and verify outcome
+            result.Awaiting(r => r.ExecuteAsync(CancellationToken.None))
+                .ShouldThrow<InvalidOperationException>()
+                .WithMessage("ApiController.Request must not be null.");
+        }
+
+        [Theory, JSendAutoData]
+        public void ExecuteThrowsWhenRequestHasNoContext(HttpStatusCode status, IJSendResponse response)
+        {
+            // Fixture setup
+            var request = new HttpRequestMessage();
+            var result = new JSendResult<IJSendResponse>(status, response, request);
+            // Exercise system and verify outcome
+            result.Awaiting(r => r.ExecuteAsync(CancellationToken.None))
+                .ShouldThrow<InvalidOperationException>()
+                .WithMessage(StringResources.Request_RequestContextMustNotBeNull);
+        }
+
+        [Theory, JSendAutoData]
+        public void ExecuteThrowsWhenRequestContextHasNoConfiguration(HttpRequestMessage request, HttpStatusCode status,
+            IJSendResponse response)
         {
             // Fixture setup
             var requestContext = new HttpRequestContext();
             request.SetRequestContext(requestContext);
+
+            var result = new JSendResult<IJSendResponse>(status, response, request);
             // Exercise system and verify outcome
-            Action ctor = () => new JSendResult<IJSendResponse>(status, response, request);
-            ctor.ShouldThrow<ArgumentException>()
-                .WithMessage("HttpRequestContext.Configuration must not be null.*");
+            result.Awaiting(r => r.ExecuteAsync(CancellationToken.None))
+                .ShouldThrow<InvalidOperationException>()
+                .WithMessage("HttpRequestContext.Configuration must not be null.");
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenControllerHasNoJsonFormatter(HttpStatusCode status, IJSendResponse response,
+        public void ExecuteThrowsWhenControllerHasNoJsonFormatter(HttpStatusCode status, IJSendResponse response,
             ApiController controller)
         {
             // Fixture setup
@@ -59,10 +85,11 @@ namespace JSend.WebApi.Tests.Results
             formatters.OfType<JsonMediaTypeFormatter>().ToList()
                 .ForEach(f => formatters.Remove(f));
 
+            var result = new JSendResult<IJSendResponse>(status, response, controller);
             // Exercise system and verify outcome
-            Action ctor = () => new JSendResult<IJSendResponse>(status, response, controller);
-            ctor.ShouldThrow<ArgumentException>()
-                .And.Message.Should().StartWith(StringResources.ConfigurationMustContainFormatter);
+            result.Awaiting(r => r.ExecuteAsync(CancellationToken.None))
+                .ShouldThrow<InvalidOperationException>()
+                .WithMessage(StringResources.ConfigurationMustContainFormatter);
         }
 
         [Theory, JSendAutoData]
