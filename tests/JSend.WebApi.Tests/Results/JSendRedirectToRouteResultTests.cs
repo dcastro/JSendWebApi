@@ -9,6 +9,7 @@ using JSend.WebApi.Responses;
 using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
 namespace JSend.WebApi.Tests.Results
@@ -28,6 +29,25 @@ namespace JSend.WebApi.Tests.Results
             // Exercise system and verify outcome
             Assert.Throws<ArgumentNullException>(
                 () => new JSendRedirectToRouteResult(routeName, routeValues, null));
+        }
+
+        [Theory, JSendAutoData]
+        public void ConstructorThrowsWhenRouteNameIsNull(
+            Dictionary<string, object> routeValues, ApiController controller)
+        {
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendRedirectToRouteResult(null, routeValues, controller);
+            ctor.ShouldThrow<ArgumentNullException>();
+        }
+
+        [Theory, JSendAutoData]
+        public void CanBeCreatedWithControllerWithoutProperties(
+            string routeName, Dictionary<string, object> routeValues,
+            [NoAutoProperties] TestableJSendApiController controller)
+        {
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendRedirectToRouteResult(routeName, routeValues, controller);
+            ctor.ShouldNotThrow();
         }
 
         [Theory, JSendAutoData]
@@ -60,15 +80,30 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void LocationIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
-            ApiController controller)
+        public void RouteNameIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues, ApiController controller)
         {
-            // Fixture setup
-            var expectedLocation = new Uri(TestConventions.RouteLink);
             // Exercise system
             var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
             // Verify outcome
-            result.Location.Should().Be(expectedLocation);
+            result.RouteName.Should().Be(routeName);
+        }
+
+        [Theory, JSendAutoData]
+        public void RouteValuesIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues, ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
+            // Verify outcome
+            result.RouteValues.Should().BeSameAs(routeValues);
+        }
+
+        [Theory, JSendAutoData]
+        public void UrlFactoryIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues, ApiController controller)
+        {
+            // Exercise system
+            var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
+            // Verify outcome
+            result.UrlFactory.Should().BeSameAs(controller.Url);
         }
 
         [Theory, JSendAutoData]

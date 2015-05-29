@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Results;
+using JSend.WebApi.Extensions;
 using JSend.WebApi.Properties;
 using JSend.WebApi.Responses;
 
@@ -190,15 +191,7 @@ namespace JSend.WebApi.Results
             {
                 if (_resolvedDependencies == null)
                 {
-                    var request = _controller.Request;
-
-                    if (request == null)
-                        throw new InvalidOperationException(
-                            string.Format(
-                                CultureInfo.CurrentCulture,
-                                StringResources.TypePropertyMustNotBeNull,
-                                typeof (ApiController).Name,
-                                "Request"));
+                    var request = _controller.GetRequestOrThrow();
 
                     _resolvedDependencies = new RequestDependencyProvider(request);
                 }

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Routing;
+using JSend.WebApi.Extensions;
 using JSend.WebApi.Responses;
 
 namespace JSend.WebApi.Results
@@ -18,8 +19,12 @@ namespace JSend.WebApi.Results
     /// <typeparam name="T">The type of the created content.</typeparam>
     public class JSendCreatedAtRouteResult<T> : IJSendResult<SuccessResponse>
     {
+        private readonly string _routeName;
+        private readonly IDictionary<string, object> _routeValues;
+        private readonly ApiController _controller;
         private readonly JSendResult<SuccessResponse> _result;
-        private readonly Uri _location;
+
+        private UrlHelper _urlFactory;
 
         /// <summary>Initializes a new instance of <see cref="JSendCreatedAtRouteResult{T}"/>.</summary>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
@@ -28,14 +33,16 @@ namespace JSend.WebApi.Results
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "3", Justification = "The parameter controller is validated by JSendResult<T>'s constructor.")]
         public JSendCreatedAtRouteResult(string routeName, IDictionary<string, object> routeValues, T content,
-            ApiController controller)
+                                         ApiController controller)
         {
-            _result = new JSendResult<SuccessResponse>(HttpStatusCode.Created, new SuccessResponse(content), controller);
+            if (routeName == null) throw new ArgumentNullException("routeName");
 
-            UrlHelper urlFactory = controller.Url ?? new UrlHelper(controller.Request);
-            string link = urlFactory.Link(routeName, routeValues);
+            _routeName = routeName;
+            _routeValues = routeValues;
+            _controller = controller;
 
-            _location = new Uri(link);
+            var response = new SuccessResponse(content);
+            _result = new JSendResult<SuccessResponse>(StatusCode, response, controller);
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
@@ -47,7 +54,7 @@ namespace JSend.WebApi.Results
         /// <summary>Gets the HTTP status code for the response message.</summary>
         public HttpStatusCode StatusCode
         {
-            get { return _result.StatusCode; }
+            get { return HttpStatusCode.Created; }
         }
 
         /// <summary>Gets the request message which led to this result.</summary>
@@ -56,16 +63,34 @@ namespace JSend.WebApi.Results
             get { return _result.Request; }
         }
 
-        /// <summary>Gets the location at which the content has been created.</summary>
-        public Uri Location
-        {
-            get { return _location; }
-        }
-
         /// <summary>Gets the content value to format in the entity body.</summary>
         public T Content
         {
-            get { return (T) _result.Response.Data; }
+            get { return (T) Response.Data; }
+        }
+
+        /// <summary>Gets the name of the route to use for generating the URL.</summary>
+        public string RouteName
+        {
+            get { return _routeName; }
+        }
+
+        /// <summary>Gets the route data to use for generating the URL.</summary>
+        public IDictionary<string, object> RouteValues
+        {
+            get { return _routeValues; }
+        }
+
+        /// <summary>Gets the factory to use to generate the route URL.</summary>
+        public UrlHelper UrlFactory
+        {
+            get
+            {
+                if (_urlFactory == null)
+                    _urlFactory = _controller.Url ?? new UrlHelper(_controller.GetRequestOrThrow());
+
+                return _urlFactory;
+            }
         }
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
@@ -73,8 +98,10 @@ namespace JSend.WebApi.Results
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
+            string link = UrlFactory.Link(_routeName, _routeValues);
+
             var message = await _result.ExecuteAsync(cancellationToken);
-            message.Headers.Location = _location;
+            message.Headers.Location = new Uri(link);
             return message;
         }
     }
