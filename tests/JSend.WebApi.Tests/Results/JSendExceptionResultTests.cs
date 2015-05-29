@@ -53,6 +53,15 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void CanBeCreatedWithControllerWithoutProperties(Exception ex, string message, int? code, object data,
+            [NoAutoProperties] TestableJSendApiController controller)
+        {
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendExceptionResult(ex, message, code, data, controller);
+            ctor.ShouldNotThrow();
+        }
+
+        [Theory, JSendAutoData]
         public void StatusCodeIs500(JSendExceptionResult result)
         {
             // Exercise system and verify outcome

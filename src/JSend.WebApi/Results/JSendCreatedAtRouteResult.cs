@@ -33,7 +33,7 @@ namespace JSend.WebApi.Results
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "3", Justification = "The parameter controller is validated by JSendResult<T>'s constructor.")]
         public JSendCreatedAtRouteResult(string routeName, IDictionary<string, object> routeValues, T content,
-                                         ApiController controller)
+            ApiController controller)
         {
             if (routeName == null) throw new ArgumentNullException("routeName");
 

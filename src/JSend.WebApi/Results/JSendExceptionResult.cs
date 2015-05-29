@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using JSend.WebApi.Extensions;
 using JSend.WebApi.Properties;
 using JSend.WebApi.Responses;
 
@@ -16,8 +17,13 @@ namespace JSend.WebApi.Results
     /// </summary>
     public class JSendExceptionResult : IJSendResult<ErrorResponse>
     {
-        private readonly JSendResult<ErrorResponse> _result;
         private readonly Exception _exception;
+        private readonly string _message;
+        private readonly int? _errorCode;
+        private readonly object _data;
+        private readonly IDependencyProvider _dependencies;
+
+        private ErrorResponse _response;
 
         /// <summary>Initializes a new instance of <see cref="JSendExceptionResult"/>.</summary>
         /// <param name="exception">The exception to include in the the error.</param>
@@ -74,29 +80,36 @@ namespace JSend.WebApi.Results
         {
             if (exception == null) throw new ArgumentNullException("exception");
 
-            var response = BuildResponse(dependencies.IncludeErrorDetail, exception, message, errorCode, data);
-
             _exception = exception;
-            _result = new JSendResult<ErrorResponse>(HttpStatusCode.InternalServerError, response,
-                dependencies.RequestMessage);
+            _message = message;
+            _errorCode = errorCode;
+            _data = data;
+            _dependencies = dependencies;
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
         public ErrorResponse Response
         {
-            get { return _result.Response; }
+            get
+            {
+                if (_response == null)
+                {
+                    _response = BuildResponse(_dependencies.IncludeErrorDetail, _exception, _message, _errorCode, _data);
+                }
+                return _response;
+            }
         }
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
         public HttpStatusCode StatusCode
         {
-            get { return _result.StatusCode; }
+            get { return HttpStatusCode.InternalServerError; }
         }
 
         /// <summary>Gets the request message which led to this result.</summary>
         public HttpRequestMessage Request
         {
-            get { return _result.Request; }
+            get { return _dependencies.RequestMessage; }
         }
 
         /// <summary>Gets the exception to include in the error.</summary>
@@ -138,7 +151,9 @@ namespace JSend.WebApi.Results
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            return _result.ExecuteAsync(cancellationToken);
+            var result = new JSendResult<ErrorResponse>(StatusCode, Response, Request);
+
+            return result.ExecuteAsync(cancellationToken);
         }
 
         private interface IDependencyProvider
@@ -155,6 +170,8 @@ namespace JSend.WebApi.Results
 
             public DirectDependencyProvider(bool includeErrorDetail, HttpRequestMessage requestMessage)
             {
+                if (requestMessage == null) throw new ArgumentNullException("requestMessage");
+
                 _includeErrorDetail = includeErrorDetail;
                 _requestMessage = requestMessage;
             }
@@ -172,27 +189,44 @@ namespace JSend.WebApi.Results
 
         private sealed class ControllerDependencyProvider : IDependencyProvider
         {
-            private readonly IDependencyProvider _dependencies;
+            private readonly ApiController _controller;
+            private IDependencyProvider _resolvedDependencies;
 
             public ControllerDependencyProvider(ApiController controller)
             {
                 if (controller == null)
                     throw new ArgumentNullException("controller");
 
-                var includeErrorDetail = controller.Request.ShouldIncludeErrorDetail();
-                var request = controller.Request;
-
-                _dependencies = new DirectDependencyProvider(includeErrorDetail, request);
+                _controller = controller;
             }
 
             public bool IncludeErrorDetail
             {
-                get { return _dependencies.IncludeErrorDetail; }
+                get
+                {
+                    EnsureResolved();
+                    return _resolvedDependencies.IncludeErrorDetail;
+                }
             }
 
             public HttpRequestMessage RequestMessage
             {
-                get { return _dependencies.RequestMessage; }
+                get
+                {
+                    EnsureResolved();
+                    return _resolvedDependencies.RequestMessage;
+                }
+            }
+
+            private void EnsureResolved()
+            {
+                if (_resolvedDependencies == null)
+                {
+                    var includeErrorDetail = _controller.Request.ShouldIncludeErrorDetail();
+                    var request = _controller.GetRequestOrThrow();
+
+                    _resolvedDependencies = new DirectDependencyProvider(includeErrorDetail, request);
+                }
             }
         }
     }
