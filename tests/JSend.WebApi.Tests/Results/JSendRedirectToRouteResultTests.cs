@@ -4,12 +4,12 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Routing;
 using FluentAssertions;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
+using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
@@ -81,26 +81,6 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void RouteNameIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
-            ApiController controller)
-        {
-            // Exercise system
-            var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
-            // Verify outcome
-            result.RouteName.Should().Be(routeName);
-        }
-
-        [Theory, JSendAutoData]
-        public void RouteValuesIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
-            ApiController controller)
-        {
-            // Exercise system
-            var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
-            // Verify outcome
-            result.RouteValues.Should().BeSameAs(routeValues);
-        }
-
-        [Theory, JSendAutoData]
         public void UrlFactoryIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
             ApiController controller)
         {
@@ -120,6 +100,18 @@ namespace JSend.WebApi.Tests.Results
             var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
             // Verify outcome
             result.UrlFactory.Should().NotBeNull();
+        }
+
+        [Theory]
+        [InlineJSendAutoData("RouteName")]
+        [InlineJSendAutoData("RouteValues")]
+        public void PropertiesAreCorrectlyInitializedThroughTheConstructor(
+            string propertyName, ConstructorInitializedMemberAssertion assertion)
+        {
+            // Fixture setup
+            var property = typeof (JSendRedirectToRouteResult).GetProperty(propertyName);
+            // Exercise system and verify outcome
+            assertion.Verify(property);
         }
 
         [Theory, JSendAutoData]

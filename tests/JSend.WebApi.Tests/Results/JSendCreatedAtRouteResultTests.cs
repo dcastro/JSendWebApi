@@ -10,6 +10,7 @@ using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using JSend.WebApi.Tests.TestTypes;
 using Newtonsoft.Json;
+using Ploeh.AutoFixture.Idioms;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
@@ -82,36 +83,6 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void ContentIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
-            Model content, ApiController controller)
-        {
-            // Exercise system
-            var result = new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, controller);
-            // Verify outcome
-            result.Content.Should().Be(content);
-        }
-
-        [Theory, JSendAutoData]
-        public void RouteNameIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
-            Model content, ApiController controller)
-        {
-            // Exercise system
-            var result = new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, controller);
-            // Verify outcome
-            result.RouteName.Should().Be(routeName);
-        }
-
-        [Theory, JSendAutoData]
-        public void RouteValuesIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
-            Model content, ApiController controller)
-        {
-            // Exercise system
-            var result = new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, controller);
-            // Verify outcome
-            result.RouteValues.Should().BeSameAs(routeValues);
-        }
-
-        [Theory, JSendAutoData]
         public void UrlFactoryIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
             Model content, ApiController controller)
         {
@@ -131,6 +102,19 @@ namespace JSend.WebApi.Tests.Results
             var result = new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, controller);
             // Verify outcome
             result.UrlFactory.Should().NotBeNull();
+        }
+
+        [Theory]
+        [InlineJSendAutoData("RouteName")]
+        [InlineJSendAutoData("RouteValues")]
+        [InlineJSendAutoData("Content")]
+        public void PropertiesAreCorrectlyInitializedThroughTheConstructor(
+            string propertyName, ConstructorInitializedMemberAssertion assertion)
+        {
+            // Fixture setup
+            var property = typeof (JSendCreatedAtRouteResult<Model>).GetProperty(propertyName);
+            // Exercise system and verify outcome
+            assertion.Verify(property);
         }
 
         [Theory, JSendAutoData]
