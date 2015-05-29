@@ -59,6 +59,15 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void CanBeCreatedWithControllerWithoutProperties([InvalidModelState] ModelStateDictionary modelState,
+            [NoAutoProperties] TestableJSendApiController controller)
+        {
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendInvalidModelStateResult(modelState, controller);
+            ctor.ShouldNotThrow();
+        }
+
+        [Theory, JSendAutoData]
         public void StatusCodeIs400([InvalidModelState] JSendInvalidModelStateResult result)
         {
             // Exercise system and verify outcome

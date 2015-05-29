@@ -10,6 +10,7 @@ using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture.Idioms;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
 namespace JSend.WebApi.Tests.Results
@@ -37,6 +38,15 @@ namespace JSend.WebApi.Tests.Results
             Action ctor = () => new JSendBadRequestResult("  ", controller);
             ctor.ShouldThrow<ArgumentException>()
                 .And.Message.Should().StartWith(StringResources.BadRequest_WhiteSpaceReason);
+        }
+
+        [Theory, JSendAutoData]
+        public void CanBeCreatedWithControllerWithoutProperties(string reason,
+            [NoAutoProperties] TestableJSendApiController controller)
+        {
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendBadRequestResult(reason, controller);
+            ctor.ShouldNotThrow();
         }
 
         [Theory, JSendAutoData]

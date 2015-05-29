@@ -39,7 +39,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void CanBeCreatedWithControllerWithoutRequest(
+        public void CanBeCreatedWithControllerWithoutProperties(
             Model content, [NoAutoProperties] TestableJSendApiController controller)
         {
             // Exercise system and verify outcome

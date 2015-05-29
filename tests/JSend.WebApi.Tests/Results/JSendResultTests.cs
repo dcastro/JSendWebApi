@@ -29,7 +29,7 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void CanBeCreatedWithControllerWithoutRequest(HttpStatusCode status, IJSendResponse response,
+        public void CanBeCreatedWithControllerWithoutProperties(HttpStatusCode status, IJSendResponse response,
             [NoAutoProperties] TestableJSendApiController controller)
         {
             // Exercise system and verify outcome
