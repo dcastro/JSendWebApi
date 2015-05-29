@@ -16,8 +16,10 @@ namespace JSend.WebApi.Results
     /// </summary>
     public class JSendUnauthorizedResult : IJSendResult<FailResponse>
     {
+        private static readonly FailResponse FailResponse = new FailResponse(StringResources.RequestNotAuthorized);
+
         private readonly IEnumerable<AuthenticationHeaderValue> _challenges;
-        private readonly JSendResult<FailResponse> _result;
+        private readonly JSendResult<FailResponse>.IDependencyProvider _dependencies;
 
         /// <summary>Initializes a new instance of <see cref="JSendUnauthorizedResult"/>.</summary>
         /// <param name="challenges">The WWW-Authenticate challenges.</param>
@@ -42,28 +44,27 @@ namespace JSend.WebApi.Results
             JSendResult<FailResponse>.IDependencyProvider dependencies)
         {
             if (challenges == null) throw new ArgumentNullException("challenges");
+            
             _challenges = challenges;
-
-            var response = new FailResponse(StringResources.RequestNotAuthorized);
-            _result = new JSendResult<FailResponse>(HttpStatusCode.Unauthorized, response, dependencies.RequestMessage);
+            _dependencies = dependencies;
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
         public FailResponse Response
         {
-            get { return _result.Response; }
+            get { return FailResponse; }
         }
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
         public HttpStatusCode StatusCode
         {
-            get { return _result.StatusCode; }
+            get { return HttpStatusCode.Unauthorized; }
         }
 
         /// <summary>Gets the request message which led to this result.</summary>
         public HttpRequestMessage Request
         {
-            get { return _result.Request; }
+            get { return _dependencies.RequestMessage; }
         }
 
         /// <summary>Gets the WWW-Authenticate challenges.</summary>
@@ -77,7 +78,9 @@ namespace JSend.WebApi.Results
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            var message = await _result.ExecuteAsync(cancellationToken);
+            var result = new JSendResult<FailResponse>(StatusCode, Response, Request);
+
+            var message = await result.ExecuteAsync(cancellationToken);
 
             foreach (var challenge in _challenges)
                 message.Headers.WwwAuthenticate.Add(challenge);

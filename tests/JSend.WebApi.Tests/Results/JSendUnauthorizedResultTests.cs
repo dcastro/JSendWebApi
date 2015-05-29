@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -12,6 +13,7 @@ using JSend.WebApi.Results;
 using JSend.WebApi.Tests.FixtureCustomizations;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture.Idioms;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
 namespace JSend.WebApi.Tests.Results
@@ -30,6 +32,15 @@ namespace JSend.WebApi.Tests.Results
         {
             // Exercise system and verify outcome
             assertion.Verify(typeof (JSendUnauthorizedResult).GetConstructors());
+        }
+
+        [Theory, JSendAutoData]
+        public void CanBeCreatedWithControllerWithoutProperties(IEnumerable<AuthenticationHeaderValue> challenges,
+            [NoAutoProperties] TestableJSendApiController controller)
+        {
+            // Exercise system and verify outcome
+            Action ctor = () => new JSendUnauthorizedResult(challenges, controller);
+            ctor.ShouldNotThrow();
         }
 
         [Theory, JSendAutoData]
