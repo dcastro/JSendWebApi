@@ -122,6 +122,18 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
+        public void UrlFactoryIsCreated_WhenControllerDoesNotHaveAUrlFactory(string routeName, Model content,
+            Dictionary<string, object> routeValues, ApiController controller)
+        {
+            // Fixture setup
+            controller.Url = null;
+            // Exercise system
+            var result = new JSendCreatedAtRouteResult<Model>(routeName, routeValues, content, controller);
+            // Verify outcome
+            result.UrlFactory.Should().NotBeNull();
+        }
+
+        [Theory, JSendAutoData]
         public async Task ResponseIsSerializedIntoBody(JSendCreatedAtRouteResult<Model> result)
         {
             // Fixture setup

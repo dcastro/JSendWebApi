@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Routing;
 using FluentAssertions;
 using JSend.WebApi.Responses;
 using JSend.WebApi.Results;
@@ -80,7 +81,8 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void RouteNameIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues, ApiController controller)
+        public void RouteNameIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
+            ApiController controller)
         {
             // Exercise system
             var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
@@ -89,7 +91,8 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void RouteValuesIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues, ApiController controller)
+        public void RouteValuesIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
+            ApiController controller)
         {
             // Exercise system
             var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
@@ -98,12 +101,25 @@ namespace JSend.WebApi.Tests.Results
         }
 
         [Theory, JSendAutoData]
-        public void UrlFactoryIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues, ApiController controller)
+        public void UrlFactoryIsCorrectlyInitialized(string routeName, Dictionary<string, object> routeValues,
+            ApiController controller)
         {
             // Exercise system
             var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
             // Verify outcome
             result.UrlFactory.Should().BeSameAs(controller.Url);
+        }
+
+        [Theory, JSendAutoData]
+        public void UrlFactoryIsCreated_WhenControllerDoesNotHaveAUrlFactory(string routeName,
+            Dictionary<string, object> routeValues, ApiController controller)
+        {
+            // Fixture setup
+            controller.Url = null;
+            // Exercise system
+            var result = new JSendRedirectToRouteResult(routeName, routeValues, controller);
+            // Verify outcome
+            result.UrlFactory.Should().NotBeNull();
         }
 
         [Theory, JSendAutoData]
