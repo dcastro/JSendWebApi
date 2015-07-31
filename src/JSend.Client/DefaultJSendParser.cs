@@ -113,7 +113,7 @@ namespace JSend.Client
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
         [Pure]
-        public async Task<JSendResponse<T>> ParseSuccessMessageAsync<T>(JToken json,
+        public static async Task<JSendResponse<T>> ParseSuccessMessageAsync<T>(JToken json,
             JsonSerializerSettings serializerSettings, HttpResponseMessage responseMessage)
         {
             json.Validate(await SuccessSchema.Value);
@@ -140,7 +140,7 @@ namespace JSend.Client
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
         [Pure]
-        public async Task<JSendResponse<T>> ParseFailMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
+        public static async Task<JSendResponse<T>> ParseFailMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
             json.Validate(await FailSchema.Value);
 
@@ -161,7 +161,7 @@ namespace JSend.Client
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
         [Pure]
-        public async Task<JSendResponse<T>> ParseErrorMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
+        public static async Task<JSendResponse<T>> ParseErrorMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
             json.Validate(await ErrorSchema.Value);
 
