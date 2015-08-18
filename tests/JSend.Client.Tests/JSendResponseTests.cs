@@ -291,6 +291,13 @@ namespace JSend.Client.Tests
 
         private static readonly HttpResponseMessage HttpResponseMessageSingleton = new HttpResponseMessage();
 
+        public class DerivedResponse<T> : JSendResponse<T>
+        {
+            public DerivedResponse(HttpResponseMessage httpResponse) : base(httpResponse)
+            {
+            }
+        }
+
         public static IEnumerable<object[]> EquivalentResponses
         {
             get
@@ -381,6 +388,16 @@ namespace JSend.Client.Tests
         public void TwoResponses_AreNotEqual_WhenTheirFieldsDoNotMatch(JSendResponse<string> first,
             JSendResponse<string> second)
         {
+            // Exercise system and verify outcome
+            first.Equals(second).Should().BeFalse();
+        }
+
+        [Theory, JSendAutoData]
+        public void TwoResponses_AreNotEqual_WhenTheirTypesDoNotMatch(HttpResponseMessage httpResponse)
+        {
+            // Fixture setup
+            var first = new JSendResponse<int>(httpResponse);
+            var second = new DerivedResponse<int>(httpResponse);
             // Exercise system and verify outcome
             first.Equals(second).Should().BeFalse();
         }

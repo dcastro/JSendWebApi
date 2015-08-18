@@ -11,7 +11,7 @@ namespace JSend.Client
 {
     /// <summary>Represents the response received from a JSend API.</summary>
     /// <typeparam name="T">The type of data expected to be returned by the API.</typeparam>
-    public sealed class JSendResponse<T> : IEquatable<JSendResponse<T>>, IDisposable
+    public class JSendResponse<T> : IDisposable
     {
         private readonly T _data;
         private readonly bool _hasData;
@@ -190,15 +190,8 @@ namespace JSend.Client
                 HttpResponse.Dispose();
         }
 
-        /// <summary>Determines whether the specified <see cref="JSendResponse{T}"/> is equal to the current <see cref="JSendResponse{T}"/>.</summary>
-        /// <param name="other">The object to compare with the current object.</param>
-        /// <returns><see langword="true"/> if the specified error is equal to the current error; otherwise, <see langword="false"/>.</returns>
-        [Pure]
-        public bool Equals(JSendResponse<T> other)
+        private bool Equals(JSendResponse<T> other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-
             return _status == other.Status &&
                    object.Equals(_error, other._error) &&
                    object.Equals(_httpResponse, other._httpResponse) &&
@@ -211,7 +204,11 @@ namespace JSend.Client
         /// <returns><see langword="true"/> if the specified object is equal to the current object; otherwise, <see langword="false"/>.</returns>
         public override bool Equals(object obj)
         {
-            return Equals(obj as JSendResponse<T>);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+
+            return Equals((JSendResponse<T>) obj);
         }
 
         /// <summary>Returns whether the two operands are equal.</summary>
