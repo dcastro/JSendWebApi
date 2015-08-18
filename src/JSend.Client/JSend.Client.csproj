@@ -58,7 +58,6 @@
     <Compile Include="JSendParseException.cs" />
     <Compile Include="JSendRequestException.cs" />
     <Compile Include="JSendResponse.cs" />
-    <Compile Include="JSendResponse`1.cs" />
     <Compile Include="JSendStatus.cs" />
     <Compile Include="MessageInterceptor.cs" />
     <Compile Include="NullMessageInterceptor.cs" />

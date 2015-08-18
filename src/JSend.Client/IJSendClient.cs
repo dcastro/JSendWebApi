@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace JSend.Client
 {
@@ -87,7 +88,9 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        Task<JSendResponse> PostAsync(string requestUri, object content);
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        Task<JSendResponse<JToken>> PostAsync(string requestUri, object content);
 
         /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
         /// <param name="requestUri">The Uri the request is sent to.</param>
@@ -95,7 +98,9 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        Task<JSendResponse> PostAsync(Uri requestUri, object content);
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        Task<JSendResponse<JToken>> PostAsync(Uri requestUri, object content);
 
         /// <summary>Send a POST request to the specified Uri as an asynchronous operation.</summary>
         /// <param name="requestUri">The Uri the request is sent to.</param>
@@ -104,7 +109,9 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        Task<JSendResponse> PostAsync(Uri requestUri, object content,
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        Task<JSendResponse<JToken>> PostAsync(Uri requestUri, object content,
             CancellationToken cancellationToken);
 
         /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
@@ -112,14 +119,18 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        Task<JSendResponse> DeleteAsync(string requestUri);
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        Task<JSendResponse<JToken>> DeleteAsync(string requestUri);
 
         /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
         /// <param name="requestUri">The Uri the request is sent to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        Task<JSendResponse> DeleteAsync(Uri requestUri);
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        Task<JSendResponse<JToken>> DeleteAsync(Uri requestUri);
 
         /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
         /// <param name="requestUri">The Uri the request is sent to.</param>
@@ -127,7 +138,9 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        Task<JSendResponse> DeleteAsync(Uri requestUri, CancellationToken cancellationToken);
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        Task<JSendResponse<JToken>> DeleteAsync(Uri requestUri, CancellationToken cancellationToken);
 
         /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>
@@ -167,7 +180,9 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        Task<JSendResponse> PutAsync(string requestUri, object content);
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        Task<JSendResponse<JToken>> PutAsync(string requestUri, object content);
 
         /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
         /// <param name="requestUri">The Uri the request is sent to.</param>
@@ -175,7 +190,9 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        Task<JSendResponse> PutAsync(Uri requestUri, object content);
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        Task<JSendResponse<JToken>> PutAsync(Uri requestUri, object content);
 
         /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
         /// <param name="requestUri">The Uri the request is sent to.</param>
@@ -184,7 +201,9 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        Task<JSendResponse> PutAsync(Uri requestUri, object content,
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification = "We need to return a response asynchronously.")]
+        Task<JSendResponse<JToken>> PutAsync(Uri requestUri, object content,
             CancellationToken cancellationToken);
 
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>

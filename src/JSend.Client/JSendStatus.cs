@@ -1,6 +1,6 @@
 ﻿namespace JSend.Client
 {
-    /// <summary>Defines the possible statuses for a <see cref="JSendResponse"/>.</summary>
+    /// <summary>Defines the possible statuses for a <see cref="JSendResponse{T}"/>.</summary>
     public enum JSendStatus
     {
         /// <summary>Indicates that all went well, and (usually) some data was returned.</summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Globalization;
@@ -9,39 +10,86 @@ using JSend.Client.Properties;
 namespace JSend.Client
 {
     /// <summary>Represents the response received from a JSend API.</summary>
-    public class JSendResponse : IDisposable
+    /// <typeparam name="T">The type of data expected to be returned by the API.</typeparam>
+    public sealed class JSendResponse<T> : IEquatable<JSendResponse<T>>, IDisposable
     {
-        private readonly JSendStatus _status;
+        private readonly T _data;
+        private readonly bool _hasData;
         private readonly JSendError _error;
         private readonly HttpResponseMessage _httpResponseMessage;
+        private readonly JSendStatus _status;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="JSendResponse"/> representing a successful response.
+        /// Initializes a new instance of <see cref="JSendResponse{T}"/> representing a successful response.
         /// </summary>
+        /// <param name="data">The data returned by the API.</param>
         /// <param name="httpResponseMessage">The HTTP response message.</param>
-        public JSendResponse(HttpResponseMessage httpResponseMessage)
+        public JSendResponse(T data, HttpResponseMessage httpResponseMessage)
+            : this(data, true, null, httpResponseMessage)
         {
-            if (httpResponseMessage == null) throw new ArgumentNullException("httpResponseMessage");
-
             _status = JSendStatus.Success;
-            _httpResponseMessage = httpResponseMessage;
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="JSendResponse"/> representing a failure/error response.
+        /// Initializes a new instance of <see cref="JSendResponse{T}"/> representing a successful response.
+        /// </summary>
+        /// <param name="httpResponseMessage">The HTTP response message.</param>
+        public JSendResponse(HttpResponseMessage httpResponseMessage)
+            : this(default(T), false, null, httpResponseMessage)
+        {
+            _status = JSendStatus.Success;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="JSendResponse{T}"/> representing a failure/error response.
         /// </summary>
         /// <param name="error">The error details.</param>
         /// <param name="httpResponseMessage">The HTTP response message.</param>
         public JSendResponse(JSendError error, HttpResponseMessage httpResponseMessage)
+            : this(default(T), false, error, httpResponseMessage)
         {
             if (error == null) throw new ArgumentNullException("error");
-            if (httpResponseMessage == null) throw new ArgumentNullException("httpResponseMessage");
 
             Contract.Assert(error.Status != JSendStatus.Success);
-
             _status = error.Status;
+        }
+
+        private JSendResponse(T data, bool hasData, JSendError error, HttpResponseMessage httpResponseMessage)
+        {
+            if (httpResponseMessage == null) throw new ArgumentNullException("httpResponseMessage");
+
+            _data = data;
+            _hasData = hasData;
             _error = error;
             _httpResponseMessage = httpResponseMessage;
+        }
+
+        /// <summary>
+        /// Gets the data returned by the API.
+        /// If none was returned or if the response was not successful,
+        /// a <see cref="JSendRequestException"/> will be thrown.
+        /// </summary>
+        /// <exception cref="JSendRequestException">The request was not successful or did not return any data.</exception>        
+        [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations",
+            Justification = "This is the same pattern used by Nullable<T>.")]
+        public T Data
+        {
+            get
+            {
+                EnsureSuccessStatus();
+
+                if (!HasData)
+                    throw new JSendRequestException(StringResources.SuccessResponseWithoutData);
+                return _data;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the response contains data.
+        /// </summary>
+        public bool HasData
+        {
+            get { return _hasData; }
         }
 
         /// <summary>Indicates whether the JSend response had a status of "success".</summary>
@@ -71,12 +119,35 @@ namespace JSend.Client
             get { return _error; }
         }
 
+        /// <summary>
+        /// Returns the response's data, if any;
+        /// otherwise the default value of <typeparamref name="T"/> is returned.
+        /// </summary>
+        /// <returns>The response's data or the default vale of <typeparamref name="T"/>.</returns>
+        [Pure]
+        public T GetDataOrDefault()
+        {
+            return GetDataOrDefault(default(T));
+        }
+
+        /// <summary>
+        /// Returns the response's data, if any;
+        /// otherwise <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="defaultValue">The value to return if the response does not contain any data.</param>
+        /// <returns>The response's data or <paramref name="defaultValue"/>.</returns>
+        [Pure]
+        public T GetDataOrDefault(T defaultValue)
+        {
+            return HasData ? Data : defaultValue;
+        }
+
         /// <summary>Throws an exception if <see cref="IsSuccess"/> is <see langword="false"/>.</summary>
         /// <returns>Returns itself if the call is successful.</returns>
         /// <exception cref="JSendRequestException">The request was not successful.</exception>
         [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase",
             Justification = "We explicitly want the lower-case string here")]
-        public JSendResponse EnsureSuccessStatus()
+        public JSendResponse<T> EnsureSuccessStatus()
         {
             if (!IsSuccess)
             {
@@ -113,42 +184,34 @@ namespace JSend.Client
         /// <see langword="true"/> to release both managed and unmanaged resources;
         /// <see langword="false"/> to release only unmanaged resources.
         /// </param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing)
                 HttpResponseMessage.Dispose();
         }
 
-        private bool Equals(JSendResponse other)
+        /// <summary>Determines whether the specified <see cref="JSendResponse{T}"/> is equal to the current <see cref="JSendResponse{T}"/>.</summary>
+        /// <param name="other">The object to compare with the current object.</param>
+        /// <returns><see langword="true"/> if the specified error is equal to the current error; otherwise, <see langword="false"/>.</returns>
+        [Pure]
+        public bool Equals(JSendResponse<T> other)
         {
-            return _status == other._status &&
-                   Equals(_error, other._error) &&
-                   _httpResponseMessage.Equals(other._httpResponseMessage);
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return _status == other.Status &&
+                   object.Equals(_error, other._error) &&
+                   object.Equals(_httpResponseMessage, other._httpResponseMessage) &&
+                   EqualityComparer<T>.Default.Equals(_data, other._data) &&
+                   _hasData.Equals(other._hasData);
         }
 
-        /// <summary>Determines whether the specified <see cref="Object"/> is equal to the current <see cref="JSendResponse"/>.</summary>
+        /// <summary>Determines whether the specified <see cref="Object"/> is equal to the current <see cref="JSendResponse{T}"/>.</summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns><see langword="true"/> if the specified object is equal to the current object; otherwise, <see langword="false"/>.</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-
-            return Equals((JSendResponse) obj);
-        }
-
-        /// <summary>Serves as a hash function for this <see cref="JSendResponse"/>.</summary>
-        /// <returns>A hash code for this <see cref="JSendResponse"/>.</returns>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = (int) _status;
-                hashCode = (hashCode*397) ^ (_error != null ? _error.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ _httpResponseMessage.GetHashCode();
-                return hashCode;
-            }
+            return Equals(obj as JSendResponse<T>);
         }
 
         /// <summary>Returns whether the two operands are equal.</summary>
@@ -158,7 +221,7 @@ namespace JSend.Client
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification =
             "Non-sealed classes should not implemented IEquatable<T>. See http://blog.mischel.com/2013/01/05/inheritance-and-iequatable-do-not-mix/" +
             "and http://stackoverflow.com/q/1868316/857807")]
-        public static bool operator ==(JSendResponse left, JSendResponse right)
+        public static bool operator ==(JSendResponse<T> left, JSendResponse<T> right)
         {
             return Equals(left, right);
         }
@@ -170,16 +233,34 @@ namespace JSend.Client
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification =
             "Non-sealed classes should not implemented IEquatable<T>. See http://blog.mischel.com/2013/01/05/inheritance-and-iequatable-do-not-mix/" +
             "and http://stackoverflow.com/q/1868316/857807")]
-        public static bool operator !=(JSendResponse left, JSendResponse right)
+        public static bool operator !=(JSendResponse<T> left, JSendResponse<T> right)
         {
             return !Equals(left, right);
         }
 
-        /// <summary>Returns a string that represents the <see cref="JSendResponse"/>.</summary>
-        /// <returns>A string that represents the <see cref="JSendResponse"/>.</returns>
+        /// <summary>Serves as a hash function for this <see cref="JSendResponse{T}"/>.</summary>
+        /// <returns>A hash code for this <see cref="JSendResponse{T}"/>.</returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (int) _status;
+                hashCode = (hashCode*397) ^ (_error != null ? _error.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ _httpResponseMessage.GetHashCode();
+                hashCode = (hashCode*397) ^ EqualityComparer<T>.Default.GetHashCode(_data);
+                hashCode = (hashCode*397) ^ _hasData.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        /// <summary>Returns a string that represents the <see cref="JSendResponse{T}"/>.</summary>
+        /// <returns>A string that represents the <see cref="JSendResponse{T}"/>.</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
+
+            if (HasData)
+                sb.AppendFormat(CultureInfo.InvariantCulture, "Data: {0}, ", Data);
 
             sb.AppendFormat(CultureInfo.InvariantCulture, "Status: {0}", Status);
 
