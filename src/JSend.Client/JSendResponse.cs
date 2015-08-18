@@ -16,16 +16,16 @@ namespace JSend.Client
         private readonly T _data;
         private readonly bool _hasData;
         private readonly JSendError _error;
-        private readonly HttpResponseMessage _httpResponseMessage;
+        private readonly HttpResponseMessage _httpResponse;
         private readonly JSendStatus _status;
 
         /// <summary>
         /// Initializes a new instance of <see cref="JSendResponse{T}"/> representing a successful response.
         /// </summary>
         /// <param name="data">The data returned by the API.</param>
-        /// <param name="httpResponseMessage">The HTTP response message.</param>
-        public JSendResponse(T data, HttpResponseMessage httpResponseMessage)
-            : this(data, true, null, httpResponseMessage)
+        /// <param name="httpResponse">The HTTP response message.</param>
+        public JSendResponse(T data, HttpResponseMessage httpResponse)
+            : this(data, true, null, httpResponse)
         {
             _status = JSendStatus.Success;
         }
@@ -33,9 +33,9 @@ namespace JSend.Client
         /// <summary>
         /// Initializes a new instance of <see cref="JSendResponse{T}"/> representing a successful response.
         /// </summary>
-        /// <param name="httpResponseMessage">The HTTP response message.</param>
-        public JSendResponse(HttpResponseMessage httpResponseMessage)
-            : this(default(T), false, null, httpResponseMessage)
+        /// <param name="httpResponse">The HTTP response message.</param>
+        public JSendResponse(HttpResponseMessage httpResponse)
+            : this(default(T), false, null, httpResponse)
         {
             _status = JSendStatus.Success;
         }
@@ -44,9 +44,9 @@ namespace JSend.Client
         /// Initializes a new instance of <see cref="JSendResponse{T}"/> representing a failure/error response.
         /// </summary>
         /// <param name="error">The error details.</param>
-        /// <param name="httpResponseMessage">The HTTP response message.</param>
-        public JSendResponse(JSendError error, HttpResponseMessage httpResponseMessage)
-            : this(default(T), false, error, httpResponseMessage)
+        /// <param name="httpResponse">The HTTP response message.</param>
+        public JSendResponse(JSendError error, HttpResponseMessage httpResponse)
+            : this(default(T), false, error, httpResponse)
         {
             if (error == null) throw new ArgumentNullException("error");
 
@@ -54,14 +54,14 @@ namespace JSend.Client
             _status = error.Status;
         }
 
-        private JSendResponse(T data, bool hasData, JSendError error, HttpResponseMessage httpResponseMessage)
+        private JSendResponse(T data, bool hasData, JSendError error, HttpResponseMessage httpResponse)
         {
-            if (httpResponseMessage == null) throw new ArgumentNullException("httpResponseMessage");
+            if (httpResponse == null) throw new ArgumentNullException("httpResponse");
 
             _data = data;
             _hasData = hasData;
             _error = error;
-            _httpResponseMessage = httpResponseMessage;
+            _httpResponse = httpResponse;
         }
 
         /// <summary>
@@ -105,9 +105,9 @@ namespace JSend.Client
         }
 
         /// <summary>Gets the HTTP response message.</summary>
-        public HttpResponseMessage HttpResponseMessage
+        public HttpResponseMessage HttpResponse
         {
-            get { return _httpResponseMessage; }
+            get { return _httpResponse; }
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace JSend.Client
         private void Dispose(bool disposing)
         {
             if (disposing)
-                HttpResponseMessage.Dispose();
+                HttpResponse.Dispose();
         }
 
         /// <summary>Determines whether the specified <see cref="JSendResponse{T}"/> is equal to the current <see cref="JSendResponse{T}"/>.</summary>
@@ -201,7 +201,7 @@ namespace JSend.Client
 
             return _status == other.Status &&
                    object.Equals(_error, other._error) &&
-                   object.Equals(_httpResponseMessage, other._httpResponseMessage) &&
+                   object.Equals(_httpResponse, other._httpResponse) &&
                    EqualityComparer<T>.Default.Equals(_data, other._data) &&
                    _hasData.Equals(other._hasData);
         }
@@ -246,7 +246,7 @@ namespace JSend.Client
             {
                 var hashCode = (int) _status;
                 hashCode = (hashCode*397) ^ (_error != null ? _error.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ _httpResponseMessage.GetHashCode();
+                hashCode = (hashCode*397) ^ _httpResponse.GetHashCode();
                 hashCode = (hashCode*397) ^ EqualityComparer<T>.Default.GetHashCode(_data);
                 hashCode = (hashCode*397) ^ _hasData.GetHashCode();
                 return hashCode;
@@ -267,7 +267,7 @@ namespace JSend.Client
             if (Error != null)
                 sb.AppendFormat(CultureInfo.CurrentCulture, ", Error: {{{0}}}", Error);
 
-            sb.AppendFormat(CultureInfo.CurrentCulture, ", HttpResponseMessage: {{{0}}}", HttpResponseMessage);
+            sb.AppendFormat(CultureInfo.CurrentCulture, ", HttpResponse: {{{0}}}", HttpResponse);
 
             return sb.ToString();
         }

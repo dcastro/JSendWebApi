@@ -127,7 +127,7 @@ namespace JSend.Client.Tests
         public void HttpResponseMessageIsCorrectlyInitialized(ConstructorInitializedMemberAssertion assertion)
         {
             // Fixture setup
-            var property = new Properties<JSendResponse<int>>().Select(rsp => rsp.HttpResponseMessage);
+            var property = new Properties<JSendResponse<int>>().Select(rsp => rsp.HttpResponse);
             // Exercise system and verify outcome
             assertion.Verify(property);
         }
