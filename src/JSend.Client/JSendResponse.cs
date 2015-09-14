@@ -11,57 +11,16 @@ namespace JSend.Client
 {
     /// <summary>Represents the response received from a JSend API.</summary>
     /// <typeparam name="T">The type of data expected to be returned by the API.</typeparam>
-    public class JSendResponse<T> : IDisposable
+    public abstract class JSendResponse<T> : IDisposable
     {
-        private readonly T _data;
-        private readonly bool _hasData;
-        private readonly JSendError _error;
-        private readonly HttpResponseMessage _httpResponse;
-        private readonly JSendStatus _status;
-
         /// <summary>
-        /// Initializes a new instance of <see cref="JSendResponse{T}"/> representing a successful response.
-        /// </summary>
-        /// <param name="data">The data returned by the API.</param>
-        /// <param name="httpResponse">The HTTP response message.</param>
-        public JSendResponse(T data, HttpResponseMessage httpResponse)
-            : this(data, true, null, httpResponse)
-        {
-            _status = JSendStatus.Success;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="JSendResponse{T}"/> representing a successful response.
+        /// Initializes a new instance of <see cref="JSendResponse{T}"/>.
         /// </summary>
         /// <param name="httpResponse">The HTTP response message.</param>
-        public JSendResponse(HttpResponseMessage httpResponse)
-            : this(default(T), false, null, httpResponse)
+        protected JSendResponse(HttpResponseMessage httpResponse)
         {
-            _status = JSendStatus.Success;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="JSendResponse{T}"/> representing a failure/error response.
-        /// </summary>
-        /// <param name="error">The error details.</param>
-        /// <param name="httpResponse">The HTTP response message.</param>
-        public JSendResponse(JSendError error, HttpResponseMessage httpResponse)
-            : this(default(T), false, error, httpResponse)
-        {
-            if (error == null) throw new ArgumentNullException("error");
-
-            Contract.Assert(error.Status != JSendStatus.Success);
-            _status = error.Status;
-        }
-
-        private JSendResponse(T data, bool hasData, JSendError error, HttpResponseMessage httpResponse)
-        {
-            if (httpResponse == null) throw new ArgumentNullException("httpResponse");
-
-            _data = data;
-            _hasData = hasData;
-            _error = error;
-            _httpResponse = httpResponse;
+            if (httpResponse == null) throw new ArgumentNullException(nameof(httpResponse));
+            HttpResponse = httpResponse;
         }
 
         /// <summary>
@@ -69,55 +28,27 @@ namespace JSend.Client
         /// If none was returned or if the response was not successful,
         /// a <see cref="JSendRequestException"/> will be thrown.
         /// </summary>
-        /// <exception cref="JSendRequestException">The request was not successful or did not return any data.</exception>        
-        [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations",
-            Justification = "This is the same pattern used by Nullable<T>.")]
-        public T Data
-        {
-            get
-            {
-                EnsureSuccessStatus();
+        /// <exception cref="JSendRequestException">The request was not successful or did not return any data.</exception>
+        public abstract T Data { get; }
 
-                if (!HasData)
-                    throw new JSendRequestException(StringResources.SuccessResponseWithoutData);
-                return _data;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the response contains data.
-        /// </summary>
-        public bool HasData
-        {
-            get { return _hasData; }
-        }
+        /// <summary>Gets whether the response contains data.</summary>
+        public abstract bool HasData { get; }
 
         /// <summary>Indicates whether the JSend response had a status of "success".</summary>
-        public bool IsSuccess
-        {
-            get { return Status == JSendStatus.Success; }
-        }
+        public bool IsSuccess => Status == JSendStatus.Success;
 
         /// <summary>Gets the status of the JSend response.</summary>
-        public JSendStatus Status
-        {
-            get { return _status; }
-        }
+        public abstract JSendStatus Status { get; }
 
         /// <summary>Gets the HTTP response message.</summary>
-        public HttpResponseMessage HttpResponse
-        {
-            get { return _httpResponse; }
-        }
+        public HttpResponseMessage HttpResponse { get; }
 
         /// <summary>
         /// Gets the error object with the details of why the request failed.
         /// <see langword="null"/> if the request was successful.
         /// </summary>
-        public JSendError Error
-        {
-            get { return _error; }
-        }
+        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error")]
+        public abstract JSendError Error { get; }
 
         /// <summary>
         /// Returns the response's data, if any;
@@ -192,11 +123,11 @@ namespace JSend.Client
 
         private bool Equals(JSendResponse<T> other)
         {
-            return _status == other.Status &&
-                   object.Equals(_error, other._error) &&
-                   object.Equals(_httpResponse, other._httpResponse) &&
-                   EqualityComparer<T>.Default.Equals(_data, other._data) &&
-                   _hasData.Equals(other._hasData);
+            return Status == other.Status &&
+                   object.Equals(Error, other.Error) &&
+                   object.Equals(HttpResponse, other.HttpResponse) &&
+                   EqualityComparer<T>.Default.Equals(GetDataOrDefault(), other.GetDataOrDefault()) &&
+                   HasData.Equals(other.HasData);
         }
 
         /// <summary>Determines whether the specified <see cref="Object"/> is equal to the current <see cref="JSendResponse{T}"/>.</summary>
@@ -241,11 +172,11 @@ namespace JSend.Client
         {
             unchecked
             {
-                var hashCode = (int) _status;
-                hashCode = (hashCode*397) ^ (_error != null ? _error.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ _httpResponse.GetHashCode();
-                hashCode = (hashCode*397) ^ EqualityComparer<T>.Default.GetHashCode(_data);
-                hashCode = (hashCode*397) ^ _hasData.GetHashCode();
+                var hashCode = (int) Status;
+                hashCode = (hashCode*397) ^ (Error?.GetHashCode() ?? 0);
+                hashCode = (hashCode*397) ^ HttpResponse.GetHashCode();
+                hashCode = (hashCode*397) ^ EqualityComparer<T>.Default.GetHashCode(GetDataOrDefault());
+                hashCode = (hashCode*397) ^ HasData.GetHashCode();
                 return hashCode;
             }
         }

@@ -140,6 +140,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseParsedContextTests.cs" />
     <Compile Include="ResponseReceivedContextTests.cs" />
+    <Compile Include="Responses\JErrorResponseTests.cs" />
+    <Compile Include="Responses\JSuccessResponseTests.cs" />
+    <Compile Include="Responses\JSuccessWithDataResponseTests.cs" />
     <Compile Include="TestTypes\Model.cs" />
   </ItemGroup>
   <ItemGroup>

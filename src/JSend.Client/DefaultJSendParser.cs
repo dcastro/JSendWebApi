@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using JSend.Client.Properties;
+using JSend.Client.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
@@ -120,12 +121,12 @@ namespace JSend.Client
 
             var dataToken = json["data"];
             if (dataToken.Type == JTokenType.Null)
-                return new JSendResponse<T>(responseMessage);
+                return new JSuccessResponse<T>(responseMessage);
 
             var serializer = JsonSerializer.Create(serializerSettings);
 
             T data = dataToken.ToObject<T>(serializer);
-            return new JSendResponse<T>(data, responseMessage);
+            return new JSuccessWithDataResponse<T>(data, responseMessage);
         }
 
         /// <summary>
@@ -146,7 +147,7 @@ namespace JSend.Client
 
             var dataToken = json["data"];
             var error = new JSendError(JSendStatus.Fail, null, null, dataToken);
-            return new JSendResponse<T>(error, responseMessage);
+            return new JErrorResponse<T>(error, responseMessage);
         }
 
         /// <summary>
@@ -174,7 +175,7 @@ namespace JSend.Client
                 dataToken = null;
 
             var error = new JSendError(JSendStatus.Error, message, code, dataToken);
-            return new JSendResponse<T>(error, responseMessage);
+            return new JErrorResponse<T>(error, responseMessage);
         }
     }
 }

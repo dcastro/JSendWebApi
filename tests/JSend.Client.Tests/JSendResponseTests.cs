@@ -1,225 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Reflection;
 using FluentAssertions;
-using JSend.Client.Properties;
+using JSend.Client.Responses;
 using JSend.Client.Tests.FixtureCustomizations;
 using JSend.Client.Tests.TestTypes;
-using Ploeh.Albedo;
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.Idioms;
-using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
 namespace JSend.Client.Tests
 {
     public class JSendResponseTests
     {
-        private class WithDataAttribute : CustomizeAttribute, ICustomization
-        {
-            public override ICustomization GetCustomization(ParameterInfo parameter)
-            {
-                return this;
-            }
-
-            public void Customize(IFixture fixture)
-            {
-                fixture.Customize<JSendResponse<Model>>(
-                    c => c.FromFactory(
-                        (Model model, HttpResponseMessage msg) => new JSendResponse<Model>(model, msg)));
-            }
-        }
-
-        private class WithoutDataAttribute : CustomizeAttribute, ICustomization
-        {
-            public override ICustomization GetCustomization(ParameterInfo parameter)
-            {
-                return this;
-            }
-
-            public void Customize(IFixture fixture)
-            {
-                fixture.Customize<JSendResponse<Model>>(
-                    c => c.FromFactory(
-                        (HttpResponseMessage msg) => new JSendResponse<Model>(msg)));
-            }
-        }
-
-        private class WithErrorAttribute : CustomizeAttribute, ICustomization
-        {
-            public override ICustomization GetCustomization(ParameterInfo parameter)
-            {
-                return this;
-            }
-
-            public void Customize(IFixture fixture)
-            {
-                fixture.Customize<JSendResponse<Model>>(
-                    c => c.FromFactory(
-                        (JSendError error, HttpResponseMessage msg) => new JSendResponse<Model>(error, msg)));
-            }
-        }
-
         [Theory, JSendAutoData]
-        public void ConstructorsThrowWhenHttpResponseMessageIsNull(JSendError error)
+        public void HttpResponseMessageMustNotBeNull(JSendError error)
         {
             // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendResponse<int>(0, null));
-            Assert.Throws<ArgumentNullException>(() => new JSendResponse<int>(null));
-            Assert.Throws<ArgumentNullException>(() => new JSendResponse<int>(error, null));
+            Assert.Throws<ArgumentNullException>(() => new JSuccessWithDataResponse<int>(0, null));
+            Assert.Throws<ArgumentNullException>(() => new JSuccessResponse<int>(null));
+            Assert.Throws<ArgumentNullException>(() => new JErrorResponse<int>(error, null));
         }
 
         [Theory, JSendAutoData]
-        public void ConstructorThrowsWhenErrorIsNull(HttpResponseMessage httpResponseMessage)
-        {
-            // Exercise system and verify outcome
-            Assert.Throws<ArgumentNullException>(() => new JSendResponse<int>(null, httpResponseMessage));
-        }
-
-        [Theory, JSendAutoData]
-        public void StatusIsSuccessWhenNoErrorIsProvided(HttpResponseMessage httpResponseMessage)
-        {
-            // Exercise system
-            var response = new JSendResponse<int>(httpResponseMessage);
-            // Verify outcome
-            response.Status.Should().Be(JSendStatus.Success);
-        }
-
-        [Theory]
-        [InlineJSendAutoData(JSendStatus.Fail)]
-        [InlineJSendAutoData(JSendStatus.Error)]
-        public void StatusMatchesErrorStatusWhenErrorIsProvided(JSendStatus jsendErrorStatus,
-            HttpResponseMessage httpResponseMessage)
-        {
-            // Fixture setup
-            var error = new JSendError(jsendErrorStatus, null, null, null);
-            // Exercise system
-            var response = new JSendResponse<int>(error, httpResponseMessage);
-            // Verify outcome
-            response.Status.Should().Be(error.Status);
-        }
-
-        [Theory, JSendAutoData]
-        public void IsSuccessIsTrueWhenNoErrorIsProvided(HttpResponseMessage httpResponseMessage)
-        {
-            // Exercise system
-            var response = new JSendResponse<int>(httpResponseMessage);
-            // Verify outcome
-            response.IsSuccess.Should().BeTrue();
-        }
-
-        [Theory]
-        [InlineJSendAutoData(JSendStatus.Fail)]
-        [InlineJSendAutoData(JSendStatus.Error)]
-        public void IsSuccessIsFalseWhenErrorIsProvided(JSendStatus jsendErrorStatus,
-            HttpResponseMessage httpResponseMessage)
-        {
-            // Fixture setup
-            var error = new JSendError(jsendErrorStatus, null, null, null);
-            // Exercise system
-            var response = new JSendResponse<int>(error, httpResponseMessage);
-            // Verify outcome
-            response.IsSuccess.Should().BeFalse();
-        }
-
-        [Theory, JSendAutoData]
-        public void HttpResponseMessageIsCorrectlyInitialized(ConstructorInitializedMemberAssertion assertion)
-        {
-            // Fixture setup
-            var property = new Properties<JSendResponse<int>>().Select(rsp => rsp.HttpResponse);
-            // Exercise system and verify outcome
-            assertion.Verify(property);
-        }
-
-        [Theory, JSendAutoData]
-        public void ErrorIsCorrectlyInitialized(ConstructorInitializedMemberAssertion assertion)
-        {
-            // Fixture setup
-            var property = new Properties<JSendResponse<int>>().Select(rsp => rsp.Error);
-            // Exercise system and verify outcome
-            assertion.Verify(property);
-        }
-
-        [Theory, JSendAutoData]
-        public void DataIsCorrectlyInitialized(Model model, HttpResponseMessage httpResponseMessage)
-        {
-            // Exercise system
-            var response = new JSendResponse<Model>(model, httpResponseMessage);
-            // Verify outcome
-            response.Data.Should().Be(model);
-        }
-
-        [Theory, JSendAutoData]
-        public void DataThrowsExceptionWhenNoneIsProvided(HttpResponseMessage httpResponseMessage)
-        {
-            // Exercise system
-            var response = new JSendResponse<Model>(httpResponseMessage);
-            // Verify outcome
-            Action data = () => { var x = response.Data; };
-            data.ShouldThrow<JSendRequestException>()
-                .WithMessage(StringResources.SuccessResponseWithoutData);
-        }
-
-        [Theory, JSendAutoData]
-        public void DataThrowsExceptionWhenErrorIsProvided(HttpResponseMessage httpResponseMessage)
-        {
-            // Fixture setup
-            var error = new JSendError(JSendStatus.Fail, null, null, null);
-            // Exercise system
-            var response = new JSendResponse<Model>(error, httpResponseMessage);
-            // Verify outcome
-            Action data = () => { var x = response.Data; };
-            data.ShouldThrow<JSendRequestException>()
-                .WithMessage("JSend status does not indicate success: \"fail\".");
-        }
-
-        [Theory, JSendAutoData]
-        public void HasDataWhenDataIsProvided([WithData] JSendResponse<Model> response)
-        {
-            // Exercise system and verify outcome
-            response.HasData.Should().BeTrue();
-        }
-
-        [Theory, JSendAutoData]
-        public void DoesNotHaveDataWhenNoneIsProvided([WithoutData] JSendResponse<Model> response)
-        {
-            // Exercise system and verify outcome
-            response.HasData.Should().BeFalse();
-        }
-
-        [Theory, JSendAutoData]
-        public void DoesNotHaveDataWhenErrorIsProvided([WithError] JSendResponse<Model> response)
-        {
-            // Exercise system and verify outcome
-            response.HasData.Should().BeFalse();
-        }
-
-        [Theory, JSendAutoData]
-        public void GetDataOrDefault_ReturnsData_WhenDataIsProvided([WithData] JSendResponse<Model> response)
+        public void GetDataOrDefault_ReturnsData_WhenDataIsProvided(JSuccessWithDataResponse<Model> response)
         {
             // Exercise system and verify outcome
             response.GetDataOrDefault().Should().Be(response.Data);
         }
 
         [Theory, JSendAutoData]
-        public void GetDataOrDefault_ReturnsDefault_WhenDataIsNotProvided([WithoutData] JSendResponse<Model> response)
+        public void GetDataOrDefault_ReturnsDefault_WhenDataIsNotProvided(JSuccessResponse<Model> response)
         {
             // Exercise system and verify outcome
             response.GetDataOrDefault().Should().Be(default(Model));
         }
 
         [Theory, JSendAutoData]
-        public void GetDataOrDefault_WithDefaultValue_ReturnsData_WhenDataIsProvided(
-            [WithData] JSendResponse<Model> response)
+        public void GetDataOrDefault_WithDefaultValue_ReturnsData_WhenDataIsProvided(JSuccessWithDataResponse<Model> response)
         {
             // Exercise system and verify outcome
             response.GetDataOrDefault(null).Should().Be(response.Data);
         }
 
         [Theory, JSendAutoData]
-        public void GetDataOrDefault_WithDefaultValue_ReturnsDefault_WhenDataIsNotProvided(
-            [WithoutData] JSendResponse<Model> response)
+        public void GetDataOrDefault_WithDefaultValue_ReturnsDefault_WhenDataIsNotProvided(JSuccessResponse<Model> response)
         {
             // Fixture setup
             Model defaultValue = new Model();
@@ -228,24 +51,21 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void EnsureSuccessStatus_Throws_WhenStatusIsNotSuccess(HttpResponseMessage httpResponseMessage)
+        public void EnsureSuccessStatus_Throws_WhenStatusIsNotSuccess(JErrorResponse<int> response)
         {
-            // Fixture setup
-            var error = new JSendError(JSendStatus.Fail, null, null, null);
-            var nonSuccessResponse = new JSendResponse<Model>(error, httpResponseMessage);
             // Exercise system and verify outcome
-            nonSuccessResponse.Invoking(rsp => rsp.EnsureSuccessStatus())
+            response.Invoking(rsp => rsp.EnsureSuccessStatus())
                 .ShouldThrow<JSendRequestException>()
                 .WithMessage("JSend status does not indicate success: \"fail\".");
         }
 
         [Theory, JSendAutoData]
-        public void EnsureSuccessStatus_ReturnsSelf_WhenStatusIsSuccess([WithData] JSendResponse<Model> successResponse)
+        public void EnsureSuccessStatus_ReturnsSelf_WhenStatusIsSuccess(JSuccessResponse<Model> response)
         {
             // Exercise system
-            var response = successResponse.EnsureSuccessStatus();
+            var result = response.EnsureSuccessStatus();
             // Verify outcome
-            response.Should().BeSameAs(successResponse);
+            result.Should().BeSameAs(response);
         }
 
         public class HttpResponseMessageSpy : HttpResponseMessage
@@ -260,10 +80,10 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void DisposingOfTheResponse_DisposesOfTheHttpResponseMessage(HttpResponseMessageSpy spy)
+        public void DisposingOfTheResponse_DisposesOfTheHttpResponse(HttpResponseMessageSpy spy)
         {
             // Fixture setup
-            var response = new JSendResponse<int>(spy);
+            var response = new JSuccessResponse<int>(spy);
             // Exercise system
             response.Dispose();
             // Verify outcome
@@ -275,7 +95,7 @@ namespace JSend.Client.Tests
             HttpResponseMessageSpy spy)
         {
             // Fixture setup
-            var response = new JSendResponse<int>(error, spy);
+            var response = new JErrorResponse<int>(error, spy);
 
             // Exercise system
             try
@@ -291,89 +111,94 @@ namespace JSend.Client.Tests
 
         private static readonly HttpResponseMessage HttpResponseMessageSingleton = new HttpResponseMessage();
 
-        public class DerivedResponse<T> : JSendResponse<T>
+        public class DerivedResponseA<T> : JSendResponse<T>
         {
-            public DerivedResponse(HttpResponseMessage httpResponse) : base(httpResponse)
+            public DerivedResponseA(HttpResponseMessage httpResponse) : base(httpResponse)
             {
             }
+
+            public override T Data { get; }
+            public override bool HasData { get; }
+            public override JSendStatus Status { get; }
+            public override JSendError Error { get; }
         }
 
-        public static IEnumerable<object[]> EquivalentResponses
+        public class DerivedResponseB<T> : JSendResponse<T>
         {
-            get
+            public DerivedResponseB(HttpResponseMessage httpResponse) : base(httpResponse)
             {
-                return new[]
-                {
-                    new object[]
-                    {
-                        new JSendResponse<string>(HttpResponseMessageSingleton),
-                        new JSendResponse<string>(HttpResponseMessageSingleton)
-                    },
-                    new object[]
-                    {
-                        new JSendResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
-                            HttpResponseMessageSingleton),
-                        new JSendResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
-                            HttpResponseMessageSingleton)
-                    },
-                    new object[]
-                    {
-                        new JSendResponse<string>("a", HttpResponseMessageSingleton),
-                        new JSendResponse<string>("a", HttpResponseMessageSingleton)
-                    }
-                };
             }
+
+            public override T Data { get; }
+            public override bool HasData { get; }
+            public override JSendStatus Status { get; }
+            public override JSendError Error { get; }
         }
 
-        public static IEnumerable<object[]> DistinctResponses
+        public static IEnumerable<object[]> EquivalentResponses => new[]
         {
-            get
+            new object[]
             {
-                return new[]
-                {
-                    new object[]
-                    {
-                        new JSendResponse<string>(new HttpResponseMessage()),
-                        new JSendResponse<string>(new HttpResponseMessage())
-                    },
-                    new object[]
-                    {
-                        new JSendResponse<string>(HttpResponseMessageSingleton),
-                        new JSendResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
-                            HttpResponseMessageSingleton)
-                    },
-                    new object[]
-                    {
-                        new JSendResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
-                            HttpResponseMessageSingleton),
-                        new JSendResponse<string>(new JSendError(JSendStatus.Error, null, null, null),
-                            HttpResponseMessageSingleton)
-                    },
-                    new object[]
-                    {
-                        new JSendResponse<string>(HttpResponseMessageSingleton),
-                        new JSendResponse<string>("a", HttpResponseMessageSingleton)
-                    },
-
-                    new object[]
-                    {
-                        new JSendResponse<string>(HttpResponseMessageSingleton),
-                        new JSendResponse<string>(default(string), HttpResponseMessageSingleton)
-                    },
-                    new object[]
-                    {
-                        new JSendResponse<string>("a", HttpResponseMessageSingleton),
-                        new JSendResponse<string>("b", HttpResponseMessageSingleton)
-                    },
-                    new object[]
-                    {
-                        new JSendResponse<string>("a", HttpResponseMessageSingleton),
-                        new JSendResponse<string>(new JSendError(JSendStatus.Error, null, null, null),
-                            HttpResponseMessageSingleton)
-                    }
-                };
+                new JSuccessResponse<string>(HttpResponseMessageSingleton),
+                new JSuccessResponse<string>(HttpResponseMessageSingleton)
+            },
+            new object[]
+            {
+                new JErrorResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
+                    HttpResponseMessageSingleton),
+                new JErrorResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
+                    HttpResponseMessageSingleton)
+            },
+            new object[]
+            {
+                new JSuccessWithDataResponse<string>("a", HttpResponseMessageSingleton),
+                new JSuccessWithDataResponse<string>("a", HttpResponseMessageSingleton)
             }
-        }
+        };
+
+        public static IEnumerable<object[]> DistinctResponses => new[]
+        {
+            new object[]
+            {
+                new JSuccessResponse<string>(new HttpResponseMessage()),
+                new JSuccessResponse<string>(new HttpResponseMessage())
+            },
+            new object[]
+            {
+                new JSuccessResponse<string>(HttpResponseMessageSingleton),
+                new JErrorResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
+                    HttpResponseMessageSingleton)
+            },
+            new object[]
+            {
+                new JErrorResponse<string>(new JSendError(JSendStatus.Fail, null, null, null),
+                    HttpResponseMessageSingleton),
+                new JErrorResponse<string>(new JSendError(JSendStatus.Error, null, null, null),
+                    HttpResponseMessageSingleton)
+            },
+            new object[]
+            {
+                new JSuccessResponse<string>(HttpResponseMessageSingleton),
+                new JSuccessWithDataResponse<string>("a", HttpResponseMessageSingleton)
+            },
+
+            new object[]
+            {
+                new JSuccessResponse<string>(HttpResponseMessageSingleton),
+                new JSuccessWithDataResponse<string>(default(string), HttpResponseMessageSingleton)
+            },
+            new object[]
+            {
+                new JSuccessWithDataResponse<string>("a", HttpResponseMessageSingleton),
+                new JSuccessWithDataResponse<string>("b", HttpResponseMessageSingleton)
+            },
+            new object[]
+            {
+                new JSuccessWithDataResponse<string>("a", HttpResponseMessageSingleton),
+                new JErrorResponse<string>(new JSendError(JSendStatus.Error, null, null, null),
+                    HttpResponseMessageSingleton)
+            }
+        };
 
         [Theory]
         [MemberData("EquivalentResponses")]
@@ -396,28 +221,28 @@ namespace JSend.Client.Tests
         public void TwoResponses_AreNotEqual_WhenTheirTypesDoNotMatch(HttpResponseMessage httpResponse)
         {
             // Fixture setup
-            var first = new JSendResponse<int>(httpResponse);
-            var second = new DerivedResponse<int>(httpResponse);
+            var first = new DerivedResponseA<int>(httpResponse);
+            var second = new DerivedResponseB<int>(httpResponse);
             // Exercise system and verify outcome
             first.Equals(second).Should().BeFalse();
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsNotEqualToNull(JSendResponse<string> response)
+        public void ResponseIsNotEqualToNull(JSuccessResponse<string> response)
         {
             // Exercise system and verify outcome
             response.Equals(null).Should().BeFalse();
         }
 
         [Theory, JSendAutoData]
-        public void ResponseIsNotEqualToInstanceOfAnotherType(JSendResponse<string> response, string other)
+        public void ResponseIsNotEqualToInstanceOfAnotherType(JSuccessResponse<string> response, string other)
         {
             // Exercise system and verify outcome
             response.Equals(other).Should().BeFalse();
         }
 
         [Theory, JSendAutoData]
-        public void Equals_IsReflexive(JSendResponse<string> response)
+        public void Equals_IsReflexive(JSuccessResponse<string> response)
         {
             // Exercise system and verify outcome
             response.Equals(response).Should().BeTrue();
@@ -469,7 +294,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void EqualityOperator_ReturnsFalse_WhenLeftOperandsIsNull(JSendResponse<string> response)
+        public void EqualityOperator_ReturnsFalse_WhenLeftOperandsIsNull(JSuccessResponse<string> response)
         {
             // Exercise system
             var areEqual = null == response;
@@ -478,7 +303,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void EqualityOperator_ReturnsFalse_WhenRightOperandsIsNull(JSendResponse<string> response)
+        public void EqualityOperator_ReturnsFalse_WhenRightOperandsIsNull(JSuccessResponse<string> response)
         {
             // Exercise system
             var areEqual = response == null;
@@ -487,7 +312,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void EqualityOperator_IsReflexive(JSendResponse<string> response)
+        public void EqualityOperator_IsReflexive(JSuccessResponse<string> response)
         {
 #pragma warning disable 1718
             // Exercise system
@@ -497,7 +322,7 @@ namespace JSend.Client.Tests
 #pragma warning restore 1718
         }
 
-        [Theory, JSendAutoData]
+        [Theory]
         [MemberData("EquivalentResponses")]
         [MemberData("DistinctResponses")]
         public void EqualityOperator_IsSymmetric(JSendResponse<string> first, JSendResponse<string> second)
@@ -543,7 +368,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void InequalityOperator_ReturnsTrue_WhenLeftOperandsIsNull(JSendResponse<string> response)
+        public void InequalityOperator_ReturnsTrue_WhenLeftOperandsIsNull(JSuccessResponse<string> response)
         {
             // Exercise system
             var areNotEqual = null != response;
@@ -552,7 +377,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void InequalityOperator_ReturnsTrue_WhenRightOperandsIsNull(JSendResponse<string> response)
+        public void InequalityOperator_ReturnsTrue_WhenRightOperandsIsNull(JSuccessResponse<string> response)
         {
             // Exercise system
             var areNotEqual = response != null;
@@ -561,7 +386,7 @@ namespace JSend.Client.Tests
         }
 
         [Theory, JSendAutoData]
-        public void InequalityOperator_IsReflexive(JSendResponse<string> response)
+        public void InequalityOperator_IsReflexive(JSuccessResponse<string> response)
         {
 #pragma warning disable 1718
             // Exercise system
@@ -571,7 +396,7 @@ namespace JSend.Client.Tests
 #pragma warning restore 1718
         }
 
-        [Theory, JSendAutoData]
+        [Theory]
         [MemberData("EquivalentResponses")]
         [MemberData("DistinctResponses")]
         public void InequalityOperator_IsSymmetric(JSendResponse<string> first, JSendResponse<string> second)

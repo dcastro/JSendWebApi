@@ -50,6 +50,7 @@
     <Compile Include="CompositeMessageInterceptor.cs" />
     <Compile Include="DefaultJSendParser.cs" />
     <Compile Include="ExceptionContext.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IJSendClient.cs" />
     <Compile Include="IJSendParser.cs" />
     <Compile Include="JSendClient.cs" />
@@ -69,6 +70,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Responses\JErrorResponse.cs" />
+    <Compile Include="Responses\JSuccessResponse.cs" />
+    <Compile Include="Responses\JSuccessWithDataResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
