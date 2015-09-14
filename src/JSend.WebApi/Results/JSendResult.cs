@@ -22,8 +22,6 @@ namespace JSend.WebApi.Results
     /// <typeparam name="TResponse">The type of the JSend response.</typeparam>
     public sealed class JSendResult<TResponse> : IJSendResult<TResponse> where TResponse : IJSendResponse
     {
-        private readonly HttpStatusCode _statusCode;
-        private readonly TResponse _response;
         private readonly IDependencyProvider _dependencies;
 
         private static readonly MediaTypeHeaderValue MediaTypeHeader = new MediaTypeHeaderValue("application/json");
@@ -50,30 +48,21 @@ namespace JSend.WebApi.Results
 
         private JSendResult(HttpStatusCode statusCode, TResponse response, IDependencyProvider dependencies)
         {
-            if (response == null) throw new ArgumentNullException("response");
+            if (response == null) throw new ArgumentNullException(nameof(response));
 
-            _statusCode = statusCode;
-            _response = response;
+            StatusCode = statusCode;
+            Response = response;
             _dependencies = dependencies;
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
-        public TResponse Response
-        {
-            get { return _response; }
-        }
+        public TResponse Response { get; }
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
-        public HttpStatusCode StatusCode
-        {
-            get { return _statusCode; }
-        }
+        public HttpStatusCode StatusCode { get; }
 
         /// <summary>Gets the request message which led to this result.</summary>
-        public HttpRequestMessage Request
-        {
-            get { return _dependencies.RequestMessage; }
-        }
+        public HttpRequestMessage Request => _dependencies.RequestMessage;
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
@@ -82,7 +71,7 @@ namespace JSend.WebApi.Results
         {
             var mediaTypeHeader = new MediaTypeHeaderValue(MediaTypeHeader.MediaType);
 
-            var result = new FormattedContentResult<TResponse>(_statusCode, _response,
+            var result = new FormattedContentResult<TResponse>(StatusCode, Response,
                 _dependencies.Formatter, mediaTypeHeader, _dependencies.RequestMessage);
 
             return result.ExecuteAsync(cancellationToken);
@@ -103,7 +92,7 @@ namespace JSend.WebApi.Results
 
             public RequestDependencyProvider(HttpRequestMessage requestMessage)
             {
-                if (requestMessage == null) throw new ArgumentNullException("requestMessage");
+                if (requestMessage == null) throw new ArgumentNullException(nameof(requestMessage));
 
                 _requestMessage = requestMessage;
             }
@@ -164,7 +153,7 @@ namespace JSend.WebApi.Results
 
             public ControllerDependencyProvider(ApiController controller)
             {
-                if (controller == null) throw new ArgumentNullException("controller");
+                if (controller == null) throw new ArgumentNullException(nameof(controller));
 
                 _controller = controller;
             }

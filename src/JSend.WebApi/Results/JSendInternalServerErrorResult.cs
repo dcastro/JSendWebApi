@@ -28,35 +28,21 @@ namespace JSend.WebApi.Results
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
-        public ErrorResponse Response
-        {
-            get { return _result.Response; }
-        }
+        public ErrorResponse Response => _result.Response;
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
-        public HttpStatusCode StatusCode
-        {
-            get { return _result.StatusCode; }
-        }
+        public HttpStatusCode StatusCode => _result.StatusCode;
 
         /// <summary>Gets the request message which led to this result.</summary>
-        public HttpRequestMessage Request
-        {
-            get { return _result.Request; }
-        }
+        public HttpRequestMessage Request => _result.Request;
 
         /// <summary>Gets the error message explaining what went wrong.</summary>
-        public string Message
-        {
-            get { return _result.Response.Message; }
-        }
+        public string Message => _result.Response.Message;
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
-        {
-            return _result.ExecuteAsync(cancellationToken);
-        }
+            => _result.ExecuteAsync(cancellationToken);
     }
 }

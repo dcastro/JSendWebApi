@@ -19,6 +19,9 @@ namespace JSend.Client
     /// </summary>
     public class DefaultJSendParser : IJSendParser
     {
+        /// <summary>Gets an instance of <see cref="DefaultJSendParser"/>.</summary>
+        public static DefaultJSendParser Instance { get; } = new DefaultJSendParser();
+
         private static readonly Lazy<Task<JsonSchema>> BaseSchema = new Lazy<Task<JsonSchema>>(
             () => LoadSchema("JSend.Client.Schemas.JSendResponseSchema.json"));
 
@@ -42,14 +45,6 @@ namespace JSend.Client
             }
         }
 
-        private static readonly DefaultJSendParser _instance = new DefaultJSendParser();
-
-        /// <summary>Gets an instance of <see cref="DefaultJSendParser"/>.</summary>
-        public static DefaultJSendParser Instance
-        {
-            get { return _instance; }
-        }
-
         /// <summary>
         /// Parses the content of a <see cref="HttpResponseMessage"/> and returns a <see cref="JSendResponse{T}"/>.
         /// </summary>
@@ -63,7 +58,7 @@ namespace JSend.Client
             HttpResponseMessage httpResponseMessage)
         {
             if (httpResponseMessage == null)
-                throw new ArgumentNullException("httpResponseMessage");
+                throw new ArgumentNullException(nameof(httpResponseMessage));
 
             if (httpResponseMessage.Content == null)
                 throw new JSendParseException(StringResources.ResponseWithoutContent);

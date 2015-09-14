@@ -102,7 +102,7 @@ namespace JSend.Client.FunctionalTests
             // Exercise system
             using (client)
             using (var response =
-                await client.GetAsync<Dictionary<string, List<String>>>("http://localhost/users/echo-headers"))
+                await client.GetAsync<Dictionary<string, List<string>>>("http://localhost/users/echo-headers"))
             {
                 // Verify outcome
                 response.Data.Should().ContainKey("Version")

@@ -18,7 +18,7 @@ namespace JSend.WebApi
         /// <param name="actionContext">The action context.</param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            if (actionContext == null) throw new ArgumentNullException("actionContext");
+            if (actionContext == null) throw new ArgumentNullException(nameof(actionContext));
 
             var returnType = actionContext.ActionDescriptor.ReturnType;
 

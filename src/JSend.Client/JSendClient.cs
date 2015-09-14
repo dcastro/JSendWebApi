@@ -15,13 +15,6 @@ namespace JSend.Client
     /// </summary>
     public class JSendClient : IJSendClient
     {
-        private readonly IJSendParser _parser;
-        private readonly MessageInterceptor _interceptor;
-        private readonly Encoding _encoding;
-        private readonly JsonSerializerSettings _serializerSettings;
-
-        private readonly HttpClient _httpClient;
-
         /// <summary>Initializes a new instance of <see cref="JSendClient"/>.</summary>
         public JSendClient()
             : this(null)
@@ -44,48 +37,33 @@ namespace JSend.Client
         /// <param name="httpClient">A client to send HTTP requests and receive HTTP responses.</param>
         public JSendClient(JSendClientSettings settings, HttpClient httpClient)
         {
-            if (httpClient == null) throw new ArgumentNullException("httpClient");
+            if (httpClient == null) throw new ArgumentNullException(nameof(httpClient));
 
             if (settings == null)
                 settings = new JSendClientSettings();
 
-            _parser = settings.Parser ?? DefaultJSendParser.Instance;
-            _interceptor = settings.MessageInterceptor ?? NullMessageInterceptor.Instance;
-            _encoding = settings.Encoding;
-            _serializerSettings = settings.SerializerSettings;
+            Parser = settings.Parser ?? DefaultJSendParser.Instance;
+            MessageInterceptor = settings.MessageInterceptor ?? NullMessageInterceptor.Instance;
+            Encoding = settings.Encoding;
+            SerializerSettings = settings.SerializerSettings;
 
-            _httpClient = httpClient;
+            HttpClient = httpClient;
         }
 
         /// <summary>Gets the parser used to process JSend-formatted responses.</summary>
-        public IJSendParser Parser
-        {
-            get { return _parser; }
-        }
+        public IJSendParser Parser { get; }
 
         /// <summary>Gets the interceptor to perform additional work with outgoing requests/incoming responses.</summary>
-        public MessageInterceptor MessageInterceptor
-        {
-            get { return _interceptor; }
-        }
+        public MessageInterceptor MessageInterceptor { get; }
 
         /// <summary>Gets the encoding used to format a request's content.</summary>
-        public Encoding Encoding
-        {
-            get { return _encoding; }
-        }
+        public Encoding Encoding { get; }
 
         /// <summary>Gets the settings used to serialize requests/deserialize responses.</summary>
-        public JsonSerializerSettings SerializerSettings
-        {
-            get { return _serializerSettings; }
-        }
+        public JsonSerializerSettings SerializerSettings { get; }
 
         /// <summary>Gets the client used to send HTTP requests and receive HTTP responses.</summary>
-        public HttpClient HttpClient
-        {
-            get { return _httpClient; }
-        }
+        public HttpClient HttpClient { get; }
 
         /// <summary>Send a GET request to the specified Uri as an asynchronous operation.</summary>
         /// <typeparam name="TResponse">The type of the expected data.</typeparam>
@@ -352,31 +330,31 @@ namespace JSend.Client
         {
             try
             {
-                _interceptor.OnSending(request);
+                MessageInterceptor.OnSending(request);
 
                 HttpResponseMessage responseMessage;
                 try
                 {
-                    responseMessage = await _httpClient.SendAsync(request, cancellationToken);
+                    responseMessage = await HttpClient.SendAsync(request, cancellationToken);
                 }
                 catch (Exception ex)
                 {
-                    _interceptor.OnException(new ExceptionContext(request, ex));
+                    MessageInterceptor.OnException(new ExceptionContext(request, ex));
                     throw;
                 }
-                _interceptor.OnReceived(new ResponseReceivedContext(request, responseMessage));
+                MessageInterceptor.OnReceived(new ResponseReceivedContext(request, responseMessage));
 
                 JSendResponse<TResponse> jsendResponse;
                 try
                 {
-                    jsendResponse = await _parser.ParseAsync<TResponse>(_serializerSettings, responseMessage);
+                    jsendResponse = await Parser.ParseAsync<TResponse>(SerializerSettings, responseMessage);
                 }
                 catch (Exception ex)
                 {
-                    _interceptor.OnException(new ExceptionContext(request, ex));
+                    MessageInterceptor.OnException(new ExceptionContext(request, ex));
                     throw;
                 }
-                _interceptor.OnParsed(new ResponseParsedContext<TResponse>(request, responseMessage, jsendResponse));
+                MessageInterceptor.OnParsed(new ResponseParsedContext<TResponse>(request, responseMessage, jsendResponse));
 
                 return jsendResponse;
             }
@@ -390,8 +368,8 @@ namespace JSend.Client
 
         private HttpContent Serialize(object content)
         {
-            var serialized = JsonConvert.SerializeObject(content, _serializerSettings);
-            return new StringContent(serialized, _encoding, "application/json");
+            var serialized = JsonConvert.SerializeObject(content, SerializerSettings);
+            return new StringContent(serialized, Encoding, "application/json");
         }
 
         private static Uri BuildUri(string uri)
@@ -425,7 +403,7 @@ namespace JSend.Client
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-                _httpClient.Dispose();
+                HttpClient.Dispose();
         }
     }
 }

@@ -14,7 +14,6 @@ namespace JSend.WebApi.Results
     /// <typeparam name="T">The type of the content in the entity body.</typeparam>
     public class JSendOkResult<T> : IJSendResult<SuccessResponse>
     {
-        private readonly SuccessResponse _response;
         private readonly JSendResult<SuccessResponse>.IDependencyProvider _dependencies;
 
         /// <summary>Initializes a new instance of <see cref="JSendOkResult{T}"/>.</summary>
@@ -37,40 +36,28 @@ namespace JSend.WebApi.Results
 
         private JSendOkResult(T content, JSendResult<SuccessResponse>.IDependencyProvider dependencies)
         {
-            _response = new SuccessResponse(content);
+            Response = new SuccessResponse(content);
             _dependencies = dependencies;
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
-        public SuccessResponse Response
-        {
-            get { return _response; }
-        }
+        public SuccessResponse Response { get; }
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
-        public HttpStatusCode StatusCode
-        {
-            get { return HttpStatusCode.OK; }
-        }
+        public HttpStatusCode StatusCode => HttpStatusCode.OK;
 
         /// <summary>Gets the request message which led to this result.</summary>
-        public HttpRequestMessage Request
-        {
-            get { return _dependencies.RequestMessage; }
-        }
+        public HttpRequestMessage Request => _dependencies.RequestMessage;
 
         /// <summary>Gets the content value to format in the entity body.</summary>
-        public T Content
-        {
-            get { return (T) _response.Data; }
-        }
+        public T Content => (T) Response.Data;
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            var result = new JSendResult<SuccessResponse>(StatusCode, _response, _dependencies.RequestMessage);
+            var result = new JSendResult<SuccessResponse>(StatusCode, Response, _dependencies.RequestMessage);
 
             return result.ExecuteAsync(cancellationToken);
         }

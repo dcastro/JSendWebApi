@@ -33,34 +33,20 @@ namespace JSend.WebApi.FunctionalTests
         }
 
         [Route("ok"), HttpGet]
-        public IHttpActionResult OkAction()
-        {
-            return JSendOk();
-        }
+        public IHttpActionResult OkAction() => JSendOk();
 
         [Route("ok-with-user"), HttpGet]
-        public IHttpActionResult OkWithDataAction()
-        {
-            return JSendOk(TestUser);
-        }
+        public IHttpActionResult OkWithDataAction() => JSendOk(TestUser);
 
         [Route("created-with-string"), HttpGet]
-        public IHttpActionResult CreatedWithStringAction()
-        {
-            return JSendCreated(TestLocation, TestUser);
-        }
+        public IHttpActionResult CreatedWithStringAction() => JSendCreated(TestLocation, TestUser);
 
         [Route("created-with-uri"), HttpGet]
-        public IHttpActionResult CreatedWithUriAction()
-        {
-            return JSendCreated(new Uri(TestLocation), TestUser);
-        }
+        public IHttpActionResult CreatedWithUriAction() => JSendCreated(new Uri(TestLocation), TestUser);
 
         [Route("created-at-route-with-object"), HttpGet]
         public IHttpActionResult CreatedAtRouteWithObjectAction()
-        {
-            return JSendCreatedAtRoute("DummyLocation", new {id = 5}, TestUser);
-        }
+            => JSendCreatedAtRoute("DummyLocation", new {id = 5}, TestUser);
 
         [Route("created-at-route-with-dictionary"), HttpGet]
         public IHttpActionResult CreatedAtRouteWithDictionaryAction()
@@ -73,22 +59,14 @@ namespace JSend.WebApi.FunctionalTests
         }
 
         [Route("redirect-with-string"), HttpGet]
-        public IHttpActionResult RedirectWithStringAction()
-        {
-            return JSendRedirect(TestLocation);
-        }
+        public IHttpActionResult RedirectWithStringAction() => JSendRedirect(TestLocation);
 
         [Route("redirect-with-uri"), HttpGet]
-        public IHttpActionResult RedirectWithUriAction()
-        {
-            return JSendRedirect(new Uri(TestLocation));
-        }
+        public IHttpActionResult RedirectWithUriAction() => JSendRedirect(new Uri(TestLocation));
 
         [Route("redirect-to-route-with-object"), HttpGet]
         public IHttpActionResult RedirectToRouteWithObjectAction()
-        {
-            return JSendRedirectToRoute("DummyLocation", new {id = 5});
-        }
+            => JSendRedirectToRoute("DummyLocation", new {id = 5});
 
         [Route("redirect-to-route-with-dictionary"), HttpGet]
         public IHttpActionResult RedirectToRouteWithDictionaryAction()
@@ -101,10 +79,7 @@ namespace JSend.WebApi.FunctionalTests
         }
 
         [Route("badrequest-with-reason"), HttpGet]
-        public IHttpActionResult BadRequestWithReasonAction()
-        {
-            return JSendBadRequest(ErrorMessage);
-        }
+        public IHttpActionResult BadRequestWithReasonAction() => JSendBadRequest(ErrorMessage);
 
         [Route("badrequest-with-modelstate"), HttpGet]
         public IHttpActionResult BadRequestWithModelStateAction()
@@ -115,33 +90,20 @@ namespace JSend.WebApi.FunctionalTests
 
         [Route("unauthorized"), HttpGet]
         public IHttpActionResult UnauthorizedAction()
-        {
-            return JSendUnauthorized(new AuthenticationHeaderValue(AuthenticationHeader));
-        }
+            => JSendUnauthorized(new AuthenticationHeaderValue(AuthenticationHeader));
 
         [Route("notfound"), HttpGet]
-        public IHttpActionResult NotFoundAction()
-        {
-            return JSendNotFound();
-        }
+        public IHttpActionResult NotFoundAction() => JSendNotFound();
 
         [Route("notfound-with-reason"), HttpGet]
-        public IHttpActionResult NotFoundWithReasonAction()
-        {
-            return JSendNotFound(ErrorMessage);
-        }
+        public IHttpActionResult NotFoundWithReasonAction() => JSendNotFound(ErrorMessage);
 
         [Route("internal-server-error"), HttpGet]
         public IHttpActionResult InternalServerErrorAction()
-        {
-            return JSendInternalServerError(ErrorMessage, ErrorCode, ErrorData);
-        }
+            => JSendInternalServerError(ErrorMessage, ErrorCode, ErrorData);
 
         [Route("internal-server-error-with-exception"), HttpGet]
-        public IHttpActionResult InternalServerErrorWithExceptionAction()
-        {
-            return JSendInternalServerError(TestException);
-        }
+        public IHttpActionResult InternalServerErrorWithExceptionAction() => JSendInternalServerError(TestException);
 
         [Route("jsend"), HttpGet]
         public IHttpActionResult JSendAction()
@@ -152,22 +114,14 @@ namespace JSend.WebApi.FunctionalTests
         }
 
         [Route("jsend-success"), HttpGet]
-        public IHttpActionResult JSendSuccessAction()
-        {
-            return JSendSuccess(HttpStatusCode.Gone, TestUser);
-        }
+        public IHttpActionResult JSendSuccessAction() => JSendSuccess(HttpStatusCode.Gone, TestUser);
 
         [Route("jsend-fail"), HttpGet]
-        public IHttpActionResult JSendFailAction()
-        {
-            return JSendFail(HttpStatusCode.Gone, ErrorMessage);
-        }
+        public IHttpActionResult JSendFailAction() => JSendFail(HttpStatusCode.Gone, ErrorMessage);
 
         [Route("jsend-error"), HttpGet]
         public IHttpActionResult JSendErrorAction()
-        {
-            return JSendError(HttpStatusCode.Gone, ErrorMessage, ErrorCode, ErrorData);
-        }
+            => JSendError(HttpStatusCode.Gone, ErrorMessage, ErrorCode, ErrorData);
 
         [Route("void"), HttpGet]
         public void VoidAction()
@@ -176,10 +130,7 @@ namespace JSend.WebApi.FunctionalTests
         }
 
         [Route("value"), HttpGet]
-        public User ValueAction()
-        {
-            return TestUser;
-        }
+        public User ValueAction() => TestUser;
 
         [Route("exception"), HttpGet]
         public void ExceptionAction()

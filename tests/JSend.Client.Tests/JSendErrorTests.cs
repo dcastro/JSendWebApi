@@ -33,84 +33,72 @@ namespace JSend.Client.Tests
 
         private static readonly JToken JTokenSingleton = new JObject();
 
-        public static IEnumerable<object[]> EquivalentErrors
+        public static IEnumerable<object[]> EquivalentErrors => new[]
         {
-            get
+            new object[]
             {
-                return new[]
-                {
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Fail, null, null, null),
-                        new JSendError(JSendStatus.Fail, null, null, null)
-                    },
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Error, "a", null, null),
-                        new JSendError(JSendStatus.Error, "a", null, null)
-                    },
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Fail, null, 2, null),
-                        new JSendError(JSendStatus.Fail, null, 2, null)
-                    },
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Fail, null, null, JTokenSingleton),
-                        new JSendError(JSendStatus.Fail, null, null, JTokenSingleton)
-                    },
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Fail, null, null, new JObject()),
-                        new JSendError(JSendStatus.Fail, null, null, new JObject())
-                    },
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "a"}}),
-                        new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "a"}})
-                    }
-                };
+                new JSendError(JSendStatus.Fail, null, null, null),
+                new JSendError(JSendStatus.Fail, null, null, null)
+            },
+            new object[]
+            {
+                new JSendError(JSendStatus.Error, "a", null, null),
+                new JSendError(JSendStatus.Error, "a", null, null)
+            },
+            new object[]
+            {
+                new JSendError(JSendStatus.Fail, null, 2, null),
+                new JSendError(JSendStatus.Fail, null, 2, null)
+            },
+            new object[]
+            {
+                new JSendError(JSendStatus.Fail, null, null, JTokenSingleton),
+                new JSendError(JSendStatus.Fail, null, null, JTokenSingleton)
+            },
+            new object[]
+            {
+                new JSendError(JSendStatus.Fail, null, null, new JObject()),
+                new JSendError(JSendStatus.Fail, null, null, new JObject())
+            },
+            new object[]
+            {
+                new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "a"}}),
+                new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "a"}})
             }
-        }
+        };
 
-        public static IEnumerable<object[]> DistinctErrors
+        public static IEnumerable<object[]> DistinctErrors => new[]
         {
-            get
+            new object[]
             {
-                return new[]
-                {
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Fail, null, null, null),
-                        new JSendError(JSendStatus.Error, null, null, null)
-                    },
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Error, "a", null, null),
-                        new JSendError(JSendStatus.Error, "b", null, null)
-                    },
-                    new object[]
-                    {
+                new JSendError(JSendStatus.Fail, null, null, null),
+                new JSendError(JSendStatus.Error, null, null, null)
+            },
+            new object[]
+            {
+                new JSendError(JSendStatus.Error, "a", null, null),
+                new JSendError(JSendStatus.Error, "b", null, null)
+            },
+            new object[]
+            {
 
-                        // Here, we're verifying that these two strings are treated as different.
-                        // This requires the usage of StringComparison.Ordinal.
-                        // StringComparison.InvariantCulture would treat both strings as equals, and that's not what we want.
-                        new JSendError(JSendStatus.Error, "lasst", null, null),
-                        new JSendError(JSendStatus.Error, "laßt", null, null)
-                    },
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Fail, null, 2, null),
-                        new JSendError(JSendStatus.Fail, null, 3, null)
-                    },
-                    new object[]
-                    {
-                        new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "a"}}),
-                        new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "b"}})
-                    }
-                };
+                // Here, we're verifying that these two strings are treated as different.
+                // This requires the usage of StringComparison.Ordinal.
+                // StringComparison.InvariantCulture would treat both strings as equals, and that's not what we want.
+                new JSendError(JSendStatus.Error, "lasst", null, null),
+                new JSendError(JSendStatus.Error, "laßt", null, null)
+            },
+            new object[]
+            {
+                new JSendError(JSendStatus.Fail, null, 2, null),
+                new JSendError(JSendStatus.Fail, null, 3, null)
+            },
+            new object[]
+            {
+                new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "a"}}),
+                new JSendError(JSendStatus.Fail, null, null, new JObject {{"key", "b"}})
             }
-        }
+        };
 
         [Theory]
         [MemberData("EquivalentErrors")]

@@ -25,38 +25,28 @@ namespace JSend.WebApi
         /// <summary>Creates a <see cref="JSendOkResult"/> (200 OK).</summary>
         /// <returns>A <see cref="JSendOkResult"/>.</returns>
         [Pure]
-        protected internal virtual JSendOkResult JSendOk()
-        {
-            return new JSendOkResult(this);
-        }
+        protected internal virtual JSendOkResult JSendOk() => new JSendOkResult(this);
 
         /// <summary>Creates a <see cref="JSendOkResult{T}"/> with the specified content.</summary>
         /// <typeparam name="T">The type of the content in the entity body.</typeparam>
         /// <param name="content">The content value to format in the entity body.</param>
         /// <returns>A <see cref="JSendOkResult{T}"/> with the specified content.</returns>
         [Pure]
-        protected internal virtual JSendOkResult<T> JSendOk<T>(T content)
-        {
-            return new JSendOkResult<T>(content, this);
-        }
+        protected internal virtual JSendOkResult<T> JSendOk<T>(T content) => new JSendOkResult<T>(content, this);
 
         /// <summary>Creates a <see cref="JSendBadRequestResult"/> (400 Bad Request) with the specified error message.</summary>
         /// <param name="reason">The reason why the request could not be processed.</param>
         /// <returns>A <see cref="JSendBadRequestResult"/> with the specified error message.</returns>
         [Pure]
         protected internal virtual JSendBadRequestResult JSendBadRequest(string reason)
-        {
-            return new JSendBadRequestResult(reason, this);
-        }
+            => new JSendBadRequestResult(reason, this);
 
         /// <summary>Creates a <see cref="JSendInvalidModelStateResult"/> (400 Bad Request) with the specified model state.</summary>
         /// <param name="modelState">The invalid model state to include in the response's body as key-value pairs.</param>
         /// <returns>A <see cref="JSendInvalidModelStateResult"/> with the specified model state.</returns>
         [Pure]
         protected internal virtual JSendInvalidModelStateResult JSendBadRequest(ModelStateDictionary modelState)
-        {
-            return new JSendInvalidModelStateResult(modelState, this);
-        }
+            => new JSendInvalidModelStateResult(modelState, this);
 
         /// <summary>Creates a <see cref="JSendCreatedResult{T}"/> (201 Created) with the specified values.</summary>
         /// <typeparam name="T">The type of the content in the entity body.</typeparam>
@@ -65,9 +55,7 @@ namespace JSend.WebApi
         /// <returns>A <see cref="JSendCreatedResult{T}"/> with the specified values.</returns>
         [Pure]
         protected internal virtual JSendCreatedResult<T> JSendCreated<T>(Uri location, T content)
-        {
-            return new JSendCreatedResult<T>(location, content, this);
-        }
+            => new JSendCreatedResult<T>(location, content, this);
 
         /// <summary>Creates a <see cref="JSendCreatedResult{T}"/> (201 Created) with the specified values.</summary>
         /// <typeparam name="T">The type of the content in the entity body.</typeparam>
@@ -77,7 +65,7 @@ namespace JSend.WebApi
         [Pure]
         protected internal virtual JSendCreatedResult<T> JSendCreated<T>(string location, T content)
         {
-            if (location == null) throw new ArgumentNullException("location");
+            if (location == null) throw new ArgumentNullException(nameof(location));
 
             return JSendCreated(new Uri(location, UriKind.RelativeOrAbsolute), content);
         }
@@ -89,11 +77,9 @@ namespace JSend.WebApi
         /// <param name="content">The content value to format in the entity body.</param>
         /// <returns>A <see cref="JSendCreatedAtRouteResult{T}"/> with the specified values.</returns>
         [Pure]
-        protected internal virtual JSendCreatedAtRouteResult<T> JSendCreatedAtRoute<T>(string routeName,
-            IDictionary<string, object> routeValues, T content)
-        {
-            return new JSendCreatedAtRouteResult<T>(routeName, routeValues, content, this);
-        }
+        protected internal virtual JSendCreatedAtRouteResult<T> JSendCreatedAtRoute<T>(
+            string routeName, IDictionary<string, object> routeValues, T content)
+            => new JSendCreatedAtRouteResult<T>(routeName, routeValues, content, this);
 
         /// <summary>Creates a <see cref="JSendCreatedAtRouteResult{T}"/> (201 Created) with the specified values.</summary>
         /// <typeparam name="T">The type of the content in the entity body.</typeparam>
@@ -102,11 +88,9 @@ namespace JSend.WebApi
         /// <param name="content">The content value to format in the entity body.</param>
         /// <returns>A <see cref="JSendCreatedAtRouteResult{T}"/> with the specified values.</returns>
         [Pure]
-        protected internal virtual JSendCreatedAtRouteResult<T> JSendCreatedAtRoute<T>(string routeName,
-            object routeValues, T content)
-        {
-            return JSendCreatedAtRoute(routeName, new HttpRouteValueDictionary(routeValues), content);
-        }
+        protected internal virtual JSendCreatedAtRouteResult<T> JSendCreatedAtRoute<T>(
+            string routeName, object routeValues, T content)
+            => JSendCreatedAtRoute(routeName, new HttpRouteValueDictionary(routeValues), content);
 
         /// <summary>
         /// Creates a <see cref="JSendInternalServerErrorResult"/> (500 Internal Server Error) with the specified error message
@@ -119,11 +103,9 @@ namespace JSend.WebApi
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
             Justification = "The default values will never change. Furthermore, since C#, F# and VB.NET support optional parameters, it's acceptable to force other CLS-compliant languages that don't support this feature to explicitly provide arguments for each default parameter.")]
         [Pure]
-        protected internal virtual JSendInternalServerErrorResult JSendInternalServerError(string message,
-            int? errorCode = null, object data = null)
-        {
-            return new JSendInternalServerErrorResult(message, errorCode, data, this);
-        }
+        protected internal virtual JSendInternalServerErrorResult JSendInternalServerError(
+            string message, int? errorCode = null, object data = null)
+            => new JSendInternalServerErrorResult(message, errorCode, data, this);
 
         /// <summary>
         /// Creates a <see cref="JSendExceptionResult"/> (500 Internal Server Error) with the specified exception
@@ -147,88 +129,67 @@ namespace JSend.WebApi
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
             Justification = "The default values will never change. Furthermore, since C#, F# and VB.NET support optional parameters, it's acceptable to force other CLS-compliant languages that don't support this feature to explicitly provide arguments for each default parameter.")]
         [Pure]
-        protected internal virtual JSendExceptionResult JSendInternalServerError(Exception exception, string message = null,
-            int? errorCode = null, object data = null)
-        {
-            return new JSendExceptionResult(exception, message, errorCode, data, this);
-        }
+        protected internal virtual JSendExceptionResult JSendInternalServerError(
+            Exception exception, string message = null, int? errorCode = null, object data = null)
+            => new JSendExceptionResult(exception, message, errorCode, data, this);
 
         /// <summary>Creates a <see cref="JSendNotFoundResult"/> (404 Not Found) with the specified error message.</summary>
         /// <param name="reason">The reason why the requested resource could not be found.</param>
         /// <returns>A <see cref="JSendNotFoundResult"/> with the specified error message.</returns>
         [Pure]
         protected internal virtual JSendNotFoundResult JSendNotFound(string reason)
-        {
-            return new JSendNotFoundResult(reason, this);
-        }
+            => new JSendNotFoundResult(reason, this);
 
         /// <summary>Creates a <see cref="JSendNotFoundResult"/> (404 Not Found).</summary>
         /// <returns>A <see cref="JSendNotFoundResult"/>.</returns>
         [Pure]
-        protected internal virtual JSendNotFoundResult JSendNotFound()
-        {
-            return JSendNotFound(null);
-        }
+        protected internal virtual JSendNotFoundResult JSendNotFound() => JSendNotFound(null);
 
         /// <summary>Creates a <see cref="JSendRedirectResult"/> (302 Found) with the specified location.</summary>
         /// <param name="location">The location to which to redirect.</param>
         /// <returns>A <see cref="JSendRedirectResult"/> with the specified location.</returns>
         [Pure]
         protected internal virtual JSendRedirectResult JSendRedirect(Uri location)
-        {
-            return new JSendRedirectResult(location, this);
-        }
+            => new JSendRedirectResult(location, this);
 
         /// <summary>Creates a <see cref="JSendRedirectResult"/> (302 Found) with the specified location.</summary>
         /// <param name="location">The location to which to redirect.</param>
         /// <returns>A <see cref="JSendRedirectResult"/> with the specified location.</returns>
         [Pure]
         protected internal virtual JSendRedirectResult JSendRedirect(string location)
-        {
-            return JSendRedirect(new Uri(location));
-        }
+            => JSendRedirect(new Uri(location));
 
         /// <summary>Creates a <see cref="JSendRedirectToRouteResult"/> (302 Found) with the specified values.</summary>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="routeValues">The route data to use for generating the URL.</param>
         /// <returns>A <see cref="JSendRedirectToRouteResult"/> with the specified values.</returns>
         [Pure]
-        protected internal virtual JSendRedirectToRouteResult JSendRedirectToRoute(string routeName,
-            IDictionary<string, object> routeValues)
-        {
-            return new JSendRedirectToRouteResult(routeName, routeValues, this);
-        }
+        protected internal virtual JSendRedirectToRouteResult JSendRedirectToRoute(
+            string routeName, IDictionary<string, object> routeValues)
+            => new JSendRedirectToRouteResult(routeName, routeValues, this);
 
         /// <summary>Creates a <see cref="JSendRedirectToRouteResult"/> (302 Found) with the specified values.</summary>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="routeValues">The route data to use for generating the URL.</param>
         /// <returns>A <see cref="JSendRedirectToRouteResult"/> with the specified values.</returns>
         [Pure]
-        protected internal virtual JSendRedirectToRouteResult JSendRedirectToRoute(string routeName,
-            object routeValues)
-        {
-            return JSendRedirectToRoute(routeName, new HttpRouteValueDictionary(routeValues));
-        }
+        protected internal virtual JSendRedirectToRouteResult JSendRedirectToRoute(
+            string routeName, object routeValues)
+            => JSendRedirectToRoute(routeName, new HttpRouteValueDictionary(routeValues));
 
         /// <summary>Creates a <see cref="JSendUnauthorizedResult"/> (401 Unauthorized) with the specified challenge headers.</summary>
         /// <param name="challenges">The WWW-Authenticate challenges.</param>
         /// <returns>A <see cref="JSendUnauthorizedResult"/> with the specified values.</returns>
         [Pure]
         protected internal virtual JSendUnauthorizedResult JSendUnauthorized(
-            IEnumerable<AuthenticationHeaderValue> challenges)
-        {
-            return new JSendUnauthorizedResult(challenges, this);
-        }
+            IEnumerable<AuthenticationHeaderValue> challenges) => new JSendUnauthorizedResult(challenges, this);
 
         /// <summary>Creates a <see cref="JSendUnauthorizedResult"/> (401 Unauthorized) with the specified challenge headers.</summary>
         /// <param name="challenges">The WWW-Authenticate challenges.</param>
         /// <returns>A <see cref="JSendUnauthorizedResult"/> with the specified values.</returns>
         [Pure]
         protected internal virtual JSendUnauthorizedResult JSendUnauthorized(
-            params AuthenticationHeaderValue[] challenges)
-        {
-            return JSendUnauthorized(challenges.AsEnumerable());
-        }
+            params AuthenticationHeaderValue[] challenges) => JSendUnauthorized(challenges.AsEnumerable());
 
         /// <summary>Creates a <see cref="JSendResult{TResponse}"/> with the specified status code and JSend response.</summary>
         /// <typeparam name="TResponse">The type of the JSend response in the entity body.</typeparam>
@@ -238,9 +199,7 @@ namespace JSend.WebApi
         [Pure]
         protected internal virtual JSendResult<TResponse> JSend<TResponse>(HttpStatusCode statusCode, TResponse response)
             where TResponse : IJSendResponse
-        {
-            return new JSendResult<TResponse>(statusCode, response, this);
-        }
+            => new JSendResult<TResponse>(statusCode, response, this);
 
         /// <summary>Creates a <see cref="JSendResult{TResponse}"/> with a <see cref="SuccessResponse"/> and the specified status code and data.</summary>
         /// <param name="statusCode">The HTTP status code for the response message.</param>
@@ -248,9 +207,7 @@ namespace JSend.WebApi
         /// <returns>A <see cref="JSendResult{TResponse}"/> with a <see cref="SuccessResponse"/> and the specified values.</returns>
         [Pure]
         protected internal virtual JSendResult<SuccessResponse> JSendSuccess(HttpStatusCode statusCode, object data)
-        {
-            return JSend(statusCode, new SuccessResponse(data));
-        }
+            => JSend(statusCode, new SuccessResponse(data));
 
         /// <summary>Creates a <see cref="JSendResult{TResponse}"/> with a <see cref="FailResponse"/> and the specified status code and data.</summary>
         /// <param name="statusCode">The HTTP status code for the response message.</param>
@@ -258,9 +215,7 @@ namespace JSend.WebApi
         /// <returns>A <see cref="JSendResult{TResponse}"/> with a <see cref="FailResponse"/> and the specified values.</returns>
         [Pure]
         protected internal virtual JSendResult<FailResponse> JSendFail(HttpStatusCode statusCode, object data)
-        {
-            return JSend(statusCode, new FailResponse(data));
-        }
+            => JSend(statusCode, new FailResponse(data));
 
         /// <summary>
         /// Creates a <see cref="JSendResult{TResponse}"/> with a <see cref="ErrorResponse"/> and
@@ -274,10 +229,8 @@ namespace JSend.WebApi
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
             Justification = "The default values will never change. Furthermore, since C#, F# and VB.NET support optional parameters, it's acceptable to force other CLS-compliant languages that don't support this feature to explicitly provide arguments for each default parameter.")]
         [Pure]
-        protected internal virtual JSendResult<ErrorResponse> JSendError(HttpStatusCode statusCode, string message,
-            int? errorCode = null, object data = null)
-        {
-            return JSend(statusCode, new ErrorResponse(message, errorCode, data));
-        }
+        protected internal virtual JSendResult<ErrorResponse> JSendError(
+            HttpStatusCode statusCode, string message, int? errorCode = null, object data = null)
+            => JSend(statusCode, new ErrorResponse(message, errorCode, data));
     }
 }

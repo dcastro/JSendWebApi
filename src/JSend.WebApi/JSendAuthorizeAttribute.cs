@@ -26,7 +26,7 @@ namespace JSend.WebApi
         /// <param name="actionContext">The context.</param>
         protected override void HandleUnauthorizedRequest(HttpActionContext actionContext)
         {
-            if (actionContext == null) throw new ArgumentNullException("actionContext");
+            if (actionContext == null) throw new ArgumentNullException(nameof(actionContext));
             Contract.Assert(actionContext.ControllerContext != null);
 
             var result = new JSendUnauthorizedResult(

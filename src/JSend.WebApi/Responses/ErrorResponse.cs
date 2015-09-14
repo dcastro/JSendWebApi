@@ -9,10 +9,6 @@ namespace JSend.WebApi.Responses
     /// </summary>
     public class ErrorResponse : IJSendResponse
     {
-        private readonly string _message;
-        private readonly int? _code;
-        private readonly object _data;
-
         /// <summary>Initializes a new instance of <see cref="ErrorResponse"/>.</summary>
         /// <param name="message">An error message.</param>
         public ErrorResponse(string message)
@@ -46,42 +42,30 @@ namespace JSend.WebApi.Responses
         public ErrorResponse(string message, int? code, object data)
         {
             if (message == null)
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
 
             if (string.IsNullOrWhiteSpace(message))
-                throw new ArgumentException(StringResources.ErrorResponse_WhiteSpaceMessage, "message");
+                throw new ArgumentException(StringResources.ErrorResponse_WhiteSpaceMessage, nameof(message));
 
-            _message = message;
-            _code = code;
-            _data = data;
+            Message = message;
+            Code = code;
+            Data = data;
         }
 
         /// <summary>Gets the status of this response, always set to "error".</summary>
         [JsonProperty("status", Order = 1)]
-        public string Status
-        {
-            get { return "error"; }
-        }
+        public string Status => "error";
 
         /// <summary>Gets the error message explaining what went wrong.</summary>
         [JsonProperty("message", Order = 2)]
-        public string Message
-        {
-            get { return _message; }
-        }
+        public string Message { get; }
 
         /// <summary>Gets the numeric error code corresponding to the error.</summary>
         [JsonProperty("code", Order = 3, NullValueHandling = NullValueHandling.Ignore)]
-        public int? Code
-        {
-            get { return _code; }
-        }
+        public int? Code { get; }
 
         /// <summary>Gets the generic data container; null if not applicable.</summary>
         [JsonProperty("data", Order = 4, NullValueHandling = NullValueHandling.Ignore)]
-        public object Data
-        {
-            get { return _data; }
-        }
+        public object Data { get; }
     }
 }

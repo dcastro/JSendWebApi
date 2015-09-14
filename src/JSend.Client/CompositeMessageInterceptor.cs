@@ -11,7 +11,8 @@ namespace JSend.Client
     /// </summary>
     public class CompositeMessageInterceptor : MessageInterceptor
     {
-        private readonly IEnumerable<MessageInterceptor> _interceptors;
+        /// <summary>Gets the interceptors contained within this instance.</summary>
+        public IEnumerable<MessageInterceptor> Interceptors { get; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="CompositeMessageInterceptor"/>.
@@ -28,15 +29,9 @@ namespace JSend.Client
         /// <param name="interceptors">The message interceptors.</param>
         public CompositeMessageInterceptor(params MessageInterceptor[] interceptors)
         {
-            if (interceptors == null) throw new ArgumentNullException("interceptors");
+            if (interceptors == null) throw new ArgumentNullException(nameof(interceptors));
 
-            _interceptors = interceptors;
-        }
-
-        /// <summary>Gets the interceptors contained within this instance.</summary>
-        public IEnumerable<MessageInterceptor> Interceptors
-        {
-            get { return _interceptors; }
+            Interceptors = interceptors;
         }
 
         /// <summary>

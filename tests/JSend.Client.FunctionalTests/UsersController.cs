@@ -23,34 +23,20 @@ namespace JSend.Client.FunctionalTests
         }
 
         [Route("success-with-user"), HttpGet]
-        public User SuccessWithUserAction()
-        {
-            return TestUser;
-        }
+        public User SuccessWithUserAction() => TestUser;
 
         [Route("fail"), HttpGet]
-        public IHttpActionResult FailAction()
-        {
-            return JSendFail(HttpStatusCode.BadRequest, ErrorData);
-        }
+        public IHttpActionResult FailAction() => JSendFail(HttpStatusCode.BadRequest, ErrorData);
 
         [Route("error"), HttpGet]
         public IHttpActionResult ErrorAction()
-        {
-            return JSendError(HttpStatusCode.InternalServerError, ErrorMessage, ErrorCode, ErrorData);
-        }
+            => JSendError(HttpStatusCode.InternalServerError, ErrorMessage, ErrorCode, ErrorData);
 
         [Route("no-content"), HttpGet]
-        public HttpResponseMessage NoContentAction()
-        {
-            return new HttpResponseMessage(HttpStatusCode.NoContent);
-        }
+        public HttpResponseMessage NoContentAction() => new HttpResponseMessage(HttpStatusCode.NoContent);
 
         [Route("non-jsend"), HttpGet]
-        public IHttpActionResult NonJSendAction()
-        {
-            return Ok(TestUser);
-        }
+        public IHttpActionResult NonJSendAction() => Ok(TestUser);
 
         [Route("non-json"), HttpGet]
         public IHttpActionResult NonJsonAction()
@@ -62,40 +48,22 @@ namespace JSend.Client.FunctionalTests
         }
 
         [Route("get"), HttpGet]
-        public string GetAction()
-        {
-            return "get";
-        }
+        public string GetAction() => "get";
 
         [Route("post"), HttpPost]
-        public string PostAction()
-        {
-            return "post";
-        }
+        public string PostAction() => "post";
 
         [Route("put"), HttpPut]
-        public string PutAction()
-        {
-            return "put";
-        }
+        public string PutAction() => "put";
 
         [Route("delete"), HttpDelete]
-        public string DeleteAction()
-        {
-            return "delete";
-        }
+        public string DeleteAction() => "delete";
 
         [Route("post-echo"), HttpPost]
-        public User PostEchoAction(User user)
-        {
-            return user;
-        }
+        public User PostEchoAction(User user) => user;
 
         [Route("put-echo"), HttpPut]
-        public User PutEchoAction(User user)
-        {
-            return user;
-        }
+        public User PutEchoAction(User user) => user;
 
         [Route("echo-headers"), HttpGet]
         public IDictionary<string, IEnumerable<string>> EchoHeadersAction()

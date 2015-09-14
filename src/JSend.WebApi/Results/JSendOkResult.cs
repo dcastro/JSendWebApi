@@ -38,22 +38,13 @@ namespace JSend.WebApi.Results
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
-        public SuccessResponse Response
-        {
-            get { return SuccessResponse; }
-        }
+        public SuccessResponse Response => SuccessResponse;
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
-        public HttpStatusCode StatusCode
-        {
-            get { return HttpStatusCode.OK; }
-        }
+        public HttpStatusCode StatusCode => HttpStatusCode.OK;
 
         /// <summary>Gets the request message which led to this result.</summary>
-        public HttpRequestMessage Request
-        {
-            get { return _dependencies.RequestMessage; }
-        }
+        public HttpRequestMessage Request => _dependencies.RequestMessage;
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>

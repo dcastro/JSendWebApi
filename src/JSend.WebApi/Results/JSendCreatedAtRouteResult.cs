@@ -19,8 +19,6 @@ namespace JSend.WebApi.Results
     /// <typeparam name="T">The type of the created content.</typeparam>
     public class JSendCreatedAtRouteResult<T> : IJSendResult<SuccessResponse>
     {
-        private readonly string _routeName;
-        private readonly IDictionary<string, object> _routeValues;
         private readonly ApiController _controller;
         private readonly JSendResult<SuccessResponse> _result;
 
@@ -35,10 +33,10 @@ namespace JSend.WebApi.Results
         public JSendCreatedAtRouteResult(string routeName, IDictionary<string, object> routeValues, T content,
             ApiController controller)
         {
-            if (routeName == null) throw new ArgumentNullException("routeName");
+            if (routeName == null) throw new ArgumentNullException(nameof(routeName));
 
-            _routeName = routeName;
-            _routeValues = routeValues;
+            RouteName = routeName;
+            RouteValues = routeValues;
             _controller = controller;
 
             var response = new SuccessResponse(content);
@@ -46,40 +44,22 @@ namespace JSend.WebApi.Results
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
-        public SuccessResponse Response
-        {
-            get { return _result.Response; }
-        }
+        public SuccessResponse Response => _result.Response;
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
-        public HttpStatusCode StatusCode
-        {
-            get { return HttpStatusCode.Created; }
-        }
+        public HttpStatusCode StatusCode => HttpStatusCode.Created;
 
         /// <summary>Gets the request message which led to this result.</summary>
-        public HttpRequestMessage Request
-        {
-            get { return _result.Request; }
-        }
+        public HttpRequestMessage Request => _result.Request;
 
         /// <summary>Gets the content value to format in the entity body.</summary>
-        public T Content
-        {
-            get { return (T) Response.Data; }
-        }
+        public T Content => (T) Response.Data;
 
         /// <summary>Gets the name of the route to use for generating the URL.</summary>
-        public string RouteName
-        {
-            get { return _routeName; }
-        }
+        public string RouteName { get; }
 
         /// <summary>Gets the route data to use for generating the URL.</summary>
-        public IDictionary<string, object> RouteValues
-        {
-            get { return _routeValues; }
-        }
+        public IDictionary<string, object> RouteValues { get; }
 
         /// <summary>Gets the factory to use to generate the route URL.</summary>
         public UrlHelper UrlFactory
@@ -98,7 +78,7 @@ namespace JSend.WebApi.Results
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            string link = UrlFactory.Link(_routeName, _routeValues);
+            string link = UrlFactory.Link(RouteName, RouteValues);
 
             var message = await _result.ExecuteAsync(cancellationToken);
             message.Headers.Location = new Uri(link);

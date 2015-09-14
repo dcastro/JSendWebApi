@@ -124,193 +124,187 @@ namespace JSend.WebApi.FunctionalTests
             }
         }
 
-        public static IEnumerable<object[]> RoutesAndExpectedContent
+        public static IEnumerable<object[]> RoutesAndExpectedContent => new[]
         {
-            get
+            new object[]
             {
-                return new[]
+                "ok", new JObject
                 {
-                    new object[]
+                    {"status", "success"},
+                    {"data", null}
+                }
+            },
+            new object[]
+            {
+                "ok-with-user", new JObject
+                {
+                    {"status", "success"},
+                    {"data", JObject.FromObject(UsersController.TestUser)}
+                }
+            },
+            new object[]
+            {
+                "created-with-string", new JObject
+                {
+                    {"status", "success"},
+                    {"data", JObject.FromObject(UsersController.TestUser)}
+                }
+            },
+            new object[]
+            {
+                "created-with-uri", new JObject
+                {
+                    {"status", "success"},
+                    {"data", JObject.FromObject(UsersController.TestUser)}
+                }
+            },
+            new object[]
+            {
+                "created-at-route-with-object", new JObject
+                {
+                    {"status", "success"},
+                    {"data", JObject.FromObject(UsersController.TestUser)}
+                }
+            },
+            new object[]
+            {
+                "created-at-route-with-dictionary", new JObject
+                {
+                    {"status", "success"},
+                    {"data", JObject.FromObject(UsersController.TestUser)}
+                }
+            },
+            new object[]
+            {
+                "redirect-with-string", new JObject
+                {
+                    {"status", "success"},
+                    {"data", null}
+                }
+            },
+            new object[]
+            {
+                "redirect-with-uri", new JObject
+                {
+                    {"status", "success"},
+                    {"data", null}
+                }
+            },
+            new object[]
+            {
+                "redirect-to-route-with-object", new JObject
+                {
+                    {"status", "success"},
+                    {"data", null}
+                }
+            },
+            new object[]
+            {
+                "redirect-to-route-with-dictionary", new JObject
+                {
+                    {"status", "success"},
+                    {"data", null}
+                }
+            },
+            new object[]
+            {
+                "badrequest-with-reason", new JObject
+                {
+                    {"status", "fail"},
+                    {"data", UsersController.ErrorMessage}
+                }
+            },
+            new object[]
+            {
+                "badrequest-with-modelstate", new JObject
+                {
+                    {"status", "fail"},
                     {
-                        "ok", new JObject
+                        "data", new JObject
                         {
-                            {"status", "success"},
-                            {"data", null}
-                        }
-                    },
-                    new object[]
-                    {
-                        "ok-with-user", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", JObject.FromObject(UsersController.TestUser)}
-                        }
-                    },
-                    new object[]
-                    {
-                        "created-with-string", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", JObject.FromObject(UsersController.TestUser)}
-                        }
-                    },
-                    new object[]
-                    {
-                        "created-with-uri", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", JObject.FromObject(UsersController.TestUser)}
-                        }
-                    },
-                    new object[]
-                    {
-                        "created-at-route-with-object", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", JObject.FromObject(UsersController.TestUser)}
-                        }
-                    },
-                    new object[]
-                    {
-                        "created-at-route-with-dictionary", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", JObject.FromObject(UsersController.TestUser)}
-                        }
-                    },
-                    new object[]
-                    {
-                        "redirect-with-string", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", null}
-                        }
-                    },
-                    new object[]
-                    {
-                        "redirect-with-uri", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", null}
-                        }
-                    },
-                    new object[]
-                    {
-                        "redirect-to-route-with-object", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", null}
-                        }
-                    },
-                    new object[]
-                    {
-                        "redirect-to-route-with-dictionary", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", null}
-                        }
-                    },
-                    new object[]
-                    {
-                        "badrequest-with-reason", new JObject
-                        {
-                            {"status", "fail"},
-                            {"data", UsersController.ErrorMessage}
-                        }
-                    },
-                    new object[]
-                    {
-                        "badrequest-with-modelstate", new JObject
-                        {
-                            {"status", "fail"},
-                            {
-                                "data", new JObject
-                                {
-                                    {UsersController.ModelErrorKey, new JArray(UsersController.ModelErrorValue)}
-                                }
-                            }
-                        }
-                    },
-                    new object[]
-                    {
-                        "unauthorized", new JObject
-                        {
-                            {"status", "fail"},
-                            {"data", "Authorization has been denied for this request."}
-                        }
-                    },
-                    new object[]
-                    {
-                        "notfound", new JObject
-                        {
-                            {"status", "fail"},
-                            {"data", "The requested resource could not be found."}
-                        }
-                    },
-                    new object[]
-                    {
-                        "notfound-with-reason", new JObject
-                        {
-                            {"status", "fail"},
-                            {"data", UsersController.ErrorMessage}
-                        }
-                    },
-                    new object[]
-                    {
-                        "internal-server-error", new JObject
-                        {
-                            {"status", "error"},
-                            {"message", UsersController.ErrorMessage},
-                            {"code", UsersController.ErrorCode},
-                            {"data", JToken.FromObject(UsersController.ErrorData)}
-                        }
-                    },
-                    new object[]
-                    {
-                        "internal-server-error-with-exception", new JObject
-                        {
-                            {"status", "error"},
-                            {"message", UsersController.TestException.Message},
-                            {"data", UsersController.TestException.ToString()}
-                        }
-                    },
-                    new object[]
-                    {
-                        "jsend", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", null}
-                        }
-                    },
-                    new object[]
-                    {
-                        "jsend-success", new JObject
-                        {
-                            {"status", "success"},
-                            {"data", JToken.FromObject(UsersController.TestUser)}
-                        }
-                    },
-                    new object[]
-                    {
-                        "jsend-fail", new JObject
-                        {
-                            {"status", "fail"},
-                            {"data", UsersController.ErrorMessage}
-                        }
-                    },
-                    new object[]
-                    {
-                        "jsend-error", new JObject
-                        {
-                            {"status", "error"},
-                            {"message", UsersController.ErrorMessage},
-                            {"code", UsersController.ErrorCode},
-                            {"data", JToken.FromObject(UsersController.ErrorData)}
+                            {UsersController.ModelErrorKey, new JArray(UsersController.ModelErrorValue)}
                         }
                     }
-                };
+                }
+            },
+            new object[]
+            {
+                "unauthorized", new JObject
+                {
+                    {"status", "fail"},
+                    {"data", "Authorization has been denied for this request."}
+                }
+            },
+            new object[]
+            {
+                "notfound", new JObject
+                {
+                    {"status", "fail"},
+                    {"data", "The requested resource could not be found."}
+                }
+            },
+            new object[]
+            {
+                "notfound-with-reason", new JObject
+                {
+                    {"status", "fail"},
+                    {"data", UsersController.ErrorMessage}
+                }
+            },
+            new object[]
+            {
+                "internal-server-error", new JObject
+                {
+                    {"status", "error"},
+                    {"message", UsersController.ErrorMessage},
+                    {"code", UsersController.ErrorCode},
+                    {"data", JToken.FromObject(UsersController.ErrorData)}
+                }
+            },
+            new object[]
+            {
+                "internal-server-error-with-exception", new JObject
+                {
+                    {"status", "error"},
+                    {"message", UsersController.TestException.Message},
+                    {"data", UsersController.TestException.ToString()}
+                }
+            },
+            new object[]
+            {
+                "jsend", new JObject
+                {
+                    {"status", "success"},
+                    {"data", null}
+                }
+            },
+            new object[]
+            {
+                "jsend-success", new JObject
+                {
+                    {"status", "success"},
+                    {"data", JToken.FromObject(UsersController.TestUser)}
+                }
+            },
+            new object[]
+            {
+                "jsend-fail", new JObject
+                {
+                    {"status", "fail"},
+                    {"data", UsersController.ErrorMessage}
+                }
+            },
+            new object[]
+            {
+                "jsend-error", new JObject
+                {
+                    {"status", "error"},
+                    {"message", UsersController.ErrorMessage},
+                    {"code", UsersController.ErrorCode},
+                    {"data", JToken.FromObject(UsersController.ErrorData)}
+                }
             }
-        }
+        };
 
         [Theory]
         [MemberData("RoutesAndExpectedContent")]

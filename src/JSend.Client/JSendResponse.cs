@@ -56,10 +56,7 @@ namespace JSend.Client
         /// </summary>
         /// <returns>The response's data or the default vale of <typeparamref name="T"/>.</returns>
         [Pure]
-        public T GetDataOrDefault()
-        {
-            return GetDataOrDefault(default(T));
-        }
+        public T GetDataOrDefault() => GetDataOrDefault(default(T));
 
         /// <summary>
         /// Returns the response's data, if any;
@@ -68,10 +65,7 @@ namespace JSend.Client
         /// <param name="defaultValue">The value to return if the response does not contain any data.</param>
         /// <returns>The response's data or <paramref name="defaultValue"/>.</returns>
         [Pure]
-        public T GetDataOrDefault(T defaultValue)
-        {
-            return HasData ? Data : defaultValue;
-        }
+        public T GetDataOrDefault(T defaultValue) => HasData ? Data : defaultValue;
 
         /// <summary>Throws an exception if <see cref="IsSuccess"/> is <see langword="false"/>.</summary>
         /// <returns>Returns itself if the call is successful.</returns>
@@ -149,10 +143,7 @@ namespace JSend.Client
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification =
             "Non-sealed classes should not implemented IEquatable<T>. See http://blog.mischel.com/2013/01/05/inheritance-and-iequatable-do-not-mix/" +
             "and http://stackoverflow.com/q/1868316/857807")]
-        public static bool operator ==(JSendResponse<T> left, JSendResponse<T> right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(JSendResponse<T> left, JSendResponse<T> right) => Equals(left, right);
 
         /// <summary>Returns whether the two operands are not equal.</summary>
         /// <param name="left">The left operand.</param>
@@ -161,10 +152,7 @@ namespace JSend.Client
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification =
             "Non-sealed classes should not implemented IEquatable<T>. See http://blog.mischel.com/2013/01/05/inheritance-and-iequatable-do-not-mix/" +
             "and http://stackoverflow.com/q/1868316/857807")]
-        public static bool operator !=(JSendResponse<T> left, JSendResponse<T> right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(JSendResponse<T> left, JSendResponse<T> right) => !Equals(left, right);
 
         /// <summary>Serves as a hash function for this <see cref="JSendResponse{T}"/>.</summary>
         /// <returns>A hash code for this <see cref="JSendResponse{T}"/>.</returns>

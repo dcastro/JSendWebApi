@@ -17,7 +17,6 @@ namespace JSend.WebApi.Results
     /// </summary>
     public class JSendExceptionResult : IJSendResult<ErrorResponse>
     {
-        private readonly Exception _exception;
         private readonly string _message;
         private readonly int? _errorCode;
         private readonly object _data;
@@ -78,9 +77,9 @@ namespace JSend.WebApi.Results
         private JSendExceptionResult(Exception exception, string message, int? errorCode, object data,
             IDependencyProvider dependencies)
         {
-            if (exception == null) throw new ArgumentNullException("exception");
+            if (exception == null) throw new ArgumentNullException(nameof(exception));
 
-            _exception = exception;
+            Exception = exception;
             _message = message;
             _errorCode = errorCode;
             _data = data;
@@ -94,29 +93,20 @@ namespace JSend.WebApi.Results
             {
                 if (_response == null)
                 {
-                    _response = BuildResponse(_dependencies.IncludeErrorDetail, _exception, _message, _errorCode, _data);
+                    _response = BuildResponse(_dependencies.IncludeErrorDetail, Exception, _message, _errorCode, _data);
                 }
                 return _response;
             }
         }
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
-        public HttpStatusCode StatusCode
-        {
-            get { return HttpStatusCode.InternalServerError; }
-        }
+        public HttpStatusCode StatusCode => HttpStatusCode.InternalServerError;
 
         /// <summary>Gets the request message which led to this result.</summary>
-        public HttpRequestMessage Request
-        {
-            get { return _dependencies.RequestMessage; }
-        }
+        public HttpRequestMessage Request => _dependencies.RequestMessage;
 
         /// <summary>Gets the exception to include in the error.</summary>
-        public Exception Exception
-        {
-            get { return _exception; }
-        }
+        public Exception Exception { get; }
 
         private static ErrorResponse BuildResponse(bool includeErrorDetail, Exception ex, string message,
             int? errorCode, object data)
@@ -165,26 +155,17 @@ namespace JSend.WebApi.Results
 
         private sealed class DirectDependencyProvider : IDependencyProvider
         {
-            private readonly bool _includeErrorDetail;
-            private readonly HttpRequestMessage _requestMessage;
-
             public DirectDependencyProvider(bool includeErrorDetail, HttpRequestMessage requestMessage)
             {
-                if (requestMessage == null) throw new ArgumentNullException("requestMessage");
+                if (requestMessage == null) throw new ArgumentNullException(nameof(requestMessage));
 
-                _includeErrorDetail = includeErrorDetail;
-                _requestMessage = requestMessage;
+                IncludeErrorDetail = includeErrorDetail;
+                RequestMessage = requestMessage;
             }
 
-            public bool IncludeErrorDetail
-            {
-                get { return _includeErrorDetail; }
-            }
+            public bool IncludeErrorDetail { get; }
 
-            public HttpRequestMessage RequestMessage
-            {
-                get { return _requestMessage; }
-            }
+            public HttpRequestMessage RequestMessage { get; }
         }
 
         private sealed class ControllerDependencyProvider : IDependencyProvider
@@ -195,7 +176,7 @@ namespace JSend.WebApi.Results
             public ControllerDependencyProvider(ApiController controller)
             {
                 if (controller == null)
-                    throw new ArgumentNullException("controller");
+                    throw new ArgumentNullException(nameof(controller));
 
                 _controller = controller;
             }

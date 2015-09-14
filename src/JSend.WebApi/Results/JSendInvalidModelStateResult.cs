@@ -26,7 +26,7 @@ namespace JSend.WebApi.Results
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         public JSendInvalidModelStateResult(ModelStateDictionary modelState, ApiController controller)
         {
-            if (controller == null) throw new ArgumentNullException("controller");
+            if (controller == null) throw new ArgumentNullException(nameof(controller));
 
             IDictionary<string, IEnumerable<string>> validationErrorsDictionary =
                 new HttpError(modelState, controller.RequestContext.IncludeErrorDetail)
@@ -42,37 +42,24 @@ namespace JSend.WebApi.Results
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
-        public FailResponse Response
-        {
-            get { return _result.Response; }
-        }
+        public FailResponse Response => _result.Response;
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
-        public HttpStatusCode StatusCode
-        {
-            get { return _result.StatusCode; }
-        }
+        public HttpStatusCode StatusCode => _result.StatusCode;
 
         /// <summary>Gets the request message which led to this result.</summary>
-        public HttpRequestMessage Request
-        {
-            get { return _result.Request; }
-        }
+        public HttpRequestMessage Request => _result.Request;
 
         /// <summary>Gets the model state errors to include in the response.</summary>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "Since the nested generic type is the member's return type, and not a parameter type, it places little burden on the client. Additionally, the burden can be mitigated through type inference.")]
         public IReadOnlyDictionary<string, IEnumerable<string>> ModelState
-        {
-            get { return (IReadOnlyDictionary<string, IEnumerable<string>>) _result.Response.Data; }
-        }
+            => (IReadOnlyDictionary<string, IEnumerable<string>>) _result.Response.Data;
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that, when completed, contains the <see cref="HttpResponseMessage"/>.</returns>
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
-        {
-            return _result.ExecuteAsync(cancellationToken);
-        }
+            => _result.ExecuteAsync(cancellationToken);
     }
 }

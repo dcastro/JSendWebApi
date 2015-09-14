@@ -10,11 +10,6 @@ namespace JSend.Client
     /// <summary>Represents an error returned by a JSend API.</summary>
     public sealed class JSendError : IEquatable<JSendError>
     {
-        private readonly JSendStatus _status;
-        private readonly string _message;
-        private readonly int? _code;
-        private readonly JToken _data;
-
         /// <summary>Initializes a new instance of <see cref="JSendError"/>.</summary>
         /// <param name="status">
         /// The status of the response. Must be either <see cref="JSendStatus.Error"/> or <see cref="JSendStatus.Fail"/>.
@@ -27,37 +22,25 @@ namespace JSend.Client
         public JSendError(JSendStatus status, string message, int? code, JToken data)
         {
             if (status == JSendStatus.Success)
-                throw new ArgumentException(StringResources.ErrorWithSuccessStatus, "status");
+                throw new ArgumentException(StringResources.ErrorWithSuccessStatus, nameof(status));
 
-            _status = status;
-            _message = message;
-            _code = code;
-            _data = data;
+            Status = status;
+            Message = message;
+            Code = code;
+            Data = data;
         }
 
         /// <summary>Gets the status of this response.</summary>
-        public JSendStatus Status
-        {
-            get { return _status; }
-        }
+        public JSendStatus Status { get; }
 
         /// <summary>Gets the error message explaining what went wrong.</summary>
-        public string Message
-        {
-            get { return _message; }
-        }
+        public string Message { get; }
 
         /// <summary>Gets the numeric error code corresponding to the error.</summary>
-        public int? Code
-        {
-            get { return _code; }
-        }
+        public int? Code { get; }
 
         /// <summary>Gets the generic data container.</summary>
-        public JToken Data
-        {
-            get { return _data; }
-        }
+        public JToken Data { get; }
 
         /// <summary>Determines whether the specified <see cref="JSendError"/> is equal to the current <see cref="JSendError"/>.</summary>
         /// <param name="other">The object to compare with the current object.</param>
@@ -68,19 +51,16 @@ namespace JSend.Client
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return _status == other._status &&
-                   _code == other._code &&
-                   string.Equals(_message, other._message, StringComparison.Ordinal) &&
-                   JToken.EqualityComparer.Equals(_data, other._data);
+            return Status == other.Status &&
+                   Code == other.Code &&
+                   string.Equals(Message, other.Message, StringComparison.Ordinal) &&
+                   JToken.EqualityComparer.Equals(Data, other.Data);
         }
 
         /// <summary>Determines whether the specified <see cref="Object"/> is equal to the current <see cref="JSendError"/>.</summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns><see langword="true"/> if the specified object is equal to the current object; otherwise, <see langword="false"/>.</returns>
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as JSendError);
-        }
+        public override bool Equals(object obj) => Equals(obj as JSendError);
 
         /// <summary>Serves as a hash function for this <see cref="JSendError"/>.</summary>
         /// <returns>A hash code for this <see cref="JSendError"/>.</returns>
@@ -88,10 +68,10 @@ namespace JSend.Client
         {
             unchecked
             {
-                var hashCode = (int) _status;
-                hashCode = (hashCode*397) ^ (_message != null ? StringComparer.Ordinal.GetHashCode(_message) : 0);
-                hashCode = (hashCode*397) ^ _code.GetHashCode();
-                hashCode = (hashCode*397) ^ JToken.EqualityComparer.GetHashCode(_data);
+                var hashCode = (int) Status;
+                hashCode = (hashCode*397) ^ (Message != null ? StringComparer.Ordinal.GetHashCode(Message) : 0);
+                hashCode = (hashCode*397) ^ Code.GetHashCode();
+                hashCode = (hashCode*397) ^ JToken.EqualityComparer.GetHashCode(Data);
                 return hashCode;
             }
         }

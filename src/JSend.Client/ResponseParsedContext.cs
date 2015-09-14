@@ -10,10 +10,6 @@ namespace JSend.Client
     /// <typeparam name="TResponse">The type of the data contained by the JSend response.</typeparam>
     public class ResponseParsedContext<TResponse>
     {
-        private readonly HttpRequestMessage _httpRequestMessage;
-        private readonly HttpResponseMessage _httpResponseMessage;
-        private readonly JSendResponse<TResponse> _jsendResponse;
-
         /// <summary>Initializes a new instance of <see cref="ResponseParsedContext{TResponse}"/>.</summary>
         /// <param name="httpRequestMessage">The HTTP request message that was sent.</param>
         /// <param name="httpResponseMessage">The HTTP response message that was received.</param>
@@ -22,31 +18,22 @@ namespace JSend.Client
         public ResponseParsedContext(HttpRequestMessage httpRequestMessage, HttpResponseMessage httpResponseMessage,
             JSendResponse<TResponse> jsendResponse)
         {
-            if (httpRequestMessage == null) throw new ArgumentNullException("httpRequestMessage");
-            if (httpResponseMessage == null) throw new ArgumentNullException("httpResponseMessage");
-            if (jsendResponse == null) throw new ArgumentNullException("jsendResponse");
+            if (httpRequestMessage == null) throw new ArgumentNullException(nameof(httpRequestMessage));
+            if (httpResponseMessage == null) throw new ArgumentNullException(nameof(httpResponseMessage));
+            if (jsendResponse == null) throw new ArgumentNullException(nameof(jsendResponse));
 
-            _httpRequestMessage = httpRequestMessage;
-            _httpResponseMessage = httpResponseMessage;
-            _jsendResponse = jsendResponse;
+            HttpRequestMessage = httpRequestMessage;
+            HttpResponseMessage = httpResponseMessage;
+            JSendResponse = jsendResponse;
         }
 
         /// <summary>Gets the HTTP request message that was sent.</summary>
-        public HttpRequestMessage HttpRequestMessage
-        {
-            get { return _httpRequestMessage; }
-        }
+        public HttpRequestMessage HttpRequestMessage { get; }
 
         /// <summary>Gets the HTTP response message that was received.</summary>
-        public HttpResponseMessage HttpResponseMessage
-        {
-            get { return _httpResponseMessage; }
-        }
+        public HttpResponseMessage HttpResponseMessage { get; }
 
         /// <summary>Gets the parsed JSend response.</summary>
-        public JSendResponse<TResponse> JSendResponse
-        {
-            get { return _jsendResponse; }
-        }
+        public JSendResponse<TResponse> JSendResponse { get; }
     }
 }

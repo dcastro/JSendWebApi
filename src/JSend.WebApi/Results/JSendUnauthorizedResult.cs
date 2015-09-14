@@ -18,7 +18,6 @@ namespace JSend.WebApi.Results
     {
         private static readonly FailResponse FailResponse = new FailResponse(StringResources.RequestNotAuthorized);
 
-        private readonly IEnumerable<AuthenticationHeaderValue> _challenges;
         private readonly JSendResult<FailResponse>.IDependencyProvider _dependencies;
 
         /// <summary>Initializes a new instance of <see cref="JSendUnauthorizedResult"/>.</summary>
@@ -43,35 +42,23 @@ namespace JSend.WebApi.Results
         private JSendUnauthorizedResult(IEnumerable<AuthenticationHeaderValue> challenges,
             JSendResult<FailResponse>.IDependencyProvider dependencies)
         {
-            if (challenges == null) throw new ArgumentNullException("challenges");
-            
-            _challenges = challenges;
+            if (challenges == null) throw new ArgumentNullException(nameof(challenges));
+
+            Challenges = challenges;
             _dependencies = dependencies;
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
-        public FailResponse Response
-        {
-            get { return FailResponse; }
-        }
+        public FailResponse Response => FailResponse;
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
-        public HttpStatusCode StatusCode
-        {
-            get { return HttpStatusCode.Unauthorized; }
-        }
+        public HttpStatusCode StatusCode => HttpStatusCode.Unauthorized;
 
         /// <summary>Gets the request message which led to this result.</summary>
-        public HttpRequestMessage Request
-        {
-            get { return _dependencies.RequestMessage; }
-        }
+        public HttpRequestMessage Request => _dependencies.RequestMessage;
 
         /// <summary>Gets the WWW-Authenticate challenges.</summary>
-        public IEnumerable<AuthenticationHeaderValue> Challenges
-        {
-            get { return _challenges; }
-        }
+        public IEnumerable<AuthenticationHeaderValue> Challenges { get; }
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
@@ -82,7 +69,7 @@ namespace JSend.WebApi.Results
 
             var message = await result.ExecuteAsync(cancellationToken);
 
-            foreach (var challenge in _challenges)
+            foreach (var challenge in Challenges)
                 message.Headers.WwwAuthenticate.Add(challenge);
 
             return message;

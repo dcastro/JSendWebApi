@@ -25,7 +25,7 @@ namespace JSend.WebApi
         public HttpResponseMessage Convert(HttpControllerContext controllerContext, object actionResult)
         {
             if (controllerContext == null)
-                throw new ArgumentNullException("controllerContext");
+                throw new ArgumentNullException(nameof(controllerContext));
             
             var request = controllerContext.Request;
 

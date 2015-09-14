@@ -16,7 +16,6 @@ namespace JSend.WebApi.Results
     public class JSendCreatedResult<T> : IJSendResult<SuccessResponse>
     {
         private readonly JSendResult<SuccessResponse> _result;
-        private readonly Uri _location;
 
         /// <summary>Initializes a new instance of <see cref="JSendCreatedResult{T}"/>.</summary>
         /// <param name="location">The location at which the content has been created.</param>
@@ -24,42 +23,27 @@ namespace JSend.WebApi.Results
         /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
         public JSendCreatedResult(Uri location, T content, ApiController controller)
         {
-            if (location == null) throw new ArgumentNullException("location");
+            if (location == null) throw new ArgumentNullException(nameof(location));
 
             _result = new JSendResult<SuccessResponse>(HttpStatusCode.Created, new SuccessResponse(content), controller);
 
-            _location = location;
+            Location = location;
         }
 
         /// <summary>Gets the response to be formatted into the message's body.</summary>
-        public SuccessResponse Response
-        {
-            get { return _result.Response; }
-        }
+        public SuccessResponse Response => _result.Response;
 
         /// <summary>Gets the HTTP status code for the response message.</summary>
-        public HttpStatusCode StatusCode
-        {
-            get { return _result.StatusCode; }
-        }
+        public HttpStatusCode StatusCode => _result.StatusCode;
 
         /// <summary>Gets the request message which led to this result.</summary>
-        public HttpRequestMessage Request
-        {
-            get { return _result.Request; }
-        }
+        public HttpRequestMessage Request => _result.Request;
 
         /// <summary>Gets the location at which the content has been created.</summary>
-        public Uri Location
-        {
-            get { return _location; }
-        }
+        public Uri Location { get; }
 
         /// <summary>Gets the content value to format in the entity body.</summary>
-        public T Content
-        {
-            get { return (T) _result.Response.Data; }
-        }
+        public T Content => (T) _result.Response.Data;
 
         /// <summary>Creates an <see cref="HttpResponseMessage"/> asynchronously.</summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
@@ -67,7 +51,7 @@ namespace JSend.WebApi.Results
         public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             var message = await _result.ExecuteAsync(cancellationToken);
-            message.Headers.Location = _location;
+            message.Headers.Location = Location;
             return message;
         }
     }
