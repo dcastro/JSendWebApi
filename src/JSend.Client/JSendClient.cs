@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using JSend.Client.Parsers;
 using JSend.Client.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

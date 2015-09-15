@@ -126,7 +126,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CompositeMessageInterceptorTests.cs" />
-    <Compile Include="DefaultJSendParserTests.cs" />
+    <Compile Include="Parsers\DefaultJSendParserTests.cs" />
     <Compile Include="ExceptionContextTests.cs" />
     <Compile Include="FixtureCustomizations\InlineJSendAutoDataAttribute.cs" />
     <Compile Include="FixtureCustomizations\JSendAutoDataAttribute.cs" />

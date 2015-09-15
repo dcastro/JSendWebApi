@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 
-namespace JSend.Client
+namespace JSend.Client.Parsers
 {
     /// <summary>
     /// Parses HTTP responses into JSend response objects.

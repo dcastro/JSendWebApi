@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using JSend.Client.Parsers;
 using JSend.Client.Properties;
 using JSend.Client.Tests.FixtureCustomizations;
 using JSend.Client.Tests.TestTypes;
@@ -11,7 +12,7 @@ using Newtonsoft.Json.Schema;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 
-namespace JSend.Client.Tests
+namespace JSend.Client.Tests.Parsers
 {
     public class DefaultJSendParserTests
     {
