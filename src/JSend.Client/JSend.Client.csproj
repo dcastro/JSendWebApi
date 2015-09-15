@@ -63,6 +63,7 @@
     <Compile Include="JSendStatus.cs" />
     <Compile Include="MessageInterceptor.cs" />
     <Compile Include="NullMessageInterceptor.cs" />
+    <Compile Include="Parsers\NakedContentParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseParsedContext.cs" />
     <Compile Include="ResponseReceivedContext.cs" />

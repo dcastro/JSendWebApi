@@ -137,6 +137,7 @@
     <Compile Include="JSendClientTests.cs" />
     <Compile Include="JSendErrorTests.cs" />
     <Compile Include="NullMessageInterceptorTests.cs" />
+    <Compile Include="Parsers\NakedContentParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseParsedContextTests.cs" />
     <Compile Include="ResponseReceivedContextTests.cs" />
