@@ -2,15 +2,14 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Globalization;
-using System.IO;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using JSend.Client.Properties;
 using JSend.Client.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
+using static JSend.Client.JSendSchemas;
 
 namespace JSend.Client.Parsers
 {
@@ -21,29 +20,6 @@ namespace JSend.Client.Parsers
     {
         /// <summary>Gets an instance of <see cref="DefaultJSendParser"/>.</summary>
         public static DefaultJSendParser Instance { get; } = new DefaultJSendParser();
-
-        private static readonly Lazy<Task<JsonSchema>> BaseSchema = new Lazy<Task<JsonSchema>>(
-            () => LoadSchema("JSend.Client.Schemas.JSendResponseSchema.json"));
-
-        private static readonly Lazy<Task<JsonSchema>> SuccessSchema = new Lazy<Task<JsonSchema>>(
-            () => LoadSchema("JSend.Client.Schemas.SuccessResponseSchema.json"));
-
-        private static readonly Lazy<Task<JsonSchema>> FailSchema = new Lazy<Task<JsonSchema>>(
-            () => LoadSchema("JSend.Client.Schemas.FailResponseSchema.json"));
-
-        private static readonly Lazy<Task<JsonSchema>> ErrorSchema = new Lazy<Task<JsonSchema>>(
-            () => LoadSchema("JSend.Client.Schemas.ErrorResponseSchema.json"));
-
-        private static async Task<JsonSchema> LoadSchema(string name)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream(name))
-            using (var reader = new StreamReader(stream))
-            {
-                var schema = await reader.ReadToEndAsync();
-                return JsonSchema.Parse(schema);
-            }
-        }
 
         /// <summary>
         /// Parses the content of a <see cref="HttpResponseMessage"/> and returns a <see cref="JSendResponse{T}"/>.
@@ -68,7 +44,7 @@ namespace JSend.Client.Parsers
             try
             {
                 var json = JsonConvert.DeserializeObject<JToken>(content, serializerSettings);
-                json.Validate(await BaseSchema.Value);
+                json.Validate(await GetBaseSchemaAsync());
 
                 var status = json.Value<string>("status");
                 switch (status)
@@ -112,7 +88,7 @@ namespace JSend.Client.Parsers
         public static async Task<JSendResponse<T>> ParseSuccessMessageAsync<T>(JToken json,
             JsonSerializerSettings serializerSettings, HttpResponseMessage responseMessage)
         {
-            json.Validate(await SuccessSchema.Value);
+            json.Validate(await GetSuccessSchemaAsync());
 
             var dataToken = json["data"];
             if (dataToken.Type == JTokenType.Null)
@@ -138,7 +114,7 @@ namespace JSend.Client.Parsers
         [Pure]
         public static async Task<JSendResponse<T>> ParseFailMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
-            json.Validate(await FailSchema.Value);
+            json.Validate(await GetFailSchemaAsync());
 
             var dataToken = json["data"];
             var error = new JSendError(JSendStatus.Fail, null, null, dataToken);
@@ -159,7 +135,7 @@ namespace JSend.Client.Parsers
         [Pure]
         public static async Task<JSendResponse<T>> ParseErrorMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
-            json.Validate(await ErrorSchema.Value);
+            json.Validate(await GetErrorSchemaAsync());
 
             var message = json.Value<string>("message");
             var code = json.Value<int?>("code");
