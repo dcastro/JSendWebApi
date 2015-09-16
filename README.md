@@ -256,10 +256,10 @@ if (response.HasData) { ... }
 if (! response.IsSuccess) { Logger.Log(response.Error); }
 ```
 
-If you want to know more details about the response, such as its status code, you can use the [`JSendResponse.HttpResponseMessage`][7] property to access the original HTTP response message.
+If you want to know more details about the response, such as its status code, you can use the [`JSendResponse.HttpResponse`][7] property to access the original HTTP response message.
 
 ```csharp
-if (response.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+if (response.HttpResponse.StatusCode == HttpStatusCode.NotFound)
 {
     ...
 }
@@ -325,4 +325,4 @@ Or download the binaries/source code from [here][5].
  [4]: https://msdn.microsoft.com/en-us/library/system.web.http.httpconfiguration.includeerrordetailpolicy%28v=vs.118%29.aspx
  [5]: https://github.com/dcastro/JSendWebApi/releases
  [6]: https://github.com/dcastro/JSendWebApi/blob/master/src/JSend.Client/MessageInterceptor.cs
- [7]: https://github.com/dcastro/JSendWebApi/blob/master/src/JSend.Client/JSendResponse.cs#L60
+ [7]: https://github.com/dcastro/JSendWebApi/blob/master/src/JSend.Client/JSendResponse.cs#L44
