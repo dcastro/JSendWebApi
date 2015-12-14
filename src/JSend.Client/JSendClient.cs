@@ -219,6 +219,8 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+            Justification = "The HttpClient will dispose of the request object.")]
         public Task<JSendResponse<JToken>> DeleteAsync(Uri requestUri, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
