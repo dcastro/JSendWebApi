@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using JSend.Client.Extensions;
 using JSend.Client.Parsers;
 using JSend.Client.Properties;
 using Newtonsoft.Json;
@@ -186,9 +187,9 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        public async Task<JSendResponse<JToken>> PostAsync(Uri requestUri, object content, CancellationToken cancellationToken)
+        public Task<JSendResponse<JToken>> PostAsync(Uri requestUri, object content, CancellationToken cancellationToken)
         {
-            return await PostAsync<JToken>(requestUri, content, cancellationToken);
+            return PostAsync<JToken>(requestUri, content, cancellationToken);
         }
 
         /// <summary>Send a DELETE request to the specified Uri as an asynchronous operation.</summary>
@@ -218,10 +219,10 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        public async Task<JSendResponse<JToken>> DeleteAsync(Uri requestUri, CancellationToken cancellationToken)
+        public Task<JSendResponse<JToken>> DeleteAsync(Uri requestUri, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
-            return await SendAsync<JToken>(request, cancellationToken);
+            return SendAsync<JToken>(request, cancellationToken);
         }
 
         /// <summary>Send a PUT request to the specified Uri as an asynchronous operation.</summary>
@@ -303,9 +304,9 @@ namespace JSend.Client
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="JSendRequestException">An error occurred while sending the request.</exception>
         /// <exception cref="JSendParseException">An error occurred while parsing the response.</exception>
-        public async Task<JSendResponse<JToken>> PutAsync(Uri requestUri, object content, CancellationToken cancellationToken)
+        public Task<JSendResponse<JToken>> PutAsync(Uri requestUri, object content, CancellationToken cancellationToken)
         {
-            return await PutAsync<JToken>(requestUri, content, cancellationToken);
+            return PutAsync<JToken>(requestUri, content, cancellationToken);
         }
 
         /// <summary>Send an HTTP request as an asynchronous operation.</summary>
@@ -336,7 +337,7 @@ namespace JSend.Client
                 HttpResponseMessage responseMessage;
                 try
                 {
-                    responseMessage = await HttpClient.SendAsync(request, cancellationToken);
+                    responseMessage = await HttpClient.SendAsync(request, cancellationToken).IgnoreContext();
                 }
                 catch (Exception ex)
                 {
@@ -348,7 +349,7 @@ namespace JSend.Client
                 JSendResponse<TResponse> jsendResponse;
                 try
                 {
-                    jsendResponse = await Parser.ParseAsync<TResponse>(SerializerSettings, responseMessage);
+                    jsendResponse = await Parser.ParseAsync<TResponse>(SerializerSettings, responseMessage).IgnoreContext();
                 }
                 catch (Exception ex)
                 {

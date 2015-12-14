@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
+using JSend.Client.Extensions;
 using JSend.Client.Properties;
 using JSend.Client.Responses;
 using Newtonsoft.Json;
@@ -39,22 +40,22 @@ namespace JSend.Client.Parsers
             if (httpResponseMessage.Content == null)
                 throw new JSendParseException(StringResources.ResponseWithoutContent);
 
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            var content = await httpResponseMessage.Content.ReadAsStringAsync().IgnoreContext();
 
             try
             {
                 var json = JsonConvert.DeserializeObject<JToken>(content, serializerSettings);
-                json.Validate(await GetBaseSchemaAsync());
+                json.Validate(await GetBaseSchemaAsync().IgnoreContext());
 
                 var status = json.Value<string>("status");
                 switch (status)
                 {
                     case "success":
-                        return await ParseSuccessMessageAsync<T>(json, serializerSettings, httpResponseMessage);
+                        return await ParseSuccessMessageAsync<T>(json, serializerSettings, httpResponseMessage).IgnoreContext();
                     case "fail":
-                        return await ParseFailMessageAsync<T>(json, httpResponseMessage);
+                        return await ParseFailMessageAsync<T>(json, httpResponseMessage).IgnoreContext();
                     case "error":
-                        return await ParseErrorMessageAsync<T>(json, httpResponseMessage);
+                        return await ParseErrorMessageAsync<T>(json, httpResponseMessage).IgnoreContext();
                     default:
                         Contract.Assert(false);
                         return null;
@@ -88,7 +89,7 @@ namespace JSend.Client.Parsers
         public static async Task<JSendResponse<T>> ParseSuccessMessageAsync<T>(JToken json,
             JsonSerializerSettings serializerSettings, HttpResponseMessage responseMessage)
         {
-            json.Validate(await GetSuccessSchemaAsync());
+            json.Validate(await GetSuccessSchemaAsync().IgnoreContext());
 
             var dataToken = json["data"];
             if (dataToken.Type == JTokenType.Null)
@@ -114,7 +115,7 @@ namespace JSend.Client.Parsers
         [Pure]
         public static async Task<JSendResponse<T>> ParseFailMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
-            json.Validate(await GetFailSchemaAsync());
+            json.Validate(await GetFailSchemaAsync().IgnoreContext());
 
             var dataToken = json["data"];
             var error = new JSendError(JSendStatus.Fail, null, null, dataToken);
@@ -135,7 +136,7 @@ namespace JSend.Client.Parsers
         [Pure]
         public static async Task<JSendResponse<T>> ParseErrorMessageAsync<T>(JToken json, HttpResponseMessage responseMessage)
         {
-            json.Validate(await GetErrorSchemaAsync());
+            json.Validate(await GetErrorSchemaAsync().IgnoreContext());
 
             var message = json.Value<string>("message");
             var code = json.Value<int?>("code");

@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using JSend.Client.Extensions;
 using Newtonsoft.Json.Schema;
 
 namespace JSend.Client
@@ -49,7 +50,7 @@ namespace JSend.Client
             using (var stream = assembly.GetManifestResourceStream(name))
             using (var reader = new StreamReader(stream))
             {
-                var schema = await reader.ReadToEndAsync();
+                var schema = await reader.ReadToEndAsync().IgnoreContext();
                 return JsonSchema.Parse(schema);
             }
         }

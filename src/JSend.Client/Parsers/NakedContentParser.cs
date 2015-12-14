@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
+using JSend.Client.Extensions;
 using JSend.Client.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -49,21 +50,21 @@ namespace JSend.Client.Parsers
             if (httpResponseMessage.Content == null)
                 throw new JSendParseException(StringResources.ResponseWithoutContent);
 
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            var content = await httpResponseMessage.Content.ReadAsStringAsync().IgnoreContext();
 
             try
             {
                 var json = JsonConvert.DeserializeObject<JToken>(content, serializerSettings);
 
-                if (json.IsValid(await GetFailSchemaAsync()))
-                    return await DefaultJSendParser.ParseFailMessageAsync<T>(json, httpResponseMessage);
+                if (json.IsValid(await GetFailSchemaAsync().IgnoreContext()))
+                    return await DefaultJSendParser.ParseFailMessageAsync<T>(json, httpResponseMessage).IgnoreContext();
 
-                if (json.IsValid(await GetErrorSchemaAsync()))
-                    return await DefaultJSendParser.ParseErrorMessageAsync<T>(json, httpResponseMessage);
+                if (json.IsValid(await GetErrorSchemaAsync().IgnoreContext()))
+                    return await DefaultJSendParser.ParseErrorMessageAsync<T>(json, httpResponseMessage).IgnoreContext();
 
-                if (json.IsValid(await GetSuccessSchemaAsync()))
+                if (json.IsValid(await GetSuccessSchemaAsync().IgnoreContext()))
                     return await
-                        DefaultJSendParser.ParseSuccessMessageAsync<T>(json, serializerSettings, httpResponseMessage);
+                        DefaultJSendParser.ParseSuccessMessageAsync<T>(json, serializerSettings, httpResponseMessage).IgnoreContext();
 
                 var wrapped = new JObject
                 {
@@ -72,7 +73,7 @@ namespace JSend.Client.Parsers
                 };
 
                 return await
-                    DefaultJSendParser.ParseSuccessMessageAsync<T>(wrapped, serializerSettings, httpResponseMessage);
+                    DefaultJSendParser.ParseSuccessMessageAsync<T>(wrapped, serializerSettings, httpResponseMessage).IgnoreContext();
             }
             catch (JsonException ex)
             {

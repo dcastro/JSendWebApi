@@ -48,6 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CompositeMessageInterceptor.cs" />
+    <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="JSendSchemas.cs" />
     <Compile Include="Parsers\DefaultJSendParser.cs" />
     <Compile Include="ExceptionContext.cs" />
