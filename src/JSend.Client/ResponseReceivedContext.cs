@@ -9,21 +9,21 @@ namespace JSend.Client
     public class ResponseReceivedContext
     {
         /// <summary>Initializes a new instance of <see cref="ResponseReceivedContext"/>.</summary>
-        /// <param name="httpRequestMessage">The HTTP request message that was sent.</param>
-        /// <param name="httpResponseMessage">The HTTP response message that was received.</param>
-        public ResponseReceivedContext(HttpRequestMessage httpRequestMessage, HttpResponseMessage httpResponseMessage)
+        /// <param name="httpRequest">The HTTP request message that was sent.</param>
+        /// <param name="httpResponse">The HTTP response message that was received.</param>
+        public ResponseReceivedContext(HttpRequestMessage httpRequest, HttpResponseMessage httpResponse)
         {
-            if (httpRequestMessage == null) throw new ArgumentNullException(nameof(httpRequestMessage));
-            if (httpResponseMessage == null) throw new ArgumentNullException(nameof(httpResponseMessage));
+            if (httpRequest == null) throw new ArgumentNullException(nameof(httpRequest));
+            if (httpResponse == null) throw new ArgumentNullException(nameof(httpResponse));
 
-            HttpRequestMessage = httpRequestMessage;
-            HttpResponseMessage = httpResponseMessage;
+            HttpRequest = httpRequest;
+            HttpResponse = httpResponse;
         }
 
         /// <summary>Gets the HTTP request message that was sent.</summary>
-        public HttpRequestMessage HttpRequestMessage { get; }
+        public HttpRequestMessage HttpRequest { get; }
 
         /// <summary>Gets the HTTP response message that was received.</summary>
-        public HttpResponseMessage HttpResponseMessage { get; }
+        public HttpResponseMessage HttpResponse { get; }
     }
 }

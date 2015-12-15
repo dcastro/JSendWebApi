@@ -11,27 +11,27 @@ namespace JSend.Client
     public class ResponseParsedContext<TResponse>
     {
         /// <summary>Initializes a new instance of <see cref="ResponseParsedContext{TResponse}"/>.</summary>
-        /// <param name="httpRequestMessage">The HTTP request message that was sent.</param>
-        /// <param name="httpResponseMessage">The HTTP response message that was received.</param>
+        /// <param name="httpRequest">The HTTP request message that was sent.</param>
+        /// <param name="httpResponse">The HTTP response message that was received.</param>
         /// <param name="jsendResponse">The parsed JSend response.</param>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "jsend")]
-        public ResponseParsedContext(HttpRequestMessage httpRequestMessage, HttpResponseMessage httpResponseMessage,
+        public ResponseParsedContext(HttpRequestMessage httpRequest, HttpResponseMessage httpResponse,
             JSendResponse<TResponse> jsendResponse)
         {
-            if (httpRequestMessage == null) throw new ArgumentNullException(nameof(httpRequestMessage));
-            if (httpResponseMessage == null) throw new ArgumentNullException(nameof(httpResponseMessage));
+            if (httpRequest == null) throw new ArgumentNullException(nameof(httpRequest));
+            if (httpResponse == null) throw new ArgumentNullException(nameof(httpResponse));
             if (jsendResponse == null) throw new ArgumentNullException(nameof(jsendResponse));
 
-            HttpRequestMessage = httpRequestMessage;
-            HttpResponseMessage = httpResponseMessage;
+            HttpRequest = httpRequest;
+            HttpResponse = httpResponse;
             JSendResponse = jsendResponse;
         }
 
         /// <summary>Gets the HTTP request message that was sent.</summary>
-        public HttpRequestMessage HttpRequestMessage { get; }
+        public HttpRequestMessage HttpRequest { get; }
 
         /// <summary>Gets the HTTP response message that was received.</summary>
-        public HttpResponseMessage HttpResponseMessage { get; }
+        public HttpResponseMessage HttpResponse { get; }
 
         /// <summary>Gets the parsed JSend response.</summary>
         public JSendResponse<TResponse> JSendResponse { get; }

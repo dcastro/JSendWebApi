@@ -120,9 +120,9 @@ namespace JSend.WebApi.Tests.Results
             // Fixture setup
             var serializedResponse = JsonConvert.SerializeObject(result.Response);
             // Exercise system
-            var httpResponseMessage = await result.ExecuteAsync(new CancellationToken());
+            var httpResponse = await result.ExecuteAsync(new CancellationToken());
             // Verify outcome
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            var content = await httpResponse.Content.ReadAsStringAsync();
             content.Should().Be(serializedResponse);
         }
 

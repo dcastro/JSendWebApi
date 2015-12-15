@@ -16,13 +16,13 @@ namespace JSend.Client
         /// </summary>
         /// <typeparam name="T">The type of the expected data.</typeparam>
         /// <param name="serializerSettings">The settings used to deserialize the response.</param>
-        /// <param name="httpResponseMessage">The HTTP response message to parse.</param>
+        /// <param name="httpResponse">The HTTP response message to parse.</param>
         /// <returns>A task representings the parsed <see cref="JSendResponse{T}"/>.</returns>
         /// <exception cref="JSendParseException">The HTTP response message could not be parsed.</exception>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "We need to return a response asynchronously.")]
         [Pure]
         Task<JSendResponse<T>> ParseAsync<T>(JsonSerializerSettings serializerSettings,
-            HttpResponseMessage httpResponseMessage);
+            HttpResponseMessage httpResponse);
     }
 }

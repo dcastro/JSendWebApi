@@ -215,15 +215,15 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GetAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
+            HttpResponseMessage httpResponse, JSendResponse<Model> parsedResponse,
             [FrozenAsHttpClient] HttpClientStub clientStub,
             Uri uri, [Greedy] JSendClient client)
         {
             // Fixture setup
-            clientStub.ReturnOnSend = httpResponseMessage;
+            clientStub.ReturnOnSend = httpResponse;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
+                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponse))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.GetAsync<Model>(uri);
@@ -263,15 +263,15 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPostAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
+            HttpResponseMessage httpResponse, JSendResponse<Model> parsedResponse,
             [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
-            httpClientStub.ReturnOnSend = httpResponseMessage;
+            httpClientStub.ReturnOnSend = httpResponse;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
+                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponse))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PostAsync<Model>(uri, content);
@@ -352,15 +352,15 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PostAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<JToken> parsedResponse,
+            HttpResponseMessage httpResponse, JSendResponse<JToken> parsedResponse,
             [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
-            httpClientStub.ReturnOnSend = httpResponseMessage;
+            httpClientStub.ReturnOnSend = httpResponse;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<JToken>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
+                .Setup(p => p.ParseAsync<JToken>(It.IsAny<JsonSerializerSettings>(), httpResponse))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PostAsync(uri, content);
@@ -441,15 +441,15 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task DeleteAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<JToken> parsedResponse,
+            HttpResponseMessage httpResponse, JSendResponse<JToken> parsedResponse,
             [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, [Greedy] JSendClient client)
         {
             // Fixture setup
-            httpClientStub.ReturnOnSend = httpResponseMessage;
+            httpClientStub.ReturnOnSend = httpResponse;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<JToken>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
+                .Setup(p => p.ParseAsync<JToken>(It.IsAny<JsonSerializerSettings>(), httpResponse))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.DeleteAsync(uri);
@@ -489,15 +489,15 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task GenericPutAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
+            HttpResponseMessage httpResponse, JSendResponse<Model> parsedResponse,
             [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
-            httpClientStub.ReturnOnSend = httpResponseMessage;
+            httpClientStub.ReturnOnSend = httpResponse;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
+                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponse))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PutAsync<Model>(uri, content);
@@ -578,15 +578,15 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task PutAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<JToken> parsedResponse,
+            HttpResponseMessage httpResponse, JSendResponse<JToken> parsedResponse,
             [FrozenAsHttpClient] HttpClientStub httpClientStub,
             Uri uri, Model content, [Greedy] JSendClient client)
         {
             // Fixture setup
-            httpClientStub.ReturnOnSend = httpResponseMessage;
+            httpClientStub.ReturnOnSend = httpResponse;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<JToken>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
+                .Setup(p => p.ParseAsync<JToken>(It.IsAny<JsonSerializerSettings>(), httpResponse))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.PutAsync(uri, content);
@@ -667,15 +667,15 @@ namespace JSend.Client.Tests
 
         [Theory, JSendAutoData]
         public async Task SendAsync_ReturnsParsedResponse(
-            HttpResponseMessage httpResponseMessage, JSendResponse<Model> parsedResponse,
+            HttpResponseMessage httpResponse, JSendResponse<Model> parsedResponse,
             [FrozenAsHttpClient] HttpClientStub httpClientStub,
             HttpRequestMessage request, [Greedy] JSendClient client)
         {
             // Fixture setup
-            httpClientStub.ReturnOnSend = httpResponseMessage;
+            httpClientStub.ReturnOnSend = httpResponse;
 
             Mock.Get(client.Parser)
-                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponseMessage))
+                .Setup(p => p.ParseAsync<Model>(It.IsAny<JsonSerializerSettings>(), httpResponse))
                 .ReturnsAsync(parsedResponse);
             // Exercise system
             var response = await client.SendAsync<Model>(request);
@@ -753,7 +753,7 @@ namespace JSend.Client.Tests
             Mock.Get(interceptor)
                 .Verify(i => i.OnReceived(
                     It.Is<ResponseReceivedContext>(
-                        ctx => ctx.HttpRequestMessage == request && ctx.HttpResponseMessage == response)));
+                        ctx => ctx.HttpRequest == request && ctx.HttpResponse == response)));
         }
 
         [Theory, JSendAutoData]
@@ -770,8 +770,8 @@ namespace JSend.Client.Tests
             Mock.Get(interceptor)
                 .Verify(i => i.OnParsed<object>(
                     It.Is<ResponseParsedContext<object>>(
-                        ctx => ctx.HttpRequestMessage == request &&
-                               ctx.HttpResponseMessage == response &&
+                        ctx => ctx.HttpRequest == request &&
+                               ctx.HttpResponse == response &&
                                ctx.JSendResponse == jsendResponse)));
         }
 
@@ -798,7 +798,7 @@ namespace JSend.Client.Tests
             // Verify outcome
             Mock.Get(interceptor)
                 .Verify(i => i.OnException(It.Is<ExceptionContext>(
-                    ctx => ctx.HttpRequestMessage == request &&
+                    ctx => ctx.HttpRequest == request &&
                            ctx.Exception == exception
                     )), Times.Once);
         }
@@ -826,7 +826,7 @@ namespace JSend.Client.Tests
             // Verify outcome
             Mock.Get(interceptor)
                 .Verify(i => i.OnException(It.Is<ExceptionContext>(
-                    ctx => ctx.HttpRequestMessage == request &&
+                    ctx => ctx.HttpRequest == request &&
                            ctx.Exception == exception
                     )), Times.Once);
         }

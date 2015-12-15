@@ -9,20 +9,20 @@ namespace JSend.Client
     public class ExceptionContext
     {
         /// <summary>Gets the request being processed when the exception was caught.</summary>
-        public HttpRequestMessage HttpRequestMessage { get; }
+        public HttpRequestMessage HttpRequest { get; }
 
-        /// <summary>Gets the exception that was caught while processing <see cref="HttpRequestMessage"/>.</summary>
+        /// <summary>Gets the exception that was caught while processing <see cref="HttpRequest"/>.</summary>
         public Exception Exception { get; }
 
         /// <summary>Initializes a new instance of <see cref="ExceptionContext"/>.</summary>
-        /// <param name="httpRequestMessage">The request being processed when the exception was caught.</param>
-        /// <param name="exception">The exception that was caught while processing <paramref name="httpRequestMessage"/>.</param>
-        public ExceptionContext(HttpRequestMessage httpRequestMessage, Exception exception)
+        /// <param name="httpRequest">The request being processed when the exception was caught.</param>
+        /// <param name="exception">The exception that was caught while processing <paramref name="httpRequest"/>.</param>
+        public ExceptionContext(HttpRequestMessage httpRequest, Exception exception)
         {
-            if (httpRequestMessage == null) throw new ArgumentNullException(nameof(httpRequestMessage));
+            if (httpRequest == null) throw new ArgumentNullException(nameof(httpRequest));
             if (exception == null) throw new ArgumentNullException(nameof(exception));
 
-            HttpRequestMessage = httpRequestMessage;
+            HttpRequest = httpRequest;
             Exception = exception;
         }
     }

@@ -28,7 +28,7 @@ namespace JSend.Client.FunctionalTests
         {
             public override void OnReceived(ResponseReceivedContext context)
             {
-                var response = context.HttpResponseMessage;
+                var response = context.HttpResponse;
                 if (response.StatusCode == HttpStatusCode.NoContent)
                 {
                     var content = new JObject
