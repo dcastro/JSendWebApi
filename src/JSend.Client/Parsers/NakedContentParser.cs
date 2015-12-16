@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
@@ -43,6 +44,7 @@ namespace JSend.Client.Parsers
         /// <param name="httpResponse">The HTTP response message to parse.</param>
         /// <returns>A task representings the parsed <see cref="JSendResponse{T}"/>.</returns>
         /// <exception cref="JSendParseException">The HTTP response message could not be parsed.</exception>
+        [Pure]
         public async Task<JSendResponse<T>> ParseAsync<T>(JsonSerializerSettings serializerSettings,
             HttpResponseMessage httpResponse)
         {
