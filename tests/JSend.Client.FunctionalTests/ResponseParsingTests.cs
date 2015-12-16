@@ -66,7 +66,7 @@ namespace JSend.Client.FunctionalTests
         }
 
         [Theory]
-        [InlineJSendAutoData("no-content")]
+        [InlineJSendAutoData("empty-body")]
         [InlineJSendAutoData("non-jsend")]
         [InlineJSendAutoData("non-json")]
         public void DoesNotParseInvalidResponses(string route, JSendClient client)

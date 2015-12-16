@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Globalization;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using JSend.Client.Extensions;
 using JSend.Client.Properties;
+using JSend.Client.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
@@ -47,8 +49,11 @@ namespace JSend.Client.Parsers
             if (httpResponse == null)
                 throw new ArgumentNullException(nameof(httpResponse));
 
+            if (httpResponse.StatusCode == HttpStatusCode.NoContent)
+                return new JSuccessResponse<T>(httpResponse);
+
             if (httpResponse.Content == null)
-                throw new JSendParseException(StringResources.ResponseWithoutContent);
+                throw new JSendParseException(StringResources.ResponseWithEmptyBody);
 
             var content = await httpResponse.Content.ReadAsStringAsync().IgnoreContext();
 

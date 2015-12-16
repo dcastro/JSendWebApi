@@ -126,8 +126,8 @@
   <data name="ResponseParseError" xml:space="preserve">
     <value>HTTP response message could not be parsed into an instance of type "{0}". Content:{1}{2}</value>
   </data>
-  <data name="ResponseWithoutContent" xml:space="preserve">
-    <value>HTTP response had an empty body.</value>
+  <data name="ResponseWithEmptyBody" xml:space="preserve">
+    <value>HTTP response had an empty body. Only responses with the 204 No Content status code are allowed to have an empty body.</value>
   </data>
   <data name="SuccessResponseWithoutData" xml:space="preserve">
     <value>The JSend response was successful but did not contain any data.</value>

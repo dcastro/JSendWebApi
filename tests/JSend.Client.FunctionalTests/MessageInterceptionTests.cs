@@ -24,21 +24,20 @@ namespace JSend.Client.FunctionalTests
             }
         }
 
-        private class ReplaceNoContentInterceptor : MessageInterceptor
+        private class ReplaceEmptyBodyInterceptor : MessageInterceptor
         {
+            private static readonly JObject Content = new JObject
+            {
+                {"status", "success"},
+                {"data", null}
+            };
+
             public override void OnReceived(ResponseReceivedContext context)
             {
                 var response = context.HttpResponse;
-                if (response.StatusCode == HttpStatusCode.NoContent)
-                {
-                    var content = new JObject
-                    {
-                        {"status", "success"},
-                        {"data", null}
-                    };
-                    response.StatusCode = HttpStatusCode.OK;
-                    response.Content = new StringContent(content.ToString());
-                }
+
+                if (response.Content == null)
+                    response.Content = new StringContent(Content.ToString());
             }
         }
 
@@ -112,12 +111,12 @@ namespace JSend.Client.FunctionalTests
 
         [Theory, JSendAutoData]
         public void InterceptsResponsesBeforeBeingParsed(
-            [WithInterceptor(typeof (ReplaceNoContentInterceptor))] JSendClient client)
+            [WithInterceptor(typeof (ReplaceEmptyBodyInterceptor))] JSendClient client)
         {
             using (client)
             {
                 // Exercise system and verify outcome
-                client.Awaiting(c => c.GetAsync<string>("http://localhost/users/no-content"))
+                client.Awaiting(c => c.GetAsync<string>("http://localhost/users/empty-body"))
                     .ShouldNotThrow();
             }
         }
@@ -147,7 +146,7 @@ namespace JSend.Client.FunctionalTests
             {
                 try
                 {
-                    await client.GetAsync<string>("http://localhost/users/no-content");
+                    await client.GetAsync<string>("http://localhost/users/non-jsend");
                 }
                 catch
                 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -25,14 +26,26 @@ namespace JSend.Client.Tests.Parsers
         }
 
         [Theory, JSendAutoData]
-        public void ThrowsWhenResponseHasNoContent(HttpResponseMessage message, NakedContentParser parser)
+        public void ThrowsWhenResponseHasEmptyBody(NakedContentParser parser)
         {
             // Fixture setup
-            message.Content = null;
+            var message = new HttpResponseMessage();
             // Exercise system and verify outcome
             parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()
-                .WithMessage(StringResources.ResponseWithoutContent);
+                .WithMessage(StringResources.ResponseWithEmptyBody);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task Parses204NoContent(NakedContentParser parser)
+        {
+            // Fixture setup
+            var message = new HttpResponseMessage(HttpStatusCode.NoContent);
+            // Exercise system and verify outcome
+            var response = await parser.ParseAsync<Model>(null, message);
+            // Verify outcome
+            response.Status.Should().Be(JSendStatus.Success);
+            response.HasData.Should().BeFalse();
         }
 
         [Theory, JSendAutoData]

@@ -33,7 +33,7 @@ namespace JSend.Client.FunctionalTests
             => JSendError(HttpStatusCode.InternalServerError, ErrorMessage, ErrorCode, ErrorData);
 
         [Route("no-content"), HttpGet]
-        public HttpResponseMessage NoContentAction() => new HttpResponseMessage(HttpStatusCode.NoContent);
+        public IHttpActionResult NoContentAction() => StatusCode(HttpStatusCode.NoContent);
 
         [Route("non-jsend"), HttpGet]
         public IHttpActionResult NonJSendAction() => Ok(TestUser);
@@ -46,6 +46,9 @@ namespace JSend.Client.FunctionalTests
 
             return Content(HttpStatusCode.OK, response, formatter);
         }
+
+        [Route("empty-body"), HttpGet]
+        public IHttpActionResult EmptyBody() => Ok();
 
         [Route("get"), HttpGet]
         public string GetAction() => "get";
