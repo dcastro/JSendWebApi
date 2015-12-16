@@ -48,7 +48,7 @@ namespace JSend.Client.Tests.Responses
             // Exercise system and verify outcome
             response.Invoking(r => { var x = r.Data; })
                 .ShouldThrow<JSendRequestException>()
-                .WithMessage("JSend status does not indicate success: \"fail\".");
+                .WithMessage("JSend status does not indicate success*");
         }
     }
 }

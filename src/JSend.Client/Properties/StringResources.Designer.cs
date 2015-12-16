@@ -106,7 +106,7 @@ namespace JSend.Client.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JSend status does not indicate success: &quot;{0}&quot;..
+        ///   Looks up a localized string similar to JSend status does not indicate success: {0}..
         /// </summary>
         internal static string UnsuccessfulResponse {
             get {

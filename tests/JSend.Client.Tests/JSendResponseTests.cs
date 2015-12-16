@@ -56,7 +56,7 @@ namespace JSend.Client.Tests
             // Exercise system and verify outcome
             response.Invoking(rsp => rsp.EnsureSuccessStatus())
                 .ShouldThrow<JSendRequestException>()
-                .WithMessage("JSend status does not indicate success: \"fail\".");
+                .WithMessage("JSend status does not indicate success: " + response + ".");
         }
 
         [Theory, JSendAutoData]

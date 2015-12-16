@@ -85,7 +85,7 @@ namespace JSend.Client
                 throw new JSendRequestException(
                     string.Format(
                         CultureInfo.InvariantCulture,
-                        StringResources.UnsuccessfulResponse, Status.ToString().ToLowerInvariant()));
+                        StringResources.UnsuccessfulResponse, this));
             }
 
             return this;

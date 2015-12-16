@@ -133,6 +133,6 @@
     <value>The JSend response was successful but did not contain any data.</value>
   </data>
   <data name="UnsuccessfulResponse" xml:space="preserve">
-    <value>JSend status does not indicate success: "{0}".</value>
+    <value>JSend status does not indicate success: {0}.</value>
   </data>
 </root>
