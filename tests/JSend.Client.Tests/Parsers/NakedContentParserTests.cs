@@ -55,7 +55,10 @@ namespace JSend.Client.Tests.Parsers
         public async Task Parses204NoContent(NakedContentParser parser)
         {
             // Fixture setup
-            var message = new HttpResponseMessage(HttpStatusCode.NoContent);
+            var message = new HttpResponseMessage(HttpStatusCode.NoContent)
+            {
+                Content = new StringContent("")
+            };
             // Exercise system and verify outcome
             var response = await parser.ParseAsync<Model>(null, message);
             // Verify outcome
@@ -154,6 +157,18 @@ namespace JSend.Client.Tests.Parsers
             // Verify outcome
             response.Status.Should().Be(JSendStatus.Success);
             response.Data.ShouldBeEquivalentTo(model);
+        }
+
+        [Theory, JSendAutoData]
+        public async Task ParsesNullToken_AsASuccessResponse(HttpResponseMessage message, NakedContentParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent("null");
+            // Exercise system
+            var response = await parser.ParseAsync<JToken>(null, message);
+            // Verify outcome
+            response.Status.Should().Be(JSendStatus.Success);
+            response.HasData.Should().BeFalse();
         }
 
         public class ModelWithPrivateDefaultConstructor

@@ -65,7 +65,10 @@ namespace JSend.Client.Tests.Parsers
         public async Task Parses204NoContent(DefaultJSendParser parser)
         {
             // Fixture setup
-            var message = new HttpResponseMessage(HttpStatusCode.NoContent);
+            var message = new HttpResponseMessage(HttpStatusCode.NoContent)
+            {
+                Content = new StringContent("")
+            };
             // Exercise system and verify outcome
             var response = await parser.ParseAsync<Model>(null, message);
             // Verify outcome
@@ -113,6 +116,18 @@ namespace JSend.Client.Tests.Parsers
                 .ShouldThrow<JSendParseException>()
                 .WithInnerException<JsonSchemaException>()
                 .WithInnerMessage("Invalid type. Expected Object but got Array*");
+        }
+
+        [Theory, JSendAutoData]
+        public void ThrowsWhenResponse_IsNullToken(HttpResponseMessage message, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent("null");
+            // Exercise system and verify outcome
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
+                .ShouldThrow<JSendParseException>()
+                .WithInnerException<JsonSchemaException>()
+                .WithInnerMessage("Invalid type. Expected Object but got Null*");
         }
 
         [Theory, JSendAutoData]
