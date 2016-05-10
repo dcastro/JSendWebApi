@@ -36,10 +36,25 @@ namespace JSend.Client.Tests.Parsers
         }
 
         [Theory, JSendAutoData]
-        public void ThrowsWhenResponseHasEmptyBody(DefaultJSendParser parser)
+        public void ThrowsWhenResponseHasNoContent(DefaultJSendParser parser)
         {
             // Fixture setup
             var message = new HttpResponseMessage();
+            // Exercise system and verify outcome
+            parser.Awaiting(p => p.ParseAsync<Model>(null, message))
+                .ShouldThrow<JSendParseException>()
+                .WithMessage(StringResources.ResponseWithEmptyBody);
+        }
+
+        [Theory]
+        [InlineJSendAutoDataAttribute("")]
+        [InlineJSendAutoDataAttribute("  ")]
+        [InlineJSendAutoDataAttribute("\r\n")]
+        [InlineJSendAutoDataAttribute("\n")]
+        public void ThrowsWhenResponseHasEmptyBody(string content, HttpResponseMessage message, DefaultJSendParser parser)
+        {
+            // Fixture setup
+            message.Content = new StringContent(content);
             // Exercise system and verify outcome
             parser.Awaiting(p => p.ParseAsync<Model>(null, message))
                 .ShouldThrow<JSendParseException>()

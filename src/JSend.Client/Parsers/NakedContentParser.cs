@@ -59,6 +59,9 @@ namespace JSend.Client.Parsers
 
             var content = await httpResponse.Content.ReadAsStringAsync().IgnoreContext();
 
+            if (string.IsNullOrWhiteSpace(content))
+                throw new JSendParseException(StringResources.ResponseWithEmptyBody);
+
             try
             {
                 var json = JsonConvert.DeserializeObject<JToken>(content, serializerSettings);
